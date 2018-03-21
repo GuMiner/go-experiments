@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"go-experiments/voxelli/viewport"
 	"runtime"
 	"time"
@@ -47,6 +48,12 @@ func main() {
 
 	setInputCallbacks(window)
 	configureOpenGl()
+
+	longCar := NewVoxelObject("./models/long_car.vox")
+	fmt.Printf("Long Car objects: %v\n", len(longCar.subObjects))
+
+	straightRoad := NewVoxelObject("./models/road_straight.vox")
+	fmt.Printf("Straight Road objects: %v\n", len(straightRoad.subObjects))
 
 	program := createProgram("./shaders/basicRenderer")
 	defer gl.DeleteProgram(program)
