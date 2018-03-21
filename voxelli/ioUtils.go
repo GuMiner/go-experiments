@@ -3,7 +3,7 @@ package main
 // Simplifies general IO operations
 import "io/ioutil"
 
-func readFile(path string) string {
+func ReadFile(path string) string {
 	fileAsBytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
