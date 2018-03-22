@@ -48,7 +48,16 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 
 		modelCount := int(binary.LittleEndian.Uint32(data[12:16]))
 		chunkType = PackChunk{modelCount: modelCount}
+	case "SIZE":
+		bytesRead += 12
+		checkLength(12, 12, data)
+
+		x := int(binary.LittleEndian.Uint32(data[12:16]))
+		y := int(binary.LittleEndian.Uint32(data[16:20]))
+		z := int(binary.LittleEndian.Uint32(data[20:24]))
+		chunkType = SizeChunk{size: IntVec3{x, y, z}}
 	default:
+		bytesRead = 12 + int(binary.LittleEndian.Uint32(data[4:8]))
 		chunkType = UnknownChunk{typeName: chunkId}
 	}
 
