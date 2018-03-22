@@ -19,44 +19,13 @@ type VoxelObject struct {
 	subObjects []SubObject
 	minBounds  IntVec3
 	maxBounds  IntVec3
+	palette    *VoxelPalette
 }
 
 // Defines voxel types
 type ChunkType interface {
 	Name() string
 	Add(voxelObject *VoxelObject)
-}
-
-type MainChunk struct {
-}
-
-func (c MainChunk) Name() string {
-	return "Main"
-}
-
-func (c MainChunk) Add(obj *VoxelObject) {
-}
-
-type PackChunk struct {
-	modelCount int
-}
-
-func (c PackChunk) Name() string {
-	return "Pack"
-}
-
-func (c PackChunk) Add(obj *VoxelObject) {
-}
-
-type UnknownChunk struct {
-	typeName string
-}
-
-func (c UnknownChunk) Name() string {
-	return fmt.Sprintf("unknown (%v)", c.typeName)
-}
-
-func (c UnknownChunk) Add(obj *VoxelObject) {
 }
 
 // Parses out our chunk
