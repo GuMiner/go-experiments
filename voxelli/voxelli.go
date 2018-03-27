@@ -70,7 +70,7 @@ func main() {
 	// Enable our program and do first-time uniform setup
 	gl.UseProgram(program)
 
-	camera := mgl32.LookAtV(mgl32.Vec3{-3, 4, -3}, mgl32.Vec3{20, 0, 20}, mgl32.Vec3{0, 1, 0})
+	camera := mgl32.LookAtV(mgl32.Vec3{-30, 40, -30}, mgl32.Vec3{20, 0, 20}, mgl32.Vec3{0, 1, 0})
 	gl.UniformMatrix4fv(cameraLoc, 1, false, &camera[0])
 
 	startTime := time.Now()
@@ -86,17 +86,25 @@ func main() {
 			gl.UniformMatrix4fv(projectionLoc, 1, false, &projection[0])
 		}
 
-		for i := 0; i < 20; i++ {
-			for j := 0; j < 20; j++ {
+		for _, subObject := range longCar.subObjects {
+			for _, voxel := range subObject.voxels {
+				gl.Uniform1f(timeLoc, (float32(elapsed)/float32(time.Second))+float32(voxel.colorIdx)*0.3)
 
-				gl.Uniform1f(timeLoc, (float32(elapsed)/float32(time.Second))+float32(i)*0.3+float32(j)*0.5)
-
-				model := mgl32.Translate3D(float32(3*i), 0, float32(3*j))
+				model := mgl32.Translate3D(float32(voxel.position.X()*2), float32(voxel.position.Y()*2), float32(voxel.position.Z()*2))
 				gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
 
 				cube.Render()
 			}
 		}
+
+		// for i := 0; i < 20; i++ {
+		// 	 gl.Uniform1f(timeLoc, (float32(elapsed)/float32(time.Second))+float32(i)*0.3+float32(i)*0.5)
+		//
+		// 	 model := mgl32.Translate3D(float32(3*i), 0, float32(3*i))
+		// 	 gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
+		//
+		// 	 cube.Render()
+		// }
 
 		window.SwapBuffers()
 		glfw.PollEvents()
