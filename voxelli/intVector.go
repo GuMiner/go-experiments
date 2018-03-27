@@ -4,6 +4,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
+type IntVec2 [2]int
 type IntVec3 [3]int
 type Color [4]uint8
 
