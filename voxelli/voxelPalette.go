@@ -1,10 +1,10 @@
 package main
 
 type VoxelPalette struct {
-	colors []Color
+	colors [256]Color
 }
 
-var defaultPalette = []Color{
+var DefaultPalette = [256]Color{
 	NewColor(0x000000), NewColor(0xffffff), NewColor(0xccffff), NewColor(0x99ffff), NewColor(0x66ffff), NewColor(0x33ffff), NewColor(0x00ffff), NewColor(0xffccff), NewColor(0xccccff), NewColor(0x99ccff), NewColor(0x66ccff), NewColor(0x33ccff), NewColor(0x00ccff), NewColor(0xff99ff), NewColor(0xcc99ff), NewColor(0x9999ff),
 	NewColor(0x6699ff), NewColor(0x3399ff), NewColor(0x0099ff), NewColor(0xff66ff), NewColor(0xcc66ff), NewColor(0x9966ff), NewColor(0x6666ff), NewColor(0x3366ff), NewColor(0x0066ff), NewColor(0xff33ff), NewColor(0xcc33ff), NewColor(0x9933ff), NewColor(0x6633ff), NewColor(0x3333ff), NewColor(0x0033ff), NewColor(0xff00ff),
 	NewColor(0xcc00ff), NewColor(0x9900ff), NewColor(0x6600ff), NewColor(0x3300ff), NewColor(0x0000ff), NewColor(0xffffcc), NewColor(0xccffcc), NewColor(0x99ffcc), NewColor(0x66ffcc), NewColor(0x33ffcc), NewColor(0x00ffcc), NewColor(0xffcccc), NewColor(0xcccccc), NewColor(0x99cccc), NewColor(0x66cccc), NewColor(0x33cccc),

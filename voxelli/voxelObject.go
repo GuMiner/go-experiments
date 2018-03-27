@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 )
 
 // Defines voxel objects
@@ -25,7 +26,40 @@ type VoxelObject struct {
 // Defines voxel types
 type ChunkType interface {
 	Name() string
-	Add(voxelObject *VoxelObject)
+}
+
+func CheckBounds(current *IntVec3, comparison IntVec3, comparisonFunc func(int, int) int) {
+	current[0] = comparisonFunc(current[0], comparison[0])
+	current[1] = comparisonFunc(current[1], comparison[2])
+	current[2] = comparisonFunc(current[2], comparison[2])
+}
+
+func (voxelObject *VoxelObject) ComputeBounds() {
+	voxelObject.minBounds = IntVec3{math.MaxInt32, math.MaxInt32, math.MaxInt32}
+	voxelObject.maxBounds = IntVec3{math.MinInt32, math.MinInt32, math.MinInt32}
+
+	minFunc := func(x, y int) int {
+		if x < y {
+			return x
+		}
+
+		return y
+	}
+
+	maxFunc := func(x, y int) int {
+		if x > y {
+			return x
+		}
+
+		return y
+	}
+
+	for _, object := range voxelObject.subObjects {
+		for _, voxel := range object.voxels {
+			CheckBounds(&voxelObject.minBounds, voxel.position, minFunc)
+			CheckBounds(&voxelObject.maxBounds, voxel.position, maxFunc)
+		}
+	}
 }
 
 // Parses out our chunk
@@ -56,6 +90,43 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 		y := int(binary.LittleEndian.Uint32(data[16:20]))
 		z := int(binary.LittleEndian.Uint32(data[20:24]))
 		chunkType = SizeChunk{size: IntVec3{x, y, z}}
+	case "XYZI":
+		bytesRead += 4
+		checkLength(12, 4, data)
+
+		voxelCount := int(binary.LittleEndian.Uint32(data[12:16]))
+		bytesRead += 4 * voxelCount
+		checkLength(16, 4*voxelCount, data)
+
+		voxels := make([]Voxel, voxelCount)
+		dataIdx := 16
+		for i := 0; i < voxelCount; i++ {
+			x := int(data[dataIdx])
+			y := int(data[dataIdx+1])
+			z := int(data[dataIdx+2])
+			c := data[dataIdx+3]
+			dataIdx += 4
+
+			voxels[i] = Voxel{position: IntVec3{x, y, z}, colorIdx: c}
+		}
+
+		chunkType = VoxelsChunk{voxels: voxels}
+	case "RGBA":
+		colorElements := 4 * 256
+		bytesRead += colorElements
+		checkLength(12, colorElements, data)
+
+		var colors [256]Color
+		for i, color := range colors {
+			color[0] = data[12+i*4]
+			color[1] = data[12+i*4+1]
+			color[2] = data[12+i*4+2]
+			color[3] = data[12+i*4+3]
+		}
+
+		palette := VoxelPalette{colors: colors}
+
+		chunkType = PaletteChunk{palette: palette}
 	default:
 		bytesRead = 12 + int(binary.LittleEndian.Uint32(data[4:8]))
 		chunkType = UnknownChunk{typeName: chunkId}
@@ -80,6 +151,7 @@ func checkHeader(data []uint8) {
 func NewVoxelObject(fileName string) *VoxelObject {
 	data := ReadFileAsBytes(fileName)
 
+	// Validate this is a VOX file and we start out with our proper MAIN chunk
 	checkHeader(data[0:])
 
 	checkLength(4, 4, data[4:])
@@ -89,23 +161,66 @@ func NewVoxelObject(fileName string) *VoxelObject {
 	chunkType, bytesRead := parseChunk(data[byteIndex:])
 	fmt.Printf("Read a %v chunk\n", chunkType.Name())
 
-	_, isMainChunk := chunkType.(MainChunk)
+	foundChunk, isMainChunk := chunkType.(MainChunk)
 	if !isMainChunk {
-		panic("Did not find a main chunk as the first chunk of the file!")
+		panic("Did not find a main chunk as the first chunk of the file, found " + foundChunk.Name())
 	}
 
-	var voxelObject VoxelObject
-
+	// This is either PACK (1 or more models) or SIZE (the onlyy model.)
 	byteIndex += bytesRead
 	chunkType, bytesRead = parseChunk(data[byteIndex:])
 	fmt.Printf("Read a %v chunk\n", chunkType.Name())
 
+	modelCount := 1
 	switch val := chunkType.(type) {
-	case MainChunk:
-		panic("Did not expect to read in more than one main chunk!")
 	case PackChunk:
-		val.Add(&voxelObject)
+		modelCount = val.modelCount
+
+		// Only advance if this is a PACK chunk so we start parsing our model at the same
+		// spot regardless of the presense or lack thereof of PACK
+		byteIndex += bytesRead
 	}
 
+	var voxelObject VoxelObject
+	for i := 0; i < modelCount; i++ {
+		chunkType, bytesRead = parseChunk(data[byteIndex:])
+		fmt.Printf("Read a %v chunk\n", chunkType.Name())
+
+		switch val := chunkType.(type) {
+		case SizeChunk:
+			byteIndex += bytesRead
+		default:
+			panic("Expected the model to start with a SIZE chunk, not " + val.Name())
+		}
+
+		chunkType, bytesRead = parseChunk(data[byteIndex:])
+		fmt.Printf("Read a %v chunk\n", chunkType.Name())
+
+		switch val := chunkType.(type) {
+		case VoxelsChunk:
+			voxelObject.subObjects = append(voxelObject.subObjects, SubObject{voxels: val.voxels})
+			byteIndex += bytesRead
+		default:
+			panic("Expected the model to have a XYZI chunk, not " + val.Name())
+		}
+	}
+
+	voxelObject.palette = &VoxelPalette{colors: DefaultPalette}
+
+	// Parse out all the optional chunks, which may give us a palette chunk
+	for byteIndex < len(data) {
+		chunkType, bytesRead = parseChunk(data[byteIndex:])
+		// fmt.Printf("Read a %v chunk\n", chunkType.Name())
+
+		foundChunk, isPaletteChunk := chunkType.(PaletteChunk)
+		if isPaletteChunk {
+			voxelObject.palette = &foundChunk.palette
+		}
+
+		byteIndex += bytesRead
+	}
+
+	voxelObject.ComputeBounds()
+	fmt.Printf("Voxel Object is bounded by %v and %v", voxelObject.minBounds, voxelObject.maxBounds)
 	return &voxelObject
 }

@@ -8,8 +8,6 @@ type MainChunk struct {
 func (c MainChunk) Name() string {
 	return "Main"
 }
-func (c MainChunk) Add(obj *VoxelObject) {
-}
 
 type PackChunk struct {
 	modelCount int
@@ -17,8 +15,6 @@ type PackChunk struct {
 
 func (c PackChunk) Name() string {
 	return "Pack"
-}
-func (c PackChunk) Add(obj *VoxelObject) {
 }
 
 type SizeChunk struct {
@@ -28,8 +24,6 @@ type SizeChunk struct {
 func (c SizeChunk) Name() string {
 	return "Size"
 }
-func (c SizeChunk) Add(obj *VoxelObject) {
-}
 
 type VoxelsChunk struct {
 	voxels []Voxel
@@ -37,9 +31,6 @@ type VoxelsChunk struct {
 
 func (c VoxelsChunk) Name() string {
 	return "Voxels"
-}
-func (chunk VoxelsChunk) Add(obj *VoxelObject) {
-	obj.subObjects = append(obj.subObjects, SubObject{voxels: chunk.voxels})
 }
 
 type PaletteChunk struct {
@@ -49,9 +40,6 @@ type PaletteChunk struct {
 func (c PaletteChunk) Name() string {
 	return "Palette"
 }
-func (chunk PaletteChunk) Add(obj *VoxelObject) {
-	*obj.palette = chunk.palette
-}
 
 type UnknownChunk struct {
 	typeName string
@@ -59,6 +47,4 @@ type UnknownChunk struct {
 
 func (c UnknownChunk) Name() string {
 	return fmt.Sprintf("unknown (%v)", c.typeName)
-}
-func (c UnknownChunk) Add(obj *VoxelObject) {
 }

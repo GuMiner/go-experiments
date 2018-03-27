@@ -1,7 +1,7 @@
 package main
 
 type IntVec3 [3]int
-type Color [3]uint8
+type Color [4]uint8
 
 func (v IntVec3) X() int {
 	return v[0]
@@ -27,9 +27,14 @@ func (v Color) B() uint8 {
 	return v[2]
 }
 
+func (v Color) A() uint8 {
+	return v[3]
+}
+
 func NewColor(bgr uint32) Color {
 	r := uint8(bgr)
 	g := uint8(bgr >> 8)
 	b := uint8(bgr >> 16)
-	return Color{r, g, b}
+	a := uint8(bgr >> 24)
+	return Color{r, g, b, a}
 }
