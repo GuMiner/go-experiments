@@ -30,7 +30,7 @@ type ChunkType interface {
 
 func CheckBounds(current *IntVec3, comparison IntVec3, comparisonFunc func(int, int) int) {
 	current[0] = comparisonFunc(current[0], comparison[0])
-	current[1] = comparisonFunc(current[1], comparison[2])
+	current[1] = comparisonFunc(current[1], comparison[1])
 	current[2] = comparisonFunc(current[2], comparison[2])
 }
 
@@ -117,11 +117,11 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 		checkLength(12, colorElements, data)
 
 		var colors [256]Color
-		for i, color := range colors {
-			color[0] = data[12+i*4]
-			color[1] = data[12+i*4+1]
-			color[2] = data[12+i*4+2]
-			color[3] = data[12+i*4+3]
+		for i := 0; i < len(colors); i++ {
+			colors[i][0] = data[12+i*4]
+			colors[i][1] = data[12+i*4+1]
+			colors[i][2] = data[12+i*4+2]
+			colors[i][3] = data[12+i*4+3]
 		}
 
 		palette := VoxelPalette{colors: colors}
@@ -221,6 +221,13 @@ func NewVoxelObject(fileName string) *VoxelObject {
 	}
 
 	voxelObject.ComputeBounds()
-	fmt.Printf("Voxel Object is bounded by %v and %v", voxelObject.minBounds, voxelObject.maxBounds)
+
+	totalVoxels := 0
+	for _, subObject := range voxelObject.subObjects {
+		totalVoxels += len(subObject.voxels)
+	}
+
+	fmt.Printf("Voxel Object is bounded by %v and %v with %v total voxels\n", voxelObject.minBounds, voxelObject.maxBounds, totalVoxels)
+
 	return &voxelObject
 }

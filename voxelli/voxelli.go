@@ -63,6 +63,7 @@ func main() {
 	cameraLoc := gl.GetUniformLocation(program, gl.Str("camera\x00"))
 	modelLoc := gl.GetUniformLocation(program, gl.Str("model\x00"))
 	timeLoc := gl.GetUniformLocation(program, gl.Str("runTime\x00"))
+	colorOverrideLoc := gl.GetUniformLocation(program, gl.Str("colorOverride\x00"))
 
 	cube := NewCube()
 	defer cube.Delete()
@@ -70,7 +71,7 @@ func main() {
 	// Enable our program and do first-time uniform setup
 	gl.UseProgram(program)
 
-	camera := mgl32.LookAtV(mgl32.Vec3{-30, 40, -30}, mgl32.Vec3{20, 0, 20}, mgl32.Vec3{0, 1, 0})
+	camera := mgl32.LookAtV(mgl32.Vec3{-60, -60, 80}, mgl32.Vec3{200, 200, 00}, mgl32.Vec3{0, 0, 1})
 	gl.UniformMatrix4fv(cameraLoc, 1, false, &camera[0])
 
 	startTime := time.Now()
@@ -86,14 +87,26 @@ func main() {
 			gl.UniformMatrix4fv(projectionLoc, 1, false, &projection[0])
 		}
 
-		for _, subObject := range longCar.subObjects {
-			for _, voxel := range subObject.voxels {
-				gl.Uniform1f(timeLoc, (float32(elapsed)/float32(time.Second))+float32(voxel.colorIdx)*0.3)
+		for i := 0; i < 10; i++ {
+			for j := 0; j < 10; j++ {
+				for _, subObject := range longCar.subObjects {
+					for _, voxel := range subObject.voxels {
+						gl.Uniform1f(timeLoc, (float32(elapsed)/float32(time.Second))+float32(voxel.colorIdx)*0.3)
 
-				model := mgl32.Translate3D(float32(voxel.position.X()*2), float32(voxel.position.Y()*2), float32(voxel.position.Z()*2))
-				gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
+						colorVector := longCar.palette.colors[voxel.colorIdx-1].AsFloatVector()
+						gl.Uniform4fv(colorOverrideLoc, 1, &colorVector[0])
 
-				cube.Render()
+						xCarOffset := i*2*(longCar.maxBounds.X()-longCar.minBounds.X()) + 4
+						yCarOffset := j*2*(longCar.maxBounds.Y()-longCar.minBounds.Y()) + 4
+
+						model := mgl32.HomogRotate3D(0.5*float32(elapsed)/float32(time.Second), mgl32.Vec3{0, 0, 1})
+						model = model.Mul4(mgl32.Translate3D(float32(voxel.position.X()*2+xCarOffset), float32(voxel.position.Y()*2+yCarOffset), float32(voxel.position.Z()*2)))
+
+						gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
+
+						cube.Render()
+					}
+				}
 			}
 		}
 
