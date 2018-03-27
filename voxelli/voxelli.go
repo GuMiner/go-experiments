@@ -55,6 +55,9 @@ func main() {
 	straightRoad := NewVoxelObject("./models/road_straight.vox")
 	fmt.Printf("Straight Road objects: %v\n", len(straightRoad.subObjects))
 
+	straightRoadway := NewRoadway("./roadways/straight_with_s-curve.txt")
+	fmt.Printf("Straight roadway size: [%v, %v]\n", len(straightRoadway.roadElements), len(straightRoadway.roadElements[0]))
+
 	program := createProgram("./shaders/basicRenderer")
 	defer gl.DeleteProgram(program)
 

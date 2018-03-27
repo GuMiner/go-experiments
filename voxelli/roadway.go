@@ -11,6 +11,7 @@ import (
 // Defines the road types that exist in our file.
 type RoadType int
 
+// Ordering is important! Road types are parsed according to these constant values.
 const (
 	NotARoadType RoadType = iota
 	StraightRoadType
@@ -82,15 +83,18 @@ func NewRoadway(fileName string) *Roadway {
 		panic("Expected at least three lines in the file, not enough found.")
 	}
 
+	fmt.Printf("Roadway information: %v\n", lines[0])
+
 	// The roadway format corresponds to what you see when you edit it.
+	// The first line can be a comment. No other comments are allowed.
 	// *empty* newlines are allowed anywhere in the format
 	// Line 1: xSize
 	// Line 2: ySize
-	xSize := ParseInt(lines[0])
-	ySize := ParseInt(lines[1])
+	xSize := ParseInt(lines[1])
+	ySize := ParseInt(lines[2])
 	fmt.Printf("Started parsing a roadway grid of size [%v, %v]\n", xSize, ySize)
 
-	// Line 3-ySize + 3: Y lines, flipped upside down to match the screen display
+	// Remaining lines: Y lines, flipped upside down to match the screen display
 	// Any number of spaces or tabs can be used for item delimiters
 	// Items are defined as RoadType:OptionalValue
 	if len(lines) < 3+ySize {
@@ -102,7 +106,7 @@ func NewRoadway(fileName string) *Roadway {
 		roadway.roadElements[i] = make([]Road, ySize)
 	}
 
-	for i, line := range lines[2:] {
+	for i, line := range lines[3:] {
 		roadParts := strings.FieldsFunc(line, spaceSplitFunction)
 		if len(roadParts) != xSize {
 			panic(fmt.Sprintf("Found %v road elements, expected %v", len(roadParts), xSize))
