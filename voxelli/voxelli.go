@@ -49,33 +49,19 @@ func main() {
 	setInputCallbacks(window)
 	configureOpenGl()
 
-	longCar := NewVoxelObject("./models/long_car.vox")
+	longCar := NewVoxelObject("./data/models/long_car.vox")
 	fmt.Printf("Long Car objects: %v\n", len(longCar.subObjects))
 
-	straightRoad := NewVoxelObject("./models/road_straight.vox")
-	fmt.Printf("Straight Road objects: %v\n", len(straightRoad.subObjects))
+	simpleRoadway := NewRoadway("./data/roadways/straight_with_s-curve.txt")
+	fmt.Printf("Straight roadway size: [%v, %v]\n", len(simpleRoadway.roadElements), len(simpleRoadway.roadElements[0]))
 
-	straightRoadway := NewRoadway("./roadways/straight_with_s-curve.txt")
-	fmt.Printf("Straight roadway size: [%v, %v]\n", len(straightRoadway.roadElements), len(straightRoadway.roadElements[0]))
+	voxelObjectRenderer := NewVoxelObjectRenderer()
+	defer voxelObjectRenderer.Delete()
 
-	program := createProgram("./shaders/basicRenderer")
-	defer gl.DeleteProgram(program)
-
-	// Get locations of everything used in this program.
-	projectionLoc := gl.GetUniformLocation(program, gl.Str("projection\x00"))
-	cameraLoc := gl.GetUniformLocation(program, gl.Str("camera\x00"))
-	modelLoc := gl.GetUniformLocation(program, gl.Str("model\x00"))
-	timeLoc := gl.GetUniformLocation(program, gl.Str("runTime\x00"))
-	colorOverrideLoc := gl.GetUniformLocation(program, gl.Str("colorOverride\x00"))
-
-	cube := NewCube()
-	defer cube.Delete()
-
-	// Enable our program and do first-time uniform setup
-	gl.UseProgram(program)
+	roadwayRenderer := NewRoadwayRenderer(voxelObjectRenderer)
 
 	camera := mgl32.LookAtV(mgl32.Vec3{-60, -60, 80}, mgl32.Vec3{200, 200, 00}, mgl32.Vec3{0, 0, 1})
-	gl.UniformMatrix4fv(cameraLoc, 1, false, &camera[0])
+	voxelObjectRenderer.UpdateCamera(&camera)
 
 	startTime := time.Now()
 	for !window.ShouldClose() {
@@ -87,43 +73,20 @@ func main() {
 		// Don't distort on resize
 		if !viewport.PerspectiveMatrixUpdated() {
 			projection := mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
-			gl.UniformMatrix4fv(projectionLoc, 1, false, &projection[0])
+			voxelObjectRenderer.UpdateProjection(&projection)
 		}
 
-		// Draw a road piece
-		for _, subObject := range straightRoad.subObjects {
-			for _, voxel := range subObject.voxels {
-				colorVector := longCar.palette.colors[voxel.colorIdx-1].AsFloatVector()
-				gl.Uniform4fv(colorOverrideLoc, 1, &colorVector[0])
-
-				model := mgl32.Translate3D(float32(voxel.position.X()*2), float32(voxel.position.Y()*2), float32(voxel.position.Z()*2))
-				gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
-
-				cube.Render()
-			}
-		}
+		roadwayRenderer.Render(simpleRoadway)
 
 		// Draw a few cars
 		for i := 0; i < 4; i++ {
 			for j := 0; j < 4; j++ {
-				for _, subObject := range longCar.subObjects {
-					for _, voxel := range subObject.voxels {
-						gl.Uniform1f(timeLoc, (float32(elapsed)/float32(time.Second))+float32(voxel.colorIdx)*0.3)
+				xCarOffset := i*(longCar.maxBounds.X()-longCar.minBounds.X()) + 4
+				yCarOffset := j*(longCar.maxBounds.Y()-longCar.minBounds.Y()) + 4
+				modelMatrix := mgl32.HomogRotate3D(0.5*float32(elapsed)/float32(time.Second), mgl32.Vec3{0, 0, 1})
+				modelMatrix = modelMatrix.Mul4(mgl32.Translate3D(float32(xCarOffset), float32(yCarOffset), 0.0))
 
-						colorVector := longCar.palette.colors[voxel.colorIdx-1].AsFloatVector()
-						gl.Uniform4fv(colorOverrideLoc, 1, &colorVector[0])
-
-						xCarOffset := i*2*(longCar.maxBounds.X()-longCar.minBounds.X()) + 4
-						yCarOffset := j*2*(longCar.maxBounds.Y()-longCar.minBounds.Y()) + 4
-
-						model := mgl32.HomogRotate3D(0.5*float32(elapsed)/float32(time.Second), mgl32.Vec3{0, 0, 1})
-						model = model.Mul4(mgl32.Translate3D(float32(voxel.position.X()*2+xCarOffset), float32(voxel.position.Y()*2+yCarOffset), float32(voxel.position.Z()*2)))
-
-						gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
-
-						cube.Render()
-					}
-				}
+				voxelObjectRenderer.Render(longCar, &modelMatrix)
 			}
 		}
 
