@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/viewport"
 	"runtime"
 	"time"
@@ -24,20 +25,21 @@ func initGlfw() {
 	}
 }
 
-var mousePos mgl32.Vec2 = mgl32.Vec2{0, 0}
-
-func handleMouseMove(window *glfw.Window, xPos float64, yPos float64) {
-	mousePos = mgl32.Vec2{float32(xPos), float32(yPos)}
-}
-
 func setInputCallbacks(window *glfw.Window) {
 	window.SetFramebufferSizeCallback(viewport.HandleResize)
-	window.SetCursorPosCallback(handleMouseMove)
+	window.SetCursorPosCallback(input.HandleMouseMove)
+	window.SetKeyCallback(input.HandleKeyInput)
 }
 
 func main() {
 	initGlfw()
 	defer glfw.Terminate()
+
+	glfw.WindowHint(glfw.Resizable, glfw.True)
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
+	glfw.WindowHint(glfw.ContextVersionMinor, 5)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
 	window, err := glfw.CreateWindow(int(viewport.GetWidth()), int(viewport.GetHeight()), "Voxelli", nil, nil)
 	if err != nil {
@@ -60,15 +62,25 @@ func main() {
 
 	roadwayRenderer := NewRoadwayRenderer(voxelObjectRenderer)
 
-	camera := mgl32.LookAtV(mgl32.Vec3{-60, -60, 80}, mgl32.Vec3{200, 200, 00}, mgl32.Vec3{0, 0, 1})
-	voxelObjectRenderer.UpdateCamera(&camera)
+	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, -1}, mgl32.Vec3{0, 0, 1})
+	cameraMatrix := camera.GetLookAtMatrix()
+	voxelObjectRenderer.UpdateCamera(&cameraMatrix)
 
 	startTime := time.Now()
+	lastElapsed := float32(0.0)
+	elapsed := lastElapsed
 	for !window.ShouldClose() {
+		lastElapsed = elapsed
+		elapsed = float32(time.Since(startTime)) / float32(time.Second)
+		frameTime := elapsed - lastElapsed
+
+		// Start rendering and updating
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		// Update uniforms that need updating
-		elapsed := time.Since(startTime)
+		// Update our camera if we have motion
+		if camera.Update(frameTime, &cameraMatrix) {
+			voxelObjectRenderer.UpdateCamera(&cameraMatrix)
+		}
 
 		// Don't distort on resize
 		if !viewport.PerspectiveMatrixUpdated() {
@@ -79,25 +91,17 @@ func main() {
 		roadwayRenderer.Render(simpleRoadway)
 
 		// Draw a few cars
-		for i := 0; i < 4; i++ {
-			for j := 0; j < 4; j++ {
+		for i := 0; i < 2; i++ {
+			for j := 0; j < 2; j++ {
 				xCarOffset := i*(longCar.maxBounds.X()-longCar.minBounds.X()) + 4
-				yCarOffset := j*(longCar.maxBounds.Y()-longCar.minBounds.Y()) + 4
-				modelMatrix := mgl32.HomogRotate3D(0.5*float32(elapsed)/float32(time.Second), mgl32.Vec3{0, 0, 1})
-				modelMatrix = modelMatrix.Mul4(mgl32.Translate3D(float32(xCarOffset), float32(yCarOffset), 0.0))
+				zCarOffset := j*(longCar.maxBounds.Z()-longCar.minBounds.Z()) + 4
+				rotateMatrix := mgl32.HomogRotate3D(0.5*elapsed, mgl32.Vec3{0, 0, 1})
+				translateMatrix := mgl32.Translate3D(float32(xCarOffset), 0.0, float32(zCarOffset))
+				modelMatrix := rotateMatrix.Mul4(translateMatrix)
 
 				voxelObjectRenderer.Render(longCar, &modelMatrix)
 			}
 		}
-
-		// for i := 0; i < 20; i++ {
-		// 	 gl.Uniform1f(timeLoc, (float32(elapsed)/float32(time.Second))+float32(i)*0.3+float32(i)*0.5)
-		//
-		// 	 model := mgl32.Translate3D(float32(3*i), 0, float32(3*i))
-		// 	 gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
-		//
-		// 	 cube.Render()
-		// }
 
 		window.SwapBuffers()
 		glfw.PollEvents()

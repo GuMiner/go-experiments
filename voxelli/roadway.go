@@ -106,13 +106,13 @@ func NewRoadway(fileName string) *Roadway {
 		roadway.roadElements[i] = make([]Road, ySize)
 	}
 
-	for i, line := range lines[3:] {
+	for j, line := range lines[3:] {
 		roadParts := strings.FieldsFunc(line, spaceSplitFunction)
 		if len(roadParts) != xSize {
 			panic(fmt.Sprintf("Found %v road elements, expected %v", len(roadParts), xSize))
 		}
 
-		for j, part := range roadParts {
+		for i, part := range roadParts {
 			subParts := strings.Split(part, ":")
 			roadType := ParseRoadType(subParts[0])
 
@@ -122,7 +122,7 @@ func NewRoadway(fileName string) *Roadway {
 				optionalData = ParseInt(subParts[1])
 			}
 
-			roadway.roadElements[i][ySize-(j+1)] = NewRoad(roadType, optionalData)
+			roadway.roadElements[xSize-(i+1)][j] = NewRoad(roadType, optionalData)
 		}
 	}
 
