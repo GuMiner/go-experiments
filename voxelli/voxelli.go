@@ -62,7 +62,9 @@ func main() {
 
 	roadwayRenderer := NewRoadwayRenderer(voxelObjectRenderer)
 
-	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, -1}, mgl32.Vec3{0, 0, 1})
+	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
+	defer camera.CachePosition()
+
 	cameraMatrix := camera.GetLookAtMatrix()
 	voxelObjectRenderer.UpdateCamera(&cameraMatrix)
 
