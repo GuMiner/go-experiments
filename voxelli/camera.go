@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 
 	"go-experiments/voxelli/input"
@@ -23,6 +24,9 @@ type Camera struct {
 	// Computed & normalized
 	Right  mgl32.Vec3
 	Target mgl32.Vec3
+
+	wasMouseDown bool
+	lastMousePos mgl32.Vec2
 }
 
 const motionSpeed = 20.0
@@ -63,6 +67,7 @@ func (c *Camera) Update(frameTime float32, cameraMatrix *mgl32.Mat4) bool {
 	Updated = c.handleLinearMotion(glfw.KeyQ, glfw.KeyW, c.Right, moveSpeed) || Updated
 	Updated = c.handleLinearMotion(glfw.KeyS, glfw.KeyX, c.Up, moveSpeed) || Updated
 
+	// Key-based rotation
 	if input.PressedKeys[glfw.KeyE] {
 		c.Up = mgl32.HomogRotate3D(rotateSpeed, c.Forwards).Mul4x1(c.Up.Vec4(1.0)).Vec3()
 		Updated = true
@@ -97,6 +102,38 @@ func (c *Camera) Update(frameTime float32, cameraMatrix *mgl32.Mat4) bool {
 
 	if Updated {
 		c.normalize()
+	}
+
+	// Mouse-based rotation
+	if input.PressedButtons[glfw.MouseButtonRight] {
+		if !c.wasMouseDown {
+			c.wasMouseDown = true
+			c.lastMousePos = input.MousePos
+		}
+
+		difference := input.MousePos.Sub(c.lastMousePos)
+		if math.Abs(float64(difference.X())) > 1 {
+			mouseRotationSpeed := rotationSpeed * difference.X() / 1200.0
+
+			c.Forwards = mgl32.HomogRotate3D(mouseRotationSpeed, c.Up).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
+			Updated = true
+		}
+
+		if math.Abs(float64(difference.Y())) > 1 {
+			mouseRotationSpeed := -rotationSpeed * difference.Y() / 1200.0
+
+			c.Forwards = mgl32.HomogRotate3D(mouseRotationSpeed, c.Right).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
+			c.Up = mgl32.HomogRotate3D(mouseRotationSpeed, c.Right).Mul4x1(c.Up.Vec4(1.0)).Vec3()
+			Updated = true
+		}
+
+		c.lastMousePos = input.MousePos
+	} else {
+		c.wasMouseDown = false
+	}
+
+	if Updated {
+		c.normalize()
 		*cameraMatrix = c.GetLookAtMatrix()
 	}
 
@@ -121,7 +158,7 @@ func (c *Camera) CachePosition() {
 }
 
 func NewCamera(Position mgl32.Vec3, Forwards mgl32.Vec3, Up mgl32.Vec3) *Camera {
-	var camera Camera
+	camera := Camera{wasMouseDown: false, lastMousePos: mgl32.Vec2{-1.0, -1.0}}
 
 	cacheFileAsBytes, err := ioutil.ReadFile(cacheFilename)
 	cacheMiss := true
