@@ -8,6 +8,7 @@ import (
 	"go-experiments/voxelli/text"
 	"go-experiments/voxelli/viewport"
 	"go-experiments/voxelli/voxel"
+	"go-experiments/voxelli/voxelArray"
 	"runtime"
 	"time"
 
@@ -60,13 +61,16 @@ func main() {
 
 	// Create roadway
 	simpleRoadway := NewRoadway("./data/roadways/straight_with_s-curve.txt")
-	fmt.Printf("Straight roadway size: [%v, %v]\n", len(simpleRoadway.roadElements), len(simpleRoadway.roadElements[0]))
+	fmt.Printf("Straight roadway size: [%v, %v]\n\n", len(simpleRoadway.roadElements), len(simpleRoadway.roadElements[0]))
 
 	roadwayDisplayer := NewRoadwayDisplayer(voxelArrayObjectRenderer)
 	defer roadwayDisplayer.Delete()
 
-	longCar := voxel.NewVoxelObject("./data/models/long_car.vox")
-	fmt.Printf("Long Car objects: %v\n", len(longCar.SubObjects))
+	carRaw := voxel.NewVoxelObject("./data/models/car.vox")
+	fmt.Printf("Car objects: %v\n", len(carRaw.SubObjects))
+
+	car := voxelArray.NewVoxelArrayObject(carRaw)
+	fmt.Printf("Optimized Car vertices: %v\n\n", car.Vertices)
 
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
@@ -103,17 +107,18 @@ func main() {
 		roadwayDisplayer.Render(simpleRoadway)
 
 		// Draw a few cars
-		//for i := 0; i < 2; i++ {
-		//	for j := 0; j < 2; j++ {
-		//xCarOffset := i*(longCar.MaxBounds.X()-longCar.MinBounds.X()) + 4
-		//zCarOffset := j*(longCar.MaxBounds.Z()-longCar.MinBounds.Z()) + 4
-		//rotateMatrix := mgl32.HomogRotate3D(0.5*elapsed, mgl32.Vec3{0, 0, 1})
-		//translateMatrix := mgl32.Translate3D(float32(xCarOffset), 0.0, float32(zCarOffset))
-		//modelMatrix := rotateMatrix.Mul4(translateMatrix)
+		for i := 0; i < 20; i++ {
+			for j := 0; j < 20; j++ {
+				xCarOffset := i*(car.VoxelObject.MaxBounds.X()-car.VoxelObject.MinBounds.X()) + 4
+				zCarOffset := j*(car.VoxelObject.MaxBounds.Z()-car.VoxelObject.MinBounds.Z()) + 4
+				rotateMatrix := mgl32.HomogRotate3D(0.5*elapsed, mgl32.Vec3{0, 0, 1})
 
-		//voxelObjectRenderer.Render(longCar, &modelMatrix)
-		//	}
-		//	}
+				translateMatrix := mgl32.Translate3D(float32(xCarOffset), 0.0, float32(zCarOffset))
+				modelMatrix := rotateMatrix.Mul4(translateMatrix)
+
+				voxelArrayObjectRenderer.Render(car, &modelMatrix)
+			}
+		}
 
 		ident := mgl32.Ident4()
 		textRenderer.Render("Hello World!", &ident)
