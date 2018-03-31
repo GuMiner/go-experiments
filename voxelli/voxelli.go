@@ -28,6 +28,7 @@ func initGlfw() {
 func setInputCallbacks(window *glfw.Window) {
 	window.SetFramebufferSizeCallback(viewport.HandleResize)
 	window.SetCursorPosCallback(input.HandleMouseMove)
+	window.SetMouseButtonCallback(input.HandleMouseButton)
 	window.SetKeyCallback(input.HandleKeyInput)
 }
 

@@ -35,6 +35,8 @@ func (c *Camera) normalize() {
 
 	c.Target = c.Position.Add(c.Forwards)
 	c.Right = c.Up.Cross(c.Forwards)
+
+	fmt.Printf("Updated camera: %+v\n", c)
 }
 
 func (c *Camera) handleLinearMotion(positive glfw.Key, negative glfw.Key, direction mgl32.Vec3, scale float32) bool {
@@ -63,6 +65,34 @@ func (c *Camera) Update(frameTime float32, cameraMatrix *mgl32.Mat4) bool {
 
 	if input.PressedKeys[glfw.KeyE] {
 		c.Up = mgl32.HomogRotate3D(rotateSpeed, c.Forwards).Mul4x1(c.Up.Vec4(1.0)).Vec3()
+		Updated = true
+	}
+
+	if input.PressedKeys[glfw.KeyD] {
+		c.Up = mgl32.HomogRotate3D(-rotateSpeed, c.Forwards).Mul4x1(c.Up.Vec4(1.0)).Vec3()
+		Updated = true
+	}
+
+	if input.PressedKeys[glfw.KeyLeft] {
+		c.Forwards = mgl32.HomogRotate3D(rotateSpeed, c.Up).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
+		Updated = true
+	}
+
+	if input.PressedKeys[glfw.KeyRight] {
+		c.Forwards = mgl32.HomogRotate3D(-rotateSpeed, c.Up).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
+		Updated = true
+	}
+
+	if input.PressedKeys[glfw.KeyUp] {
+		c.Forwards = mgl32.HomogRotate3D(rotateSpeed, c.Right).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
+		c.Up = mgl32.HomogRotate3D(rotateSpeed, c.Right).Mul4x1(c.Up.Vec4(1.0)).Vec3()
+		Updated = true
+	}
+
+	if input.PressedKeys[glfw.KeyDown] {
+		c.Forwards = mgl32.HomogRotate3D(-rotateSpeed, c.Right).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
+		c.Up = mgl32.HomogRotate3D(-rotateSpeed, c.Right).Mul4x1(c.Up.Vec4(1.0)).Vec3()
+		Updated = true
 	}
 
 	if Updated {
