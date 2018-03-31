@@ -36,7 +36,7 @@ func (c *Camera) normalize() {
 	c.Target = c.Position.Add(c.Forwards)
 	c.Right = c.Up.Cross(c.Forwards)
 
-	fmt.Printf("Updated camera: %+v\n", c)
+	// fmt.Printf("Updated camera: %+v\n", c)
 }
 
 func (c *Camera) handleLinearMotion(positive glfw.Key, negative glfw.Key, direction mgl32.Vec3, scale float32) bool {

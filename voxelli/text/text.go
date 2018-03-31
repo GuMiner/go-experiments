@@ -181,7 +181,7 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 		panic(fmt.Sprintf("Unable to draw string to destination %v : %v", point, err))
 	}
 
-	fmt.Printf("%v", dstImage.Pix)
+	// fmt.Printf("%v", dstImage.Pix)
 	gl.TexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 512, 512, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(dstImage.Pix))
 	return &renderer
 }

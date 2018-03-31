@@ -20,6 +20,14 @@ func (v IntVec3) Z() int {
 	return v[2]
 }
 
+func (v IntVec3) AsFloatVector() mgl32.Vec3 {
+	var pos mgl32.Vec3
+	pos[0] = float32(v.X());
+	pos[1] = float32(v.Y());
+	pos[2] = float32(v.Z());
+	return pos
+}
+
 func (v Color) R() uint8 {
 	return v[0]
 }
@@ -42,6 +50,14 @@ func (v Color) AsFloatVector() mgl32.Vec4 {
 	colors[1] = float32(v.G()) / 255.0
 	colors[2] = float32(v.B()) / 255.0
 	colors[3] = float32(v.A()) / 255.0
+	return colors
+}
+
+func (v Color) AsOpaqueFloatVector() mgl32.Vec3 {
+	var colors mgl32.Vec3
+	colors[0] = float32(v.R()) / 255.0
+	colors[1] = float32(v.G()) / 255.0
+	colors[2] = float32(v.B()) / 255.0
 	return colors
 }
 

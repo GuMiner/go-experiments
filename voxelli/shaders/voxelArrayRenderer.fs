@@ -1,7 +1,5 @@
 #version 400 core
 
-uniform float runTime;
-
 in vec3 fs_color;
 
 out vec4 color;

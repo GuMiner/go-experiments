@@ -64,7 +64,11 @@ func main() {
 	voxelObjectRenderer := NewVoxelObjectRenderer()
 	defer voxelObjectRenderer.Delete()
 
-	roadwayRenderer := NewRoadwayRenderer(voxelObjectRenderer)
+	voxelArrayObjectRenderer := NewVoxelArrayObjectRenderer()
+	defer voxelArrayObjectRenderer.Delete()
+
+	roadwayRenderer := NewRoadwayRenderer(voxelArrayObjectRenderer)
+	defer roadwayRenderer.Delete()
 
 	textRenderer := text.NewTextRenderer("./data/font/DejaVuSans.ttf")
 	defer textRenderer.Delete()
@@ -74,6 +78,7 @@ func main() {
 
 	cameraMatrix := camera.GetLookAtMatrix()
 	voxelObjectRenderer.UpdateCamera(&cameraMatrix)
+	voxelArrayObjectRenderer.UpdateCamera(&cameraMatrix)
 	textRenderer.UpdateCamera(&cameraMatrix)
 
 	startTime := time.Now()
@@ -90,6 +95,7 @@ func main() {
 		// Update our camera if we have motion
 		if camera.Update(frameTime, &cameraMatrix) {
 			voxelObjectRenderer.UpdateCamera(&cameraMatrix)
+			voxelArrayObjectRenderer.UpdateCamera(&cameraMatrix)
 			textRenderer.UpdateCamera(&cameraMatrix)
 		}
 
@@ -97,6 +103,7 @@ func main() {
 		if !viewport.PerspectiveMatrixUpdated() {
 			projection := mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
 			voxelObjectRenderer.UpdateProjection(&projection)
+			voxelArrayObjectRenderer.UpdateProjection(&projection)
 			textRenderer.UpdateProjection(&projection)
 		}
 
