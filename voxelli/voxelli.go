@@ -92,6 +92,10 @@ func main() {
 		// Start rendering and updating
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
+		if input.AnyEvent() {
+			opengl.CheckWireframeToggle()
+		}
+
 		// Update our camera if we have motion
 		if camera.Update(frameTime, &cameraMatrix) {
 			voxelObjectRenderer.UpdateCamera(&cameraMatrix)
