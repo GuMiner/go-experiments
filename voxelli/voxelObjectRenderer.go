@@ -1,6 +1,7 @@
 package main
 
 import (
+	"go-experiments/voxelli/opengl"
 	"go-experiments/voxelli/voxel"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
@@ -21,6 +22,7 @@ type VoxelObjectRenderer struct {
 }
 
 func (renderer *VoxelObjectRenderer) Render(voxelObject *voxel.VoxelObject, model *mgl32.Mat4) {
+	gl.UseProgram(renderer.shaderProgram)
 	for _, subObject := range voxelObject.SubObjects {
 		for _, voxel := range subObject.Voxels {
 			colorVector := voxelObject.Palette.Colors[voxel.ColorIdx-1].AsFloatVector()
@@ -56,7 +58,7 @@ func (renderer *VoxelObjectRenderer) Delete() {
 func NewVoxelObjectRenderer() *VoxelObjectRenderer {
 	var renderer VoxelObjectRenderer
 
-	renderer.shaderProgram = createProgram("./shaders/basicRenderer")
+	renderer.shaderProgram = opengl.CreateProgram("./shaders/basicRenderer")
 
 	// Get locations of everything used in this program.
 	renderer.projectionLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("projection\x00"))

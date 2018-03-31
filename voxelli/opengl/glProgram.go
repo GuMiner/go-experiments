@@ -1,4 +1,4 @@
-package main
+package opengl
 
 // Simplifies creating a GLSL GPU shading program
 import (
@@ -36,7 +36,7 @@ func compileShader(shaderPath string, shaderType uint32) (shader uint32, errorIf
 }
 
 // Pulled mostly directly from https://github.com/go-gl/example/blob/master/gl41core-cube/cube.go
-func createProgram(baseProgramName string) (program uint32) {
+func CreateProgram(baseProgramName string) (program uint32) {
 	vertexShader, err := compileShader(baseProgramName+".vs", gl.VERTEX_SHADER)
 	if err != nil {
 		panic(err)

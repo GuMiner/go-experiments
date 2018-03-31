@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"go-experiments/voxelli/input"
+	"go-experiments/voxelli/opengl"
+	"go-experiments/voxelli/text"
 	"go-experiments/voxelli/viewport"
 	"go-experiments/voxelli/voxel"
 	"runtime"
@@ -51,7 +53,7 @@ func main() {
 	window.MakeContextCurrent()
 
 	setInputCallbacks(window)
-	configureOpenGl()
+	opengl.ConfigureOpenGl()
 
 	longCar := voxel.NewVoxelObject("./data/models/long_car.vox")
 	fmt.Printf("Long Car objects: %v\n", len(longCar.SubObjects))
@@ -64,11 +66,15 @@ func main() {
 
 	roadwayRenderer := NewRoadwayRenderer(voxelObjectRenderer)
 
+	textRenderer := text.NewTextRenderer("./data/font/DejaVuSans.ttf")
+	defer textRenderer.Delete()
+
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
 
 	cameraMatrix := camera.GetLookAtMatrix()
 	voxelObjectRenderer.UpdateCamera(&cameraMatrix)
+	textRenderer.UpdateCamera(&cameraMatrix)
 
 	startTime := time.Now()
 	lastElapsed := float32(0.0)
@@ -84,28 +90,33 @@ func main() {
 		// Update our camera if we have motion
 		if camera.Update(frameTime, &cameraMatrix) {
 			voxelObjectRenderer.UpdateCamera(&cameraMatrix)
+			textRenderer.UpdateCamera(&cameraMatrix)
 		}
 
 		// Don't distort on resize
 		if !viewport.PerspectiveMatrixUpdated() {
 			projection := mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
 			voxelObjectRenderer.UpdateProjection(&projection)
+			textRenderer.UpdateProjection(&projection)
 		}
 
 		roadwayRenderer.Render(simpleRoadway)
 
 		// Draw a few cars
-		for i := 0; i < 2; i++ {
-			for j := 0; j < 2; j++ {
-				xCarOffset := i*(longCar.MaxBounds.X()-longCar.MinBounds.X()) + 4
-				zCarOffset := j*(longCar.MaxBounds.Z()-longCar.MinBounds.Z()) + 4
-				rotateMatrix := mgl32.HomogRotate3D(0.5*elapsed, mgl32.Vec3{0, 0, 1})
-				translateMatrix := mgl32.Translate3D(float32(xCarOffset), 0.0, float32(zCarOffset))
-				modelMatrix := rotateMatrix.Mul4(translateMatrix)
+		//for i := 0; i < 2; i++ {
+		//	for j := 0; j < 2; j++ {
+		//xCarOffset := i*(longCar.MaxBounds.X()-longCar.MinBounds.X()) + 4
+		//zCarOffset := j*(longCar.MaxBounds.Z()-longCar.MinBounds.Z()) + 4
+		//rotateMatrix := mgl32.HomogRotate3D(0.5*elapsed, mgl32.Vec3{0, 0, 1})
+		//translateMatrix := mgl32.Translate3D(float32(xCarOffset), 0.0, float32(zCarOffset))
+		//modelMatrix := rotateMatrix.Mul4(translateMatrix)
 
-				voxelObjectRenderer.Render(longCar, &modelMatrix)
-			}
-		}
+		//voxelObjectRenderer.Render(longCar, &modelMatrix)
+		//	}
+		//	}
+
+		ident := mgl32.Ident4()
+		textRenderer.Render("Hello World!", &ident)
 
 		window.SwapBuffers()
 		glfw.PollEvents()

@@ -1,4 +1,4 @@
-package main
+package opengl
 
 // Simplifies OpenGL initialization
 import (
@@ -14,7 +14,7 @@ func logOpenGlInfo() {
 	fmt.Println("OpenGL version: ", version)
 }
 
-func configureOpenGl() {
+func ConfigureOpenGl() {
 	// Startup OpenGL bindings
 	if err := gl.Init(); err != nil {
 		log.Fatalln(err)
@@ -33,7 +33,7 @@ func configureOpenGl() {
 	gl.Enable(gl.PROGRAM_POINT_SIZE)
 
 	// TODO: Re-enable post-debug to get a performance boost
-	// gl.Disable(gl.CULL_FACE)
+	gl.Disable(gl.CULL_FACE)
 	gl.FrontFace(gl.CCW)
 
 	gl.Enable(gl.DEPTH_TEST)
