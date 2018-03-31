@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/voxel"
 	"go-experiments/voxelli/voxelArray"
 
@@ -10,7 +11,7 @@ import (
 
 // Defines how to render a roadway
 type RoadwayDisplayer struct {
-	voxelRenderer *VoxelArrayObjectRenderer
+	voxelRenderer *renderer.VoxelArrayObjectRenderer
 	straightRoad  *voxelArray.VoxelArrayObject
 	curvedRoad    *voxelArray.VoxelArrayObject
 }
@@ -63,7 +64,7 @@ func (renderer *RoadwayDisplayer) Delete() {
 	renderer.straightRoad.Delete()
 }
 
-func NewRoadwayDisplayer(voxelRenderer *VoxelArrayObjectRenderer) *RoadwayDisplayer {
+func NewRoadwayDisplayer(voxelRenderer *renderer.VoxelArrayObjectRenderer) *RoadwayDisplayer {
 	var renderer RoadwayDisplayer
 	renderer.voxelRenderer = voxelRenderer
 	renderer.loadRoadTypes()

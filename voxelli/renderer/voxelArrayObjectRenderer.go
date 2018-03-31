@@ -1,4 +1,4 @@
-package main
+package renderer
 
 import (
 	"go-experiments/voxelli/opengl"
