@@ -1,6 +1,8 @@
 package main
 
 import (
+	"go-experiments/voxelli/voxel"
+
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -18,13 +20,13 @@ type VoxelObjectRenderer struct {
 	cubeArchetype *Cube
 }
 
-func (renderer *VoxelObjectRenderer) Render(voxelObject *VoxelObject, model *mgl32.Mat4) {
-	for _, subObject := range voxelObject.subObjects {
-		for _, voxel := range subObject.voxels {
-			colorVector := voxelObject.palette.colors[voxel.colorIdx-1].AsFloatVector()
+func (renderer *VoxelObjectRenderer) Render(voxelObject *voxel.VoxelObject, model *mgl32.Mat4) {
+	for _, subObject := range voxelObject.SubObjects {
+		for _, voxel := range subObject.Voxels {
+			colorVector := voxelObject.Palette.Colors[voxel.ColorIdx-1].AsFloatVector()
 			gl.Uniform4fv(renderer.colorOverrideLoc, 1, &colorVector[0])
 
-			updatedModel := model.Mul4(mgl32.Translate3D(float32(voxel.position.X()), float32(voxel.position.Y()), float32(voxel.position.Z())))
+			updatedModel := model.Mul4(mgl32.Translate3D(float32(voxel.Position.X()), float32(voxel.Position.Y()), float32(voxel.Position.Z())))
 			gl.UniformMatrix4fv(renderer.modelLoc, 1, false, &updatedModel[0])
 			renderer.cubeArchetype.Render()
 		}

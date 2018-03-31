@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-experiments/voxelli/voxel"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -9,8 +10,8 @@ import (
 // Defines how to render a roadway
 type RoadwayRenderer struct {
 	voxelRenderer *VoxelObjectRenderer
-	straightRoad  *VoxelObject
-	curvedRoad    *VoxelObject
+	straightRoad  *voxel.VoxelObject
+	curvedRoad    *voxel.VoxelObject
 }
 
 func (renderer *RoadwayRenderer) Render(roadway *Roadway) {
@@ -41,11 +42,11 @@ func (renderer *RoadwayRenderer) Render(roadway *Roadway) {
 }
 
 func (renderer *RoadwayRenderer) loadRoadTypes() {
-	renderer.straightRoad = NewVoxelObject("./data/models/road_straight.vox")
-	fmt.Printf("Straight Road objects: %v\n", len(renderer.straightRoad.subObjects))
+	renderer.straightRoad = voxel.NewVoxelObject("./data/models/road_straight.vox")
+	fmt.Printf("Straight Road objects: %v\n", len(renderer.straightRoad.SubObjects))
 
-	renderer.curvedRoad = NewVoxelObject("./data/models/road_curved.vox")
-	fmt.Printf("Curved Road objects: %v\n", len(renderer.curvedRoad.subObjects))
+	renderer.curvedRoad = voxel.NewVoxelObject("./data/models/road_curved.vox")
+	fmt.Printf("Curved Road objects: %v\n", len(renderer.curvedRoad.SubObjects))
 }
 
 func NewRoadwayRenderer(voxelRenderer *VoxelObjectRenderer) *RoadwayRenderer {

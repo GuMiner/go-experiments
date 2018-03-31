@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/viewport"
+	"go-experiments/voxelli/voxel"
 	"runtime"
 	"time"
 
@@ -52,8 +53,8 @@ func main() {
 	setInputCallbacks(window)
 	configureOpenGl()
 
-	longCar := NewVoxelObject("./data/models/long_car.vox")
-	fmt.Printf("Long Car objects: %v\n", len(longCar.subObjects))
+	longCar := voxel.NewVoxelObject("./data/models/long_car.vox")
+	fmt.Printf("Long Car objects: %v\n", len(longCar.SubObjects))
 
 	simpleRoadway := NewRoadway("./data/roadways/straight_with_s-curve.txt")
 	fmt.Printf("Straight roadway size: [%v, %v]\n", len(simpleRoadway.roadElements), len(simpleRoadway.roadElements[0]))
@@ -96,8 +97,8 @@ func main() {
 		// Draw a few cars
 		for i := 0; i < 2; i++ {
 			for j := 0; j < 2; j++ {
-				xCarOffset := i*(longCar.maxBounds.X()-longCar.minBounds.X()) + 4
-				zCarOffset := j*(longCar.maxBounds.Z()-longCar.minBounds.Z()) + 4
+				xCarOffset := i*(longCar.MaxBounds.X()-longCar.MinBounds.X()) + 4
+				zCarOffset := j*(longCar.MaxBounds.Z()-longCar.MinBounds.Z()) + 4
 				rotateMatrix := mgl32.HomogRotate3D(0.5*elapsed, mgl32.Vec3{0, 0, 1})
 				translateMatrix := mgl32.Translate3D(float32(xCarOffset), 0.0, float32(zCarOffset))
 				modelMatrix := rotateMatrix.Mul4(translateMatrix)

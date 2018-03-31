@@ -1,26 +1,28 @@
-package main
+package voxel
 
 import (
 	"encoding/binary"
 	"fmt"
 	"math"
+
+	"go-experiments/voxelli/utils"
 )
 
 // Defines voxel objects
 type Voxel struct {
-	position IntVec3
-	colorIdx uint8
+	Position utils.IntVec3
+	ColorIdx uint8
 }
 
 type SubObject struct {
-	voxels []Voxel
+	Voxels []Voxel
 }
 
 type VoxelObject struct {
-	subObjects []SubObject
-	minBounds  IntVec3
-	maxBounds  IntVec3
-	palette    *VoxelPalette
+	SubObjects []SubObject
+	MinBounds  utils.IntVec3
+	MaxBounds  utils.IntVec3
+	Palette    *VoxelPalette
 }
 
 // Defines voxel types
@@ -28,15 +30,15 @@ type ChunkType interface {
 	Name() string
 }
 
-func CheckBounds(current *IntVec3, comparison IntVec3, comparisonFunc func(int, int) int) {
+func CheckBounds(current *utils.IntVec3, comparison utils.IntVec3, comparisonFunc func(int, int) int) {
 	current[0] = comparisonFunc(current[0], comparison[0])
 	current[1] = comparisonFunc(current[1], comparison[1])
 	current[2] = comparisonFunc(current[2], comparison[2])
 }
 
 func (voxelObject *VoxelObject) ComputeBounds() {
-	voxelObject.minBounds = IntVec3{math.MaxInt32, math.MaxInt32, math.MaxInt32}
-	voxelObject.maxBounds = IntVec3{math.MinInt32, math.MinInt32, math.MinInt32}
+	voxelObject.MinBounds = utils.IntVec3{math.MaxInt32, math.MaxInt32, math.MaxInt32}
+	voxelObject.MaxBounds = utils.IntVec3{math.MinInt32, math.MinInt32, math.MinInt32}
 
 	minFunc := func(x, y int) int {
 		if x < y {
@@ -54,10 +56,10 @@ func (voxelObject *VoxelObject) ComputeBounds() {
 		return y
 	}
 
-	for _, object := range voxelObject.subObjects {
-		for _, voxel := range object.voxels {
-			CheckBounds(&voxelObject.minBounds, voxel.position, minFunc)
-			CheckBounds(&voxelObject.maxBounds, voxel.position, maxFunc)
+	for _, object := range voxelObject.SubObjects {
+		for _, voxel := range object.Voxels {
+			CheckBounds(&voxelObject.MinBounds, voxel.Position, minFunc)
+			CheckBounds(&voxelObject.MaxBounds, voxel.Position, maxFunc)
 		}
 	}
 }
@@ -89,7 +91,7 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 		x := int(binary.LittleEndian.Uint32(data[12:16]))
 		y := int(binary.LittleEndian.Uint32(data[16:20]))
 		z := int(binary.LittleEndian.Uint32(data[20:24]))
-		chunkType = SizeChunk{size: IntVec3{x, y, z}}
+		chunkType = SizeChunk{size: utils.IntVec3{x, y, z}}
 	case "XYZI":
 		bytesRead += 4
 		checkLength(12, 4, data)
@@ -107,7 +109,7 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 			c := data[dataIdx+3]
 			dataIdx += 4
 
-			voxels[i] = Voxel{position: IntVec3{x, y, z}, colorIdx: c}
+			voxels[i] = Voxel{Position: utils.IntVec3{x, y, z}, ColorIdx: c}
 		}
 
 		chunkType = VoxelsChunk{voxels: voxels}
@@ -116,7 +118,7 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 		bytesRead += colorElements
 		checkLength(12, colorElements, data)
 
-		var colors [256]Color
+		var colors [256]utils.Color
 		for i := 0; i < len(colors); i++ {
 			colors[i][0] = data[12+i*4]
 			colors[i][1] = data[12+i*4+1]
@@ -124,7 +126,7 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 			colors[i][3] = data[12+i*4+3]
 		}
 
-		palette := VoxelPalette{colors: colors}
+		palette := VoxelPalette{Colors: colors}
 
 		chunkType = PaletteChunk{palette: palette}
 	default:
@@ -149,7 +151,7 @@ func checkHeader(data []uint8) {
 }
 
 func NewVoxelObject(fileName string) *VoxelObject {
-	data := ReadFileAsBytes(fileName)
+	data := utils.ReadFileAsBytes(fileName)
 
 	// Validate this is a VOX file and we start out with our proper MAIN chunk
 	checkHeader(data[0:])
@@ -198,14 +200,14 @@ func NewVoxelObject(fileName string) *VoxelObject {
 
 		switch val := chunkType.(type) {
 		case VoxelsChunk:
-			voxelObject.subObjects = append(voxelObject.subObjects, SubObject{voxels: val.voxels})
+			voxelObject.SubObjects = append(voxelObject.SubObjects, SubObject{Voxels: val.voxels})
 			byteIndex += bytesRead
 		default:
 			panic("Expected the model to have a XYZI chunk, not " + val.Name())
 		}
 	}
 
-	voxelObject.palette = &VoxelPalette{colors: DefaultPalette}
+	voxelObject.Palette = &VoxelPalette{Colors: DefaultPalette}
 
 	// Parse out all the optional chunks, which may give us a palette chunk
 	for byteIndex < len(data) {
@@ -214,7 +216,7 @@ func NewVoxelObject(fileName string) *VoxelObject {
 
 		foundChunk, isPaletteChunk := chunkType.(PaletteChunk)
 		if isPaletteChunk {
-			voxelObject.palette = &foundChunk.palette
+			voxelObject.Palette = &foundChunk.palette
 		}
 
 		byteIndex += bytesRead
@@ -223,11 +225,11 @@ func NewVoxelObject(fileName string) *VoxelObject {
 	voxelObject.ComputeBounds()
 
 	totalVoxels := 0
-	for _, subObject := range voxelObject.subObjects {
-		totalVoxels += len(subObject.voxels)
+	for _, subObject := range voxelObject.SubObjects {
+		totalVoxels += len(subObject.Voxels)
 	}
 
-	fmt.Printf("Voxel Object is bounded by %v and %v with %v total voxels\n", voxelObject.minBounds, voxelObject.maxBounds, totalVoxels)
+	fmt.Printf("Voxel Object is bounded by %v and %v with %v total voxels\n", voxelObject.MinBounds, voxelObject.MaxBounds, totalVoxels)
 
 	return &voxelObject
 }

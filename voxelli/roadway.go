@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-experiments/voxelli/utils"
 	"strconv"
 	"strings"
 
@@ -76,7 +77,7 @@ func NewRoadway(fileName string) *Roadway {
 		return c == ' ' || c == '\t'
 	}
 
-	file := ReadFile(fileName)
+	file := utils.ReadFile(fileName)
 
 	lines := strings.FieldsFunc(file, newlineSplitFunction)
 	if len(lines) < 3 {

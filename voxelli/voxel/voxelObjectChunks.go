@@ -1,6 +1,9 @@
-package main
+package voxel
 
-import "fmt"
+import (
+	"fmt"
+	"go-experiments/voxelli/utils"
+)
 
 type MainChunk struct {
 }
@@ -18,7 +21,7 @@ func (c PackChunk) Name() string {
 }
 
 type SizeChunk struct {
-	size IntVec3
+	size utils.IntVec3
 }
 
 func (c SizeChunk) Name() string {

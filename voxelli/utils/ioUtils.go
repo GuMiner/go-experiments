@@ -1,4 +1,4 @@
-package main
+package utils
 
 // Simplifies general IO operations
 import "io/ioutil"
