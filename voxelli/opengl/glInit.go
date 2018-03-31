@@ -14,6 +14,19 @@ func logOpenGlInfo() {
 	fmt.Println("OpenGL version: ", version)
 }
 
+func InitGlfw() {
+	err := glfw.Init()
+	if err != nil {
+		panic(err)
+	}
+
+	glfw.WindowHint(glfw.Resizable, glfw.True)
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
+	glfw.WindowHint(glfw.ContextVersionMinor, 5)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+}
+
 func ConfigureOpenGl() {
 	// Startup OpenGL bindings
 	if err := gl.Init(); err != nil {

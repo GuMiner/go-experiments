@@ -9,13 +9,13 @@ import (
 )
 
 // Defines how to render a roadway
-type RoadwayRenderer struct {
+type RoadwayDisplayer struct {
 	voxelRenderer *VoxelArrayObjectRenderer
 	straightRoad  *voxelArray.VoxelArrayObject
 	curvedRoad    *voxelArray.VoxelArrayObject
 }
 
-func (renderer *RoadwayRenderer) Render(roadway *Roadway) {
+func (renderer *RoadwayDisplayer) Render(roadway *Roadway) {
 	for i := 0; i < len(roadway.roadElements); i++ {
 		for j := 0; j < len(roadway.roadElements[i]); j++ {
 			positionMatrix := mgl32.Translate3D(float32(i*GetGridSize()), float32(j*GetGridSize()), 0.0)
@@ -42,7 +42,7 @@ func (renderer *RoadwayRenderer) Render(roadway *Roadway) {
 	}
 }
 
-func (renderer *RoadwayRenderer) loadRoadTypes() {
+func (renderer *RoadwayDisplayer) loadRoadTypes() {
 	straightRoad := voxel.NewVoxelObject("./data/models/road_straight.vox")
 	fmt.Printf("Straight Road objects: %v\n", len(straightRoad.SubObjects))
 
@@ -58,13 +58,13 @@ func (renderer *RoadwayRenderer) loadRoadTypes() {
 	renderer.curvedRoad = voxelArray.NewVoxelArrayObject(curvedRoad)
 }
 
-func (renderer *RoadwayRenderer) Delete() {
+func (renderer *RoadwayDisplayer) Delete() {
 	renderer.curvedRoad.Delete()
 	renderer.straightRoad.Delete()
 }
 
-func NewRoadwayRenderer(voxelRenderer *VoxelArrayObjectRenderer) *RoadwayRenderer {
-	var renderer RoadwayRenderer
+func NewRoadwayDisplayer(voxelRenderer *VoxelArrayObjectRenderer) *RoadwayDisplayer {
+	var renderer RoadwayDisplayer
 	renderer.voxelRenderer = voxelRenderer
 	renderer.loadRoadTypes()
 

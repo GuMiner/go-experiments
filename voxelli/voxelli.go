@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/opengl"
+	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/text"
 	"go-experiments/voxelli/viewport"
 	"go-experiments/voxelli/voxel"
@@ -21,13 +22,6 @@ func init() {
 	runtime.LockOSThread()
 }
 
-func initGlfw() {
-	err := glfw.Init()
-	if err != nil {
-		panic(err)
-	}
-}
-
 func setInputCallbacks(window *glfw.Window) {
 	window.SetFramebufferSizeCallback(viewport.HandleResize)
 	window.SetCursorPosCallback(input.HandleMouseMove)
@@ -36,14 +30,8 @@ func setInputCallbacks(window *glfw.Window) {
 }
 
 func main() {
-	initGlfw()
+	opengl.InitGlfw()
 	defer glfw.Terminate()
-
-	glfw.WindowHint(glfw.Resizable, glfw.True)
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 5)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
 	window, err := glfw.CreateWindow(int(viewport.GetWidth()), int(viewport.GetHeight()), "Voxelli", nil, nil)
 	if err != nil {
@@ -55,31 +43,36 @@ func main() {
 	setInputCallbacks(window)
 	opengl.ConfigureOpenGl()
 
-	longCar := voxel.NewVoxelObject("./data/models/long_car.vox")
-	fmt.Printf("Long Car objects: %v\n", len(longCar.SubObjects))
-
-	simpleRoadway := NewRoadway("./data/roadways/straight_with_s-curve.txt")
-	fmt.Printf("Straight roadway size: [%v, %v]\n", len(simpleRoadway.roadElements), len(simpleRoadway.roadElements[0]))
-
+	// Create renderers
 	voxelObjectRenderer := NewVoxelObjectRenderer()
 	defer voxelObjectRenderer.Delete()
 
 	voxelArrayObjectRenderer := NewVoxelArrayObjectRenderer()
 	defer voxelArrayObjectRenderer.Delete()
 
-	roadwayRenderer := NewRoadwayRenderer(voxelArrayObjectRenderer)
-	defer roadwayRenderer.Delete()
-
 	textRenderer := text.NewTextRenderer("./data/font/DejaVuSans.ttf")
 	defer textRenderer.Delete()
+
+	var renderers []renderer.Renderer
+	renderers = append(renderers, voxelObjectRenderer)
+	renderers = append(renderers, voxelArrayObjectRenderer)
+	renderers = append(renderers, textRenderer)
+
+	// Create roadway
+	simpleRoadway := NewRoadway("./data/roadways/straight_with_s-curve.txt")
+	fmt.Printf("Straight roadway size: [%v, %v]\n", len(simpleRoadway.roadElements), len(simpleRoadway.roadElements[0]))
+
+	roadwayDisplayer := NewRoadwayDisplayer(voxelArrayObjectRenderer)
+	defer roadwayDisplayer.Delete()
+
+	longCar := voxel.NewVoxelObject("./data/models/long_car.vox")
+	fmt.Printf("Long Car objects: %v\n", len(longCar.SubObjects))
 
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
 
 	cameraMatrix := camera.GetLookAtMatrix()
-	voxelObjectRenderer.UpdateCamera(&cameraMatrix)
-	voxelArrayObjectRenderer.UpdateCamera(&cameraMatrix)
-	textRenderer.UpdateCamera(&cameraMatrix)
+	renderer.UpdateCameras(renderers, &cameraMatrix)
 
 	startTime := time.Now()
 	lastElapsed := float32(0.0)
@@ -98,20 +91,16 @@ func main() {
 
 		// Update our camera if we have motion
 		if camera.Update(frameTime, &cameraMatrix) {
-			voxelObjectRenderer.UpdateCamera(&cameraMatrix)
-			voxelArrayObjectRenderer.UpdateCamera(&cameraMatrix)
-			textRenderer.UpdateCamera(&cameraMatrix)
+			renderer.UpdateCameras(renderers, &cameraMatrix)
 		}
 
 		// Don't distort on resize
 		if !viewport.PerspectiveMatrixUpdated() {
 			projection := mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
-			voxelObjectRenderer.UpdateProjection(&projection)
-			voxelArrayObjectRenderer.UpdateProjection(&projection)
-			textRenderer.UpdateProjection(&projection)
+			renderer.UpdateProjections(renderers, &projection)
 		}
 
-		roadwayRenderer.Render(simpleRoadway)
+		roadwayDisplayer.Render(simpleRoadway)
 
 		// Draw a few cars
 		//for i := 0; i < 2; i++ {
