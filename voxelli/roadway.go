@@ -32,6 +32,31 @@ type Roadway struct {
 	roadElements [][]Road
 }
 
+func (r *Roadway) InBounds(position mgl32.Vec2) bool {
+	offsetPos := position.Add(mgl32.Vec2{float32(GetGridSize() / 2), float32(GetGridSize() / 2)})
+
+	// Outside of the entire road grid
+	if offsetPos.X() < 0 || offsetPos.Y() < 0 || offsetPos.X() > float32(GetGridSize()*len(r.roadElements)) || offsetPos.Y() > float32(GetGridSize()*len(r.roadElements[0])) {
+		return false
+	}
+
+	gridIdxX := int(offsetPos.X() / float32(GetGridSize()))
+	gridIdxY := int(offsetPos.Y() / float32(GetGridSize()))
+	offsetPos = offsetPos.Sub(mgl32.Vec2{float32(gridIdxX * GetGridSize()), float32(gridIdxY * GetGridSize())})
+
+	return r.roadElements[gridIdxX][gridIdxY].InBounds(offsetPos)
+}
+
+func (r *Roadway) InAllBounds(positions []mgl32.Vec2) bool {
+	for _, position := range positions {
+		if !r.InBounds(position) {
+			return false
+		}
+	}
+
+	return true
+}
+
 func NewRoad(roadType RoadType, optionalData int) Road {
 	switch roadType {
 	case StraightRoadType:

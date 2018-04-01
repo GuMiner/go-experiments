@@ -40,11 +40,11 @@ func (curvedRoad CurvedRoad) InBounds(position mgl32.Vec2) bool {
 	case 0:
 		length = position.Sub(mgl32.Vec2{gridExtent, 0}).Len()
 	case 1:
-		length = position.Len()
+		length = position.Sub(mgl32.Vec2{gridExtent, gridExtent}).Len()
 	case 2:
 		length = position.Sub(mgl32.Vec2{0, gridExtent}).Len()
 	case 3:
-		length = position.Sub(mgl32.Vec2{gridExtent, gridExtent}).Len()
+		length = position.Len()
 	}
 
 	return length < gridExtent

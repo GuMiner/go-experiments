@@ -8,6 +8,9 @@ import (
 	"go-experiments/voxelli/text"
 	"go-experiments/voxelli/vehicle"
 	"go-experiments/voxelli/viewport"
+	"go-experiments/voxelli/voxel"
+	"go-experiments/voxelli/voxelArray"
+	"math/rand"
 	"runtime"
 	"time"
 
@@ -44,6 +47,9 @@ func main() {
 	opengl.ConfigureOpenGl()
 
 	// Create renderers
+	debugCube := NewCube()
+	defer debugCube.Delete()
+
 	voxelArrayObjectRenderer := renderer.NewVoxelArrayObjectRenderer()
 	defer voxelArrayObjectRenderer.Delete()
 
@@ -53,6 +59,7 @@ func main() {
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
 	renderers = append(renderers, textRenderer)
+	renderers = append(renderers, debugCube)
 
 	// Create roadway
 	simpleRoadway := NewRoadway("./data/roadways/straight_with_s-curve.txt")
@@ -61,8 +68,19 @@ func main() {
 	roadwayDisplayer := NewRoadwayDisplayer(voxelArrayObjectRenderer)
 	defer roadwayDisplayer.Delete()
 
-	car := vehicle.NewVehicle("./data/models/car.vox")
-	defer car.Delete()
+	carRaw := voxel.NewVoxelObject("./data/models/car.vox")
+	fmt.Printf("Vehicle objects: %v\n", len(carRaw.SubObjects))
+
+	carModel := voxelArray.NewVoxelArrayObject(carRaw)
+	defer carModel.Delete()
+	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
+
+	car := vehicle.NewVehicle(carModel)
+	car.Position[0] = 10
+	car.Position[1] = 10
+
+	car.AccelPos = rand.Float32()*2 - 1
+	car.SteeringPos = rand.Float32()*2 - 1
 
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
@@ -98,20 +116,45 @@ func main() {
 
 		roadwayDisplayer.Render(simpleRoadway)
 
-		// Draw a few cars
-		for i := 0; i < 20; i++ {
-			for j := 0; j < 20; j++ {
-				xCarOffset := float32(i)*car.HalfSize.X()*2 + 4
-				yCarOffset := float32(j)*car.HalfSize.Y()*2 + 4
-				rotateMatrix := mgl32.HomogRotate3D(0.5*elapsed, mgl32.Vec3{0, 0, 1})
+		oldPosition, oldOrientation := car.Update(frameTime)
+		if !simpleRoadway.InAllBounds(car.GetBounds()) {
+			car.AccelPos = rand.Float32()*2 - 1
+			car.SteeringPos = rand.Float32()*2 - 1
+			fmt.Printf("Acc: %v. Steer: %v Pos: %v\n", car.AccelPos, car.SteeringPos, car.Position)
 
-				translateMatrix := mgl32.Translate3D(xCarOffset, yCarOffset, 1)
-				modelMatrix := rotateMatrix.Mul4(translateMatrix)
-
-				// TODO Remove very soon
-				voxelArrayObjectRenderer.Render(car.Shape, &modelMatrix)
-			}
+			car.Velocity = 0
+			car.Position = oldPosition
+			car.Orientation = oldOrientation
 		}
+
+		// var height float32 = 6.0
+		// bounds := car.GetBounds()
+		// for _, bound := range bounds {
+		// 	color := mgl32.Vec4{0.0, 1.0, 0.0, 1.0}
+		// 	model := mgl32.Translate3D(bound.X(), bound.Y(), height)
+		// 	debugCube.Render(0, color, &model)
+		// }
+		//
+		// pcolor := mgl32.Vec4{0.0, 1.0, 1.0, 1.0}
+		// pmodel := mgl32.Translate3D(car.Position.X(), car.Position.Y(), height)
+		// debugCube.Render(0, pcolor, &pmodel)
+
+		// debugStep := float32(GetGridSize()*6) / 80
+		// for i := 0; i < 80; i++ {
+		// 	for j := 0; j < 80; j++ {
+		// 		height := 5
+		// 		color := mgl32.Vec4{1.0, 1.0, 0.0, 1.0}
+		// 		if simpleRoadway.InBounds(mgl32.Vec2{float32(i) * debugStep, float32(j) * debugStep}) {
+		// 			height += 5
+		// 			color[0] = 0
+		// 		}
+		//
+		// 		model := mgl32.Translate3D(float32(i)*debugStep, float32(j)*debugStep, float32(height))
+		// 		debugCube.Render(0, color, &model)
+		// 	}
+		// }
+
+		car.Render(voxelArrayObjectRenderer)
 
 		ident := mgl32.Ident4()
 		textRenderer.Render("Hello World!", &ident)
