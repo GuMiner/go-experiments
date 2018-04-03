@@ -32,6 +32,41 @@ func setInputCallbacks(window *glfw.Window) {
 	window.SetKeyCallback(input.HandleKeyInput)
 }
 
+var wasDebugPressed bool = false
+var isDebug bool = false
+
+func checkDebugToggle() {
+	if !wasDebugPressed && input.PressedKeys[glfw.KeyT] {
+		wasDebugPressed = true
+		isDebug = !isDebug
+	}
+
+	if wasDebugPressed && !input.PressedKeys[glfw.KeyT] {
+		wasDebugPressed = false
+	}
+}
+
+func debugDrawCarInfo(debugCube *Cube, car *vehicle.Vehicle, elapsed float32, boundaries []float32) {
+	eyePositions, eyeDirections := car.GetEyes()
+
+	// Debug draw where we are looking, assuming two eyes only
+	model := mgl32.Translate3D(eyePositions[0].X()+2*eyeDirections[0].X(), eyePositions[0].Y()+2*eyeDirections[0].Y(), 8)
+	debugCube.Render(elapsed, mgl32.Vec4{0.0, 1.0, 0.0, 1.0}, &model)
+
+	model = mgl32.Translate3D(eyePositions[1].X()+2*eyeDirections[1].X(), eyePositions[1].Y()+2*eyeDirections[1].Y(), 8)
+	debugCube.Render(elapsed, mgl32.Vec4{0.0, 1.0, 1.0, 1.0}, &model) // Cyan
+
+	// Debug draw where the boundaries are.
+	eyePositions[0] = eyePositions[0].Add(eyeDirections[0].Mul(boundaries[0]))
+	eyePositions[1] = eyePositions[1].Add(eyeDirections[1].Mul(boundaries[1]))
+
+	model = mgl32.Translate3D(eyePositions[0].X(), eyePositions[0].Y(), 8)
+	debugCube.Render(elapsed, mgl32.Vec4{1.0, 0.0, 0.0, 1.0}, &model)
+
+	model = mgl32.Translate3D(eyePositions[1].X(), eyePositions[1].Y(), 8)
+	debugCube.Render(elapsed, mgl32.Vec4{1.0, 1.0, 0.0, 1.0}, &model) // Yellow
+}
+
 func main() {
 	opengl.InitGlfw()
 	defer glfw.Terminate()
@@ -75,12 +110,17 @@ func main() {
 	defer carModel.Delete()
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
-	car := vehicle.NewVehicle(carModel)
-	car.Position[0] = 10
-	car.Position[1] = 10
+	var cars []*vehicle.Vehicle
+	for i := 0; i < 500; i++ {
+		car := vehicle.NewVehicle(i, carModel)
+		car.Position[0] = 10
+		car.Position[1] = 10
 
-	car.AccelPos = rand.Float32()*2 - 1
-	car.SteeringPos = rand.Float32()*2 - 1
+		car.AccelPos = rand.Float32()*2 - 1
+		car.SteeringPos = rand.Float32()*2 - 1
+
+		cars = append(cars, car)
+	}
 
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
@@ -101,6 +141,7 @@ func main() {
 
 		if input.AnyEvent() {
 			opengl.CheckWireframeToggle()
+			checkDebugToggle()
 		}
 
 		// Update our camera if we have motion
@@ -116,45 +157,37 @@ func main() {
 
 		roadwayDisplayer.Render(simpleRoadway)
 
-		oldPosition, oldOrientation := car.Update(frameTime)
-		if !simpleRoadway.InAllBounds(car.GetBounds()) {
-			car.AccelPos = rand.Float32()*2 - 1
-			car.SteeringPos = rand.Float32()*2 - 1
-			fmt.Printf("Acc: %v. Steer: %v Pos: %v\n", car.AccelPos, car.SteeringPos, car.Position)
+		var maxScore float32 = 0.0
+		maxScoreIdx := 0
+		for i, car := range cars {
+			oldPosition, oldOrientation := car.Update(frameTime)
+			if !simpleRoadway.InAllBounds(car.GetBounds()) {
+				car.AccelPos = rand.Float32()*2 - 1
+				car.SteeringPos = rand.Float32()*2 - 1
+				fmt.Printf("Acc: %v. Steer: %v Pos: %v\n", car.AccelPos, car.SteeringPos, car.Position)
 
-			car.Velocity = 0
-			car.Position = oldPosition
-			car.Orientation = oldOrientation
+				car.Velocity = 0
+				car.Position = oldPosition
+				car.Orientation = oldOrientation
+				car.Score = 0
+			}
+
+			if car.Score > maxScore {
+				maxScoreIdx = i
+				maxScore = car.Score
+			}
+
+			eyePositions, eyeDirections := car.GetEyes()
+			boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
+			if isDebug {
+				debugDrawCarInfo(debugCube, car, elapsed, boundaryLengths)
+			}
 		}
 
-		// var height float32 = 6.0
-		// bounds := car.GetBounds()
-		// for _, bound := range bounds {
-		// 	color := mgl32.Vec4{0.0, 1.0, 0.0, 1.0}
-		// 	model := mgl32.Translate3D(bound.X(), bound.Y(), height)
-		// 	debugCube.Render(0, color, &model)
-		// }
-		//
-		// pcolor := mgl32.Vec4{0.0, 1.0, 1.0, 1.0}
-		// pmodel := mgl32.Translate3D(car.Position.X(), car.Position.Y(), height)
-		// debugCube.Render(0, pcolor, &pmodel)
-
-		// debugStep := float32(GetGridSize()*6) / 80
-		// for i := 0; i < 80; i++ {
-		// 	for j := 0; j < 80; j++ {
-		// 		height := 5
-		// 		color := mgl32.Vec4{1.0, 1.0, 0.0, 1.0}
-		// 		if simpleRoadway.InBounds(mgl32.Vec2{float32(i) * debugStep, float32(j) * debugStep}) {
-		// 			height += 5
-		// 			color[0] = 0
-		// 		}
-		//
-		// 		model := mgl32.Translate3D(float32(i)*debugStep, float32(j)*debugStep, float32(height))
-		// 		debugCube.Render(0, color, &model)
-		// 	}
-		// }
-
-		car.Render(voxelArrayObjectRenderer)
+		for i, car := range cars {
+			emphasize := i == maxScoreIdx
+			car.Render(emphasize, voxelArrayObjectRenderer)
+		}
 
 		ident := mgl32.Ident4()
 		textRenderer.Render("Hello World!", &ident)

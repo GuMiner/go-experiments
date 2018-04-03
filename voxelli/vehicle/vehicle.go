@@ -26,6 +26,9 @@ type Vehicle struct {
 	Shape    *voxelArray.VoxelArrayObject
 	Center   mgl32.Vec2 // Offset for the vehicle center.
 	HalfSize mgl32.Vec2
+
+	Id    int
+	Score float32
 }
 
 const MaxVelocity = 200.0
@@ -61,10 +64,30 @@ func (v *Vehicle) Update(frameTime float32) (mgl32.Vec2, float32) {
 	xStep := float32(math.Cos(float64(v.Orientation-math.Pi/2))) * v.Velocity * frameTime
 	yStep := float32(math.Sin(float64(v.Orientation-math.Pi/2))) * v.Velocity * frameTime
 
+	step := mgl32.Vec2{xStep, yStep}
 	oldPosition := v.Position
-	v.Position = v.Position.Add(mgl32.Vec2{xStep, yStep})
+	v.Position = v.Position.Add(step)
+
+	// Score == distance moved, significantly prioritizing straight-motion travel.
+	v.Score += step.Len() * float32(math.Pow(1.0-math.Abs(float64(v.SteeringPos)), 8))
 
 	return oldPosition, oldOrientation
+}
+
+// Returns the eye position and vectors of the vehicles 'eyes'
+func (v *Vehicle) GetEyes() ([]mgl32.Vec2, []mgl32.Vec2) {
+	rotation := mgl32.Rotate2D(v.Orientation - math.Pi)
+
+	eyePositions := []mgl32.Vec2{
+		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{-v.HalfSize.X(), v.HalfSize.Y() * 2})),
+		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{v.HalfSize.X(), v.HalfSize.Y() * 2})),
+	}
+
+	eyeDirections := []mgl32.Vec2{
+		rotation.Mul2x1(mgl32.Vec2{-1, 1}.Normalize()),
+		rotation.Mul2x1(mgl32.Vec2{1, 1}.Normalize())}
+
+	return eyePositions, eyeDirections
 }
 
 // Returns the bounds of the vehicle in CW order, starting from the left bumper
@@ -81,8 +104,13 @@ func (v *Vehicle) GetBounds() []mgl32.Vec2 {
 	return bounds
 }
 
-func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer) {
-	offset := mgl32.Translate3D(-v.HalfSize.X(), -v.HalfSize.Y()*2, 1) // 1 bumps us up to the road level, *2 means we rotate from the back and appear to steer.
+func (v *Vehicle) Render(emphasize bool, renderer *renderer.VoxelArrayObjectRenderer) {
+	var height float32 = 1.0
+	if emphasize {
+		height = 5
+	}
+
+	offset := mgl32.Translate3D(-v.HalfSize.X(), -v.HalfSize.Y()*2, height) // 1 bumps us up to the road level, *2 means we rotate from the back and appear to steer.
 	rotation := mgl32.HomogRotate3DZ(v.Orientation)
 	translation := mgl32.Translate3D(v.Position.X(), v.Position.Y(), 0)
 
@@ -90,8 +118,10 @@ func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer) {
 	renderer.Render(v.Shape, &model)
 }
 
-func NewVehicle(shape *voxelArray.VoxelArrayObject) *Vehicle {
+func NewVehicle(id int, shape *voxelArray.VoxelArrayObject) *Vehicle {
 	vehicle := Vehicle{
+		Id:          id,
+		Score:       0.0,
 		SteeringPos: 0, AccelPos: 0,
 		Velocity: 0.0, Orientation: 0.0, Position: mgl32.Vec2{0, 0}}
 

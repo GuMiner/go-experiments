@@ -25,6 +25,44 @@ type Road interface {
 	// Returns true if the position is in-bounds on the road.
 	// position: Normalized from (0, 0) to GetRoadBounds(), guaranteed to be within the road piece
 	InBounds(position mgl32.Vec2) bool
+
+	// Given a position and direction on the piece, finds the piece boundary.
+	// If the boundary is out-of-bounds, returns (true, {0, 0}, and the relative position of the intersection)
+	// If the boundary leads to another piece, returns (false, the offset to the next grid pos, and the relative position of the intersection on that next piece)
+	FindBoundary(position mgl32.Vec2, direction mgl32.Vec2) (bool, utils.IntVec2, mgl32.Vec2)
+}
+
+func newRoad(roadType RoadType, optionalData int) Road {
+	switch roadType {
+	case StraightRoadType:
+		return StraightRoad{rotated: optionalData != 0}
+	case CurvedRoadType:
+		return CurvedRoad{rotation: optionalData}
+	case NotARoadType:
+		return OutOfBoundsRoad{}
+	default:
+		return OutOfBoundsRoad{}
+	}
+}
+
+func getOffsetPosition(position mgl32.Vec2) mgl32.Vec2 {
+	return position.Add(mgl32.Vec2{float32(GetGridSize() / 2), float32(GetGridSize() / 2)})
+}
+
+func getGridIdx(position mgl32.Vec2) utils.IntVec2 {
+	return utils.IntVec2{
+		int(position.X() / float32(GetGridSize())),
+		int(position.Y() / float32(GetGridSize()))}
+}
+
+func getGridRelativePos(gridIdx utils.IntVec2, position mgl32.Vec2) mgl32.Vec2 {
+	return position.Sub(mgl32.Vec2{float32(gridIdx.X() * GetGridSize()), float32(gridIdx.Y() * GetGridSize())})
+}
+
+func getRealPosition(gridIdx utils.IntVec2, gridRelativePos mgl32.Vec2) mgl32.Vec2 {
+	return mgl32.Vec2{
+		float32(gridIdx.X()*GetGridSize()) + gridRelativePos.X() - float32(GetGridSize()/2),
+		float32(gridIdx.Y()*GetGridSize()) + gridRelativePos.Y() - float32(GetGridSize()/2)}
 }
 
 // Defines a 2D roadway with road elements
@@ -33,18 +71,22 @@ type Roadway struct {
 }
 
 func (r *Roadway) InBounds(position mgl32.Vec2) bool {
-	offsetPos := position.Add(mgl32.Vec2{float32(GetGridSize() / 2), float32(GetGridSize() / 2)})
+	offsetPos := getOffsetPosition(position)
 
 	// Outside of the entire road grid
 	if offsetPos.X() < 0 || offsetPos.Y() < 0 || offsetPos.X() > float32(GetGridSize()*len(r.roadElements)) || offsetPos.Y() > float32(GetGridSize()*len(r.roadElements[0])) {
 		return false
 	}
 
-	gridIdxX := int(offsetPos.X() / float32(GetGridSize()))
-	gridIdxY := int(offsetPos.Y() / float32(GetGridSize()))
-	offsetPos = offsetPos.Sub(mgl32.Vec2{float32(gridIdxX * GetGridSize()), float32(gridIdxY * GetGridSize())})
+	gridIdx := getGridIdx(offsetPos)
+	offsetPos = getGridRelativePos(gridIdx, offsetPos)
 
-	return r.roadElements[gridIdxX][gridIdxY].InBounds(offsetPos)
+	return r.roadElements[gridIdx.X()][gridIdx.Y()].InBounds(offsetPos)
+}
+
+func (r *Roadway) GetRoadElementIdx(position mgl32.Vec2) utils.IntVec2 {
+	offsetPos := getOffsetPosition(position)
+	return getGridIdx(offsetPos)
 }
 
 func (r *Roadway) InAllBounds(positions []mgl32.Vec2) bool {
@@ -57,17 +99,32 @@ func (r *Roadway) InAllBounds(positions []mgl32.Vec2) bool {
 	return true
 }
 
-func NewRoad(roadType RoadType, optionalData int) Road {
-	switch roadType {
-	case StraightRoadType:
-		return StraightRoad{rotated: optionalData != 0}
-	case CurvedRoadType:
-		return CurvedRoad{rotation: optionalData}
-	case NotARoadType:
-		return OutOfBoundsRoad{}
-	default:
-		return OutOfBoundsRoad{}
+func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2) []float32 {
+	boundaryLengths := make([]float32, len(positions))
+
+	for i, position := range positions {
+		if !r.InBounds(position) {
+			boundaryLengths[i] = 0.0
+		}
+
+		offsetPosition := getOffsetPosition(position)
+		gridIdx := getGridIdx(offsetPosition)
+		gridRelativePos := getGridRelativePos(gridIdx, offsetPosition)
+
+		// Iterate through roadway pieces until we find an intersection
+		isBoundary, gridIdxOffset, intersectionPos := r.roadElements[gridIdx.X()][gridIdx.Y()].FindBoundary(gridRelativePos, directions[i])
+		for !isBoundary {
+			// TODO: I probably need to mess with this a bit.
+			gridIdx := utils.IntVec2{gridIdx.X() + gridIdxOffset.X(), gridIdx.Y() + gridIdxOffset.Y()}
+			isBoundary, gridIdxOffset, intersectionPos = r.roadElements[gridIdx.X()][gridIdx.Y()].FindBoundary(intersectionPos, directions[i])
+		}
+
+		// Convert that intersection back to a real position and return it.
+		realPos := getRealPosition(gridIdx, intersectionPos)
+		boundaryLengths[i] = realPos.Sub(position).Len()
 	}
+
+	return boundaryLengths
 }
 
 // Defines the 2D bounds of road elements
@@ -148,7 +205,7 @@ func NewRoadway(fileName string) *Roadway {
 				optionalData = ParseInt(subParts[1])
 			}
 
-			roadway.roadElements[xSize-(i+1)][j] = NewRoad(roadType, optionalData)
+			roadway.roadElements[xSize-(i+1)][j] = newRoad(roadType, optionalData)
 		}
 	}
 

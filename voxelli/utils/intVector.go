@@ -8,6 +8,14 @@ type IntVec2 [2]int
 type IntVec3 [3]int
 type Color [4]uint8
 
+func (v IntVec2) X() int {
+	return v[0]
+}
+
+func (v IntVec2) Y() int {
+	return v[1]
+}
+
 func (v IntVec3) X() int {
 	return v[0]
 }
@@ -22,9 +30,9 @@ func (v IntVec3) Z() int {
 
 func (v IntVec3) AsFloatVector() mgl32.Vec3 {
 	var pos mgl32.Vec3
-	pos[0] = float32(v.X());
-	pos[1] = float32(v.Y());
-	pos[2] = float32(v.Z());
+	pos[0] = float32(v.X())
+	pos[1] = float32(v.Y())
+	pos[2] = float32(v.Z())
 	return pos
 }
 
