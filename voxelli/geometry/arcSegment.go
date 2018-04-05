@@ -33,7 +33,7 @@ func solveQuadraticReals(a, b, c float32) []float32 {
 // This can return up to two results, so we take the smallest positive result for the
 // % along the vector direction if we get any results.
 // See the associated wxMaxima file for the mathematical basis for this.
-func findVectorCircleIntersection(seg *ArcSegment, vector Vector) []float32 {
+func findVectorCircleIntersection(seg ArcSegment, vector Vector) []float32 {
 	xv := vector.direction.X()
 	yv := vector.direction.Y()
 
@@ -55,7 +55,7 @@ func findVectorCircleIntersection(seg *ArcSegment, vector Vector) []float32 {
 }
 
 // Returns true and the intersection point on an intersection, false otherwise
-func (seg *ArcSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
+func (seg ArcSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
 	intersectionPercentDistances := findVectorCircleIntersection(seg, vector)
 
 	doesIntersect := false

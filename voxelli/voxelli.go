@@ -5,6 +5,7 @@ import (
 	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/opengl"
 	"go-experiments/voxelli/renderer"
+	"go-experiments/voxelli/roadway"
 	"go-experiments/voxelli/text"
 	"go-experiments/voxelli/vehicle"
 	"go-experiments/voxelli/viewport"
@@ -97,10 +98,9 @@ func main() {
 	renderers = append(renderers, debugCube)
 
 	// Create roadway
-	simpleRoadway := NewRoadway("./data/roadways/straight_with_s-curve.txt")
-	fmt.Printf("Straight roadway size: [%v, %v]\n\n", len(simpleRoadway.roadElements), len(simpleRoadway.roadElements[0]))
+	simpleRoadway := roadway.NewRoadway("./data/roadways/straight_with_s-curve.txt")
 
-	roadwayDisplayer := NewRoadwayDisplayer(voxelArrayObjectRenderer)
+	roadwayDisplayer := roadway.NewRoadwayDisplayer(voxelArrayObjectRenderer)
 	defer roadwayDisplayer.Delete()
 
 	carRaw := voxel.NewVoxelObject("./data/models/car.vox")
@@ -111,7 +111,7 @@ func main() {
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
 	var cars []*vehicle.Vehicle
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 1; i++ {
 		car := vehicle.NewVehicle(i, carModel)
 		car.Position[0] = 10
 		car.Position[1] = 10
@@ -121,6 +121,11 @@ func main() {
 
 		cars = append(cars, car)
 	}
+
+	controllableCar := ControllableCar{Car: vehicle.NewVehicle(-1, carModel)}
+
+	// TODO: This should be a parameter, not exposed directly like this
+	controllableCar.Car.RandomizeOnWallHit = false
 
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
@@ -160,17 +165,7 @@ func main() {
 		var maxScore float32 = 0.0
 		maxScoreIdx := 0
 		for i, car := range cars {
-			oldPosition, oldOrientation := car.Update(frameTime)
-			if !simpleRoadway.InAllBounds(car.GetBounds()) {
-				car.AccelPos = rand.Float32()*2 - 1
-				car.SteeringPos = rand.Float32()*2 - 1
-				fmt.Printf("Acc: %v. Steer: %v Pos: %v\n", car.AccelPos, car.SteeringPos, car.Position)
-
-				car.Velocity = 0
-				car.Position = oldPosition
-				car.Orientation = oldOrientation
-				car.Score = 0
-			}
+			car.Update(frameTime, simpleRoadway)
 
 			if car.Score > maxScore {
 				maxScoreIdx = i
@@ -187,6 +182,16 @@ func main() {
 		for i, car := range cars {
 			emphasize := i == maxScoreIdx
 			car.Render(emphasize, voxelArrayObjectRenderer)
+		}
+
+		controllableCar.Update(frameTime, simpleRoadway)
+		controllableCar.Render(voxelArrayObjectRenderer, simpleRoadway)
+
+		// TODO: Don't break abstraction like this...
+		eyePositions, eyeDirections := controllableCar.Car.GetEyes()
+		boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
+		if isDebug {
+			debugDrawCarInfo(debugCube, controllableCar.Car, elapsed, boundaryLengths)
 		}
 
 		ident := mgl32.Ident4()

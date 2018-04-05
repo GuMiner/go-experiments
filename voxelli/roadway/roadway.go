@@ -1,8 +1,10 @@
-package main
+package roadway
 
 import (
 	"fmt"
+	"go-experiments/voxelli/geometry"
 	"go-experiments/voxelli/utils"
+	"math"
 	"strconv"
 	"strings"
 
@@ -26,10 +28,8 @@ type Road interface {
 	// position: Normalized from (0, 0) to GetRoadBounds(), guaranteed to be within the road piece
 	InBounds(position mgl32.Vec2) bool
 
-	// Given a position and direction on the piece, finds the piece boundary.
-	// If the boundary is out-of-bounds, returns (true, {0, 0}, and the relative position of the intersection)
-	// If the boundary leads to another piece, returns (false, the offset to the next grid pos, and the relative position of the intersection on that next piece)
-	FindBoundary(position mgl32.Vec2, direction mgl32.Vec2) (bool, utils.IntVec2, mgl32.Vec2)
+	// Gets the bounds of the road piece.
+	GetBounds(gridPos utils.IntVec2) []geometry.Intersectable
 }
 
 func newRoad(roadType RoadType, optionalData int) Road {
@@ -59,15 +59,14 @@ func getGridRelativePos(gridIdx utils.IntVec2, position mgl32.Vec2) mgl32.Vec2 {
 	return position.Sub(mgl32.Vec2{float32(gridIdx.X() * GetGridSize()), float32(gridIdx.Y() * GetGridSize())})
 }
 
-func getRealPosition(gridIdx utils.IntVec2, gridRelativePos mgl32.Vec2) mgl32.Vec2 {
-	return mgl32.Vec2{
-		float32(gridIdx.X()*GetGridSize()) + gridRelativePos.X() - float32(GetGridSize()/2),
-		float32(gridIdx.Y()*GetGridSize()) + gridRelativePos.Y() - float32(GetGridSize()/2)}
+func getRealPosition(position mgl32.Vec2) mgl32.Vec2 {
+	return position.Sub(mgl32.Vec2{float32(GetGridSize() / 2), float32(GetGridSize() / 2)})
 }
 
 // Defines a 2D roadway with road elements
 type Roadway struct {
 	roadElements [][]Road
+	roadParts    []geometry.Intersectable
 }
 
 func (r *Roadway) InBounds(position mgl32.Vec2) bool {
@@ -108,19 +107,27 @@ func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2)
 		}
 
 		offsetPosition := getOffsetPosition(position)
-		gridIdx := getGridIdx(offsetPosition)
-		gridRelativePos := getGridRelativePos(gridIdx, offsetPosition)
+		vector := geometry.NewVector(offsetPosition, directions[i])
 
-		// Iterate through roadway pieces until we find an intersection
-		isBoundary, gridIdxOffset, intersectionPos := r.roadElements[gridIdx.X()][gridIdx.Y()].FindBoundary(gridRelativePos, directions[i])
-		for !isBoundary {
-			gridIdx := utils.IntVec2{gridIdx.X() + gridIdxOffset.X(), gridIdx.Y() + gridIdxOffset.Y()}
-			isBoundary, gridIdxOffset, intersectionPos = r.roadElements[gridIdx.X()][gridIdx.Y()].FindBoundary(intersectionPos, directions[i])
+		// Brute-force find the closest intersection by looking at the *entire* roadway
+		hasIntersection := false
+		minIntersectionDist := float32(math.MaxFloat32)
+		for _, intersectable := range r.roadParts {
+			if intersects, intersectionPoint := intersectable.Intersects(vector); intersects {
+				realPos := getRealPosition(intersectionPoint)
+				intersectionLen := realPos.Sub(position).Len()
+				if intersectionLen < minIntersectionDist {
+					minIntersectionDist = intersectionLen
+					hasIntersection = true
+				}
+			}
 		}
 
-		// Convert that intersection back to a real position and return it.
-		realPos := getRealPosition(gridIdx, intersectionPos)
-		boundaryLengths[i] = realPos.Sub(position).Len()
+		if hasIntersection {
+			boundaryLengths[i] = minIntersectionDist
+		} else {
+			boundaryLengths[i] = 0.0
+		}
 	}
 
 	return boundaryLengths
@@ -204,9 +211,12 @@ func NewRoadway(fileName string) *Roadway {
 				optionalData = ParseInt(subParts[1])
 			}
 
-			roadway.roadElements[xSize-(i+1)][j] = newRoad(roadType, optionalData)
+			newRoad := newRoad(roadType, optionalData)
+			roadway.roadElements[xSize-(i+1)][j] = newRoad
+			roadway.roadParts = append(roadway.roadParts, newRoad.GetBounds(utils.IntVec2{xSize - (i + 1), j})...)
 		}
 	}
 
+	fmt.Printf("Roadway size: [%v, %v]\n\n", len(roadway.roadElements), len(roadway.roadElements[0]))
 	return &roadway
 }

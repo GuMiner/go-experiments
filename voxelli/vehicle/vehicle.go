@@ -1,10 +1,11 @@
 package vehicle
 
 import (
-	"fmt"
 	"go-experiments/voxelli/renderer"
+	"go-experiments/voxelli/roadway"
 	"go-experiments/voxelli/voxelArray"
 	"math"
+	"math/rand"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -15,7 +16,7 @@ type Vehicle struct {
 
 	Velocity float32 // TODO -- make this a vector to allow skidding
 
-	// -1: Hard left. 1: Hard Right
+	// 1: Hard left. -1: Hard Right
 	SteeringPos float32
 
 	// -1: Slamming the brake. 0: Coast. 1: Flooring it
@@ -29,6 +30,8 @@ type Vehicle struct {
 
 	Id    int
 	Score float32
+
+	RandomizeOnWallHit bool
 }
 
 const MaxVelocity = 200.0
@@ -47,7 +50,27 @@ func boundValue(value float32, min float32, max float32) float32 {
 	return value
 }
 
-func (v *Vehicle) Update(frameTime float32) (mgl32.Vec2, float32) {
+// Returns the eye position and vectors of the vehicles 'eyes'
+func (v *Vehicle) GetEyes() ([]mgl32.Vec2, []mgl32.Vec2) {
+	rotation := mgl32.Rotate2D(v.Orientation - math.Pi)
+
+	eyePositions := []mgl32.Vec2{
+		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{-v.HalfSize.X(), v.HalfSize.Y() * 2})),
+		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{v.HalfSize.X(), v.HalfSize.Y() * 2})),
+	}
+
+	eyeDirections := []mgl32.Vec2{
+		rotation.Mul2x1(mgl32.Vec2{-1, 1}.Normalize()),
+		rotation.Mul2x1(mgl32.Vec2{1, 1}.Normalize())}
+
+	return eyePositions, eyeDirections
+}
+
+// Updates the vehicle,
+func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) {
+	v.AccelPos = boundValue(v.AccelPos, -1.0, 1.0)
+	v.SteeringPos = boundValue(v.SteeringPos, -1.0, 1.0)
+
 	v.Velocity += v.AccelPos * AccelScaleFactor * frameTime
 	v.Velocity = boundValue(v.Velocity, MinVelocity, MaxVelocity)
 
@@ -71,23 +94,21 @@ func (v *Vehicle) Update(frameTime float32) (mgl32.Vec2, float32) {
 	// Score == distance moved, significantly prioritizing straight-motion travel.
 	v.Score += step.Len() * float32(math.Pow(1.0-math.Abs(float64(v.SteeringPos)), 8))
 
-	return oldPosition, oldOrientation
-}
+	// Stop at the wall if we hit a wall.
+	if !roadway.InAllBounds(v.GetBounds()) {
 
-// Returns the eye position and vectors of the vehicles 'eyes'
-func (v *Vehicle) GetEyes() ([]mgl32.Vec2, []mgl32.Vec2) {
-	rotation := mgl32.Rotate2D(v.Orientation - math.Pi)
+		// Randomize the accelerator and steering after hitting a wall
+		// Remove once the neural net starts driving
+		if v.RandomizeOnWallHit {
+			v.AccelPos = rand.Float32()*2 - 1
+			v.SteeringPos = rand.Float32()*2 - 1
+		}
 
-	eyePositions := []mgl32.Vec2{
-		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{-v.HalfSize.X(), v.HalfSize.Y() * 2})),
-		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{v.HalfSize.X(), v.HalfSize.Y() * 2})),
+		v.Velocity = 0
+		v.Position = oldPosition
+		v.Orientation = oldOrientation
+		v.Score = 0
 	}
-
-	eyeDirections := []mgl32.Vec2{
-		rotation.Mul2x1(mgl32.Vec2{-1, 1}.Normalize()),
-		rotation.Mul2x1(mgl32.Vec2{1, 1}.Normalize())}
-
-	return eyePositions, eyeDirections
 }
 
 // Returns the bounds of the vehicle in CW order, starting from the left bumper
@@ -136,6 +157,6 @@ func NewVehicle(id int, shape *voxelArray.VoxelArrayObject) *Vehicle {
 		float32(vehicle.Shape.VoxelObject.MinBounds.X()) + vehicle.HalfSize.X(),
 		float32(vehicle.Shape.VoxelObject.MinBounds.Y()) + vehicle.HalfSize.Y()}
 
-	fmt.Printf("Vehicle half size: %v. Center: %v.\n\n", vehicle.HalfSize, vehicle.Center)
+	vehicle.RandomizeOnWallHit = true
 	return &vehicle
 }

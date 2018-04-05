@@ -22,7 +22,7 @@ func intersectionImplementation(first, second Vector) (float32, float32) {
 }
 
 // Returns true and the intersection point on an intersection, false otherwise
-func (seg *LineSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
+func (seg LineSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
 	// Convert the line segment to vector form.
 	lineVector := Vector{point: seg.start, direction: seg.end.Sub(seg.start)}
 
