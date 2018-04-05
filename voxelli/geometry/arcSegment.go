@@ -1,7 +1,6 @@
 package geometry
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -30,27 +29,11 @@ func solveQuadraticReals(a, b, c float32) []float32 {
 		(-b - discriminantSqrt) / (2 * a)}
 }
 
-func lowestPositive(first, second float32) float32 {
-	if second < 0.0 {
-		return first
-	}
-
-	if first < 0.0 {
-		return second
-	}
-
-	if first > second {
-		return second
-	}
-
-	return first
-}
-
 // Finds the closest vector intersection to the given arc segment as a circle.
 // This can return up to two results, so we take the smallest positive result for the
 // % along the vector direction if we get any results.
 // See the associated wxMaxima file for the mathematical basis for this.
-func findVectorCircleIntersection(seg *ArcSegment, vector Vector) (bool, float32) {
+func findVectorCircleIntersection(seg *ArcSegment, vector Vector) []float32 {
 	xv := vector.direction.X()
 	yv := vector.direction.Y()
 
@@ -68,48 +51,40 @@ func findVectorCircleIntersection(seg *ArcSegment, vector Vector) (bool, float32
 	// If we don't return both results, we match on a closer part of the circle that may not be part of the partial arc.
 	// This should actually simplify the logic a bit.
 	s := solveQuadraticReals(a, b, c)
-	var sPreferred float32
-	if len(s) == 2 {
-		sPreferred = lowestPositive(s[0], s[1])
-	} else if len(s) == 1 {
-		sPreferred = s[0]
-	} else {
-		return false, 0.0
-	}
-
-	// Closest positive intersection is behind the vector
-	if sPreferred < 0.0 {
-		return false, 0.0
-	}
-
-	return true, sPreferred
+	return s
 }
 
 // Returns true and the intersection point on an intersection, false otherwise
 func (seg *ArcSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
-	doesIntersect, closestIntersectionFactor := findVectorCircleIntersection(seg, vector)
+	intersectionPercentDistances := findVectorCircleIntersection(seg, vector)
 
-	if doesIntersect {
-		intersectionPoint := mgl32.Vec2{
-			vector.point.X() + vector.direction.X()*closestIntersectionFactor,
-			vector.point.Y() + vector.direction.Y()*closestIntersectionFactor}
+	doesIntersect := false
+	foundIntersectionPoint := mgl32.Vec2{0, 0}
+	lastIntersectionDistancePercent := float32(math.MaxFloat32)
+	for _, intersectionDistancePercent := range intersectionPercentDistances {
+		if intersectionDistancePercent > 0 && intersectionDistancePercent < lastIntersectionDistancePercent {
+			intersectionPoint := mgl32.Vec2{
+				vector.point.X() + vector.direction.X()*intersectionDistancePercent,
+				vector.point.Y() + vector.direction.Y()*intersectionDistancePercent}
 
-		// Verify the intersection point is on the arc.
-		dx := intersectionPoint.X() - seg.center.X()
-		dy := intersectionPoint.Y() - seg.center.Y()
+			// Verify the intersection point is on the arc.
+			dx := intersectionPoint.X() - seg.center.X()
+			dy := intersectionPoint.Y() - seg.center.Y()
 
-		angle := float32(math.Atan2(float64(dy), float64(dx)))
-		fmt.Printf("%v %v %v\n", dx, dy, angle)
-		if angle < 0 {
-			angle += 2 * math.Pi
-		}
+			angle := float32(math.Atan2(float64(dy), float64(dx)))
+			if angle < 0 {
+				angle += 2 * math.Pi
+			}
 
-		if angle >= seg.angleStart && angle <= seg.angleEnd {
-			return true, intersectionPoint
+			if angle >= seg.angleStart && angle <= seg.angleEnd {
+				doesIntersect = true
+				foundIntersectionPoint = intersectionPoint
+				lastIntersectionDistancePercent = intersectionDistancePercent
+			}
 		}
 	}
 
-	return false, mgl32.Vec2{0, 0}
+	return doesIntersect, foundIntersectionPoint
 }
 
 func NewArcSegment(center mgl32.Vec2, radius, angleStart, angleEnd float32) ArcSegment {
