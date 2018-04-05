@@ -111,7 +111,7 @@ func main() {
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
 	var cars []*vehicle.Vehicle
-	for i := 0; i < 500; i++ {
+	for i := 0; i < 10; i++ {
 		car := vehicle.NewVehicle(i, carModel)
 		car.Position[0] = 10
 		car.Position[1] = 10

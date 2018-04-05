@@ -114,7 +114,6 @@ func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2)
 		// Iterate through roadway pieces until we find an intersection
 		isBoundary, gridIdxOffset, intersectionPos := r.roadElements[gridIdx.X()][gridIdx.Y()].FindBoundary(gridRelativePos, directions[i])
 		for !isBoundary {
-			// TODO: I probably need to mess with this a bit.
 			gridIdx := utils.IntVec2{gridIdx.X() + gridIdxOffset.X(), gridIdx.Y() + gridIdxOffset.Y()}
 			isBoundary, gridIdxOffset, intersectionPos = r.roadElements[gridIdx.X()][gridIdx.Y()].FindBoundary(intersectionPos, directions[i])
 		}
