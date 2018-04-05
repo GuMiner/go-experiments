@@ -40,5 +40,5 @@ func (c *ControllableCar) Update(frameTime float32, roadway *roadway.Roadway) {
 }
 
 func (c *ControllableCar) Render(voxelArrayObjectRenderer *renderer.VoxelArrayObjectRenderer, roadway *roadway.Roadway) {
-	c.Car.Render(false, voxelArrayObjectRenderer)
+	c.Car.Render(voxelArrayObjectRenderer)
 }

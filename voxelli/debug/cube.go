@@ -1,4 +1,4 @@
-package main
+package debug
 
 // Defines a small cube
 import (
@@ -121,9 +121,10 @@ type Cube struct {
 	colorVbo    uint32
 }
 
-func NewCube() *Cube {
-	var cube Cube
+var cube *Cube
 
+func InitCube() {
+	cube = new(Cube)
 	cube.shaderProgram = opengl.CreateProgram("./shaders/basicRenderer")
 
 	// Get locations of everything used in this program.
@@ -152,15 +153,13 @@ func NewCube() *Cube {
 	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 0, nil)
 
 	gl.BufferData(gl.ARRAY_BUFFER, len(cubeColorVertices)*3*4, gl.Ptr(cubeColorVertices), gl.STATIC_DRAW)
-
-	return &cube
 }
 
-func (cube *Cube) VertexCount() int32 {
+func vertexCount() int32 {
 	return int32(len(cubeVertices))
 }
 
-func (cube *Cube) Render(time float32, color mgl32.Vec4, model *mgl32.Mat4) {
+func Render(time float32, color mgl32.Vec4, model *mgl32.Mat4) {
 	gl.UseProgram(cube.shaderProgram)
 
 	gl.Uniform1f(cube.timeLoc, time)
@@ -168,7 +167,11 @@ func (cube *Cube) Render(time float32, color mgl32.Vec4, model *mgl32.Mat4) {
 	gl.UniformMatrix4fv(cube.modelLoc, 1, false, &model[0])
 
 	gl.BindVertexArray(cube.vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, cube.VertexCount())
+	gl.DrawArrays(gl.TRIANGLES, 0, vertexCount())
+}
+
+func GetCube() *Cube {
+	return cube
 }
 
 func (renderer *Cube) UpdateProjection(projection *mgl32.Mat4) {
@@ -181,9 +184,10 @@ func (renderer *Cube) UpdateCamera(camera *mgl32.Mat4) {
 	gl.UniformMatrix4fv(renderer.cameraLoc, 1, false, &camera[0])
 }
 
-func (cube *Cube) Delete() {
+func DeleteCube() {
 	gl.DeleteBuffers(1, &cube.positionVbo)
 	gl.DeleteBuffers(1, &cube.colorVbo)
 	gl.DeleteVertexArrays(1, &cube.vao)
 	gl.DeleteProgram(cube.shaderProgram)
+	cube = nil
 }

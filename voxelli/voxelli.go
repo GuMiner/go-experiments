@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"go-experiments/voxelli/debug"
+	"go-experiments/voxelli/genetics"
 	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/opengl"
 	"go-experiments/voxelli/renderer"
@@ -11,7 +13,6 @@ import (
 	"go-experiments/voxelli/viewport"
 	"go-experiments/voxelli/voxel"
 	"go-experiments/voxelli/voxelArray"
-	"math/rand"
 	"runtime"
 	"time"
 
@@ -21,8 +22,6 @@ import (
 )
 
 func init() {
-	// This is needed to arrange that main() runs on main thread.
-	// See documentation for functions that are only allowed to be called from the main thread.
 	runtime.LockOSThread()
 }
 
@@ -33,39 +32,25 @@ func setInputCallbacks(window *glfw.Window) {
 	window.SetKeyCallback(input.HandleKeyInput)
 }
 
-var wasDebugPressed bool = false
-var isDebug bool = false
-
-func checkDebugToggle() {
-	if !wasDebugPressed && input.PressedKeys[glfw.KeyT] {
-		wasDebugPressed = true
-		isDebug = !isDebug
-	}
-
-	if wasDebugPressed && !input.PressedKeys[glfw.KeyT] {
-		wasDebugPressed = false
-	}
-}
-
-func debugDrawCarInfo(debugCube *Cube, car *vehicle.Vehicle, elapsed float32, boundaries []float32) {
+func debugDrawCarInfo(car *vehicle.Vehicle, elapsed float32, boundaries []float32) {
 	eyePositions, eyeDirections := car.GetEyes()
 
 	// Debug draw where we are looking, assuming two eyes only
 	model := mgl32.Translate3D(eyePositions[0].X()+2*eyeDirections[0].X(), eyePositions[0].Y()+2*eyeDirections[0].Y(), 8)
-	debugCube.Render(elapsed, mgl32.Vec4{0.0, 1.0, 0.0, 1.0}, &model)
+	debug.Render(elapsed, mgl32.Vec4{0.0, 1.0, 0.0, 1.0}, &model)
 
 	model = mgl32.Translate3D(eyePositions[1].X()+2*eyeDirections[1].X(), eyePositions[1].Y()+2*eyeDirections[1].Y(), 8)
-	debugCube.Render(elapsed, mgl32.Vec4{0.0, 1.0, 1.0, 1.0}, &model) // Cyan
+	debug.Render(elapsed, mgl32.Vec4{0.0, 1.0, 1.0, 1.0}, &model) // Cyan
 
 	// Debug draw where the boundaries are.
 	eyePositions[0] = eyePositions[0].Add(eyeDirections[0].Mul(boundaries[0]))
 	eyePositions[1] = eyePositions[1].Add(eyeDirections[1].Mul(boundaries[1]))
 
 	model = mgl32.Translate3D(eyePositions[0].X(), eyePositions[0].Y(), 8)
-	debugCube.Render(elapsed, mgl32.Vec4{1.0, 0.0, 0.0, 1.0}, &model)
+	debug.Render(elapsed, mgl32.Vec4{1.0, 0.0, 0.0, 1.0}, &model)
 
 	model = mgl32.Translate3D(eyePositions[1].X(), eyePositions[1].Y(), 8)
-	debugCube.Render(elapsed, mgl32.Vec4{1.0, 1.0, 0.0, 1.0}, &model) // Yellow
+	debug.Render(elapsed, mgl32.Vec4{1.0, 1.0, 0.0, 1.0}, &model) // Yellow
 }
 
 func main() {
@@ -83,8 +68,8 @@ func main() {
 	opengl.ConfigureOpenGl()
 
 	// Create renderers
-	debugCube := NewCube()
-	defer debugCube.Delete()
+	debug.InitCube()
+	defer debug.DeleteCube()
 
 	voxelArrayObjectRenderer := renderer.NewVoxelArrayObjectRenderer()
 	defer voxelArrayObjectRenderer.Delete()
@@ -95,7 +80,7 @@ func main() {
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
 	renderers = append(renderers, textRenderer)
-	renderers = append(renderers, debugCube)
+	renderers = append(renderers, debug.GetCube())
 
 	// Create roadway
 	simpleRoadway := roadway.NewRoadway("./data/roadways/straight_with_s-curve.txt")
@@ -110,15 +95,9 @@ func main() {
 	defer carModel.Delete()
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
-	var cars []*vehicle.Vehicle
-	for i := 0; i < 1; i++ {
-		car := vehicle.NewVehicle(i, carModel)
-		car.Position[0] = 10
-		car.Position[1] = 10
-
-		car.AccelPos = rand.Float32()*2 - 1
-		car.SteeringPos = rand.Float32()*2 - 1
-
+	var cars []*genetics.Agent
+	for i := 0; i < 100; i++ {
+		car := genetics.NewAgent(i, carModel, mgl32.Vec2{10, 10})
 		cars = append(cars, car)
 	}
 
@@ -146,7 +125,7 @@ func main() {
 
 		if input.AnyEvent() {
 			opengl.CheckWireframeToggle()
-			checkDebugToggle()
+			debug.CheckDebugToggle()
 		}
 
 		// Update our camera if we have motion
@@ -162,26 +141,27 @@ func main() {
 
 		roadwayDisplayer.Render(simpleRoadway)
 
-		var maxScore float32 = 0.0
-		maxScoreIdx := 0
-		for i, car := range cars {
-			car.Update(frameTime, simpleRoadway)
-
-			if car.Score > maxScore {
-				maxScoreIdx = i
-				maxScore = car.Score
+		anyAlive := false
+		for _, car := range cars {
+			if car.Update(frameTime, simpleRoadway) {
+				anyAlive = true
 			}
 
-			eyePositions, eyeDirections := car.GetEyes()
+			eyePositions, eyeDirections := car.GetCar().GetEyes()
 			boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
-			if isDebug {
-				debugDrawCarInfo(debugCube, car, elapsed, boundaryLengths)
+			if debug.IsDebug() {
+				debugDrawCarInfo(car.GetCar(), elapsed, boundaryLengths)
 			}
 		}
 
-		for i, car := range cars {
-			emphasize := i == maxScoreIdx
-			car.Render(emphasize, voxelArrayObjectRenderer)
+		if !anyAlive {
+			// TODO: Also check to see if the generation time has been exceeded,
+			//  and then generate a new generation and repeat.
+			fmt.Printf("done\n")
+		}
+
+		for _, car := range cars {
+			car.Render(voxelArrayObjectRenderer)
 		}
 
 		controllableCar.Update(frameTime, simpleRoadway)
@@ -190,8 +170,8 @@ func main() {
 		// TODO: Don't break abstraction like this...
 		eyePositions, eyeDirections := controllableCar.Car.GetEyes()
 		boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
-		if isDebug {
-			debugDrawCarInfo(debugCube, controllableCar.Car, elapsed, boundaryLengths)
+		if debug.IsDebug() {
+			debugDrawCarInfo(controllableCar.Car, elapsed, boundaryLengths)
 		}
 
 		ident := mgl32.Ident4()

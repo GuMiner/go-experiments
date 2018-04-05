@@ -66,8 +66,8 @@ func (v *Vehicle) GetEyes() ([]mgl32.Vec2, []mgl32.Vec2) {
 	return eyePositions, eyeDirections
 }
 
-// Updates the vehicle,
-func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) {
+// Updates the vehicle, returning true if it hit a wall
+func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) bool {
 	v.AccelPos = boundValue(v.AccelPos, -1.0, 1.0)
 	v.SteeringPos = boundValue(v.SteeringPos, -1.0, 1.0)
 
@@ -107,8 +107,11 @@ func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) {
 		v.Velocity = 0
 		v.Position = oldPosition
 		v.Orientation = oldOrientation
-		v.Score = 0
+
+		return true
 	}
+
+	return false
 }
 
 // Returns the bounds of the vehicle in CW order, starting from the left bumper
@@ -125,11 +128,8 @@ func (v *Vehicle) GetBounds() []mgl32.Vec2 {
 	return bounds
 }
 
-func (v *Vehicle) Render(emphasize bool, renderer *renderer.VoxelArrayObjectRenderer) {
-	var height float32 = 1.0
-	if emphasize {
-		height = 5
-	}
+func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer) {
+	height := float32(5.0)
 
 	offset := mgl32.Translate3D(-v.HalfSize.X(), -v.HalfSize.Y()*2, height) // 1 bumps us up to the road level, *2 means we rotate from the back and appear to steer.
 	rotation := mgl32.HomogRotate3DZ(v.Orientation)
