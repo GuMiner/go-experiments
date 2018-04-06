@@ -29,6 +29,18 @@ func (n *NeuralNet) Evaluate(inputs []float32) []float32 {
 	return inputs
 }
 
+func (n *NeuralNet) ProbablyRandomize(randomizeProbability, randomAmount float32) {
+	for _, layer := range n.layers {
+		layer.ProbablyRandomize(randomizeProbability, randomAmount)
+	}
+}
+
+func (n *NeuralNet) CrossMerge(first, second *NeuralNet, crossoverProbability float32) {
+	for i, layer := range n.layers {
+		layer.CrossMerge(first.layers[i], second.layers[i], crossoverProbability)
+	}
+}
+
 func NewNeuralNet(layerSizes []int, outputCount int) *NeuralNet {
 	net := NeuralNet{layers: []*NeuralLayer{}}
 	for i, layerSize := range layerSizes {
@@ -92,6 +104,28 @@ func (n *NeuralLayer) Randomize() {
 	for i, _ := range n.neurons {
 		for j, _ := range n.neurons[i].weights {
 			n.neurons[i].weights[j] = rand.Float32()*2.0 - 1.0
+		}
+	}
+}
+
+func (n *NeuralLayer) ProbablyRandomize(randomizeProbability, randomAmount float32) {
+	for i, _ := range n.neurons {
+		for j, _ := range n.neurons[i].weights {
+			if rand.Float32() < randomizeProbability {
+				n.neurons[i].weights[j] += rand.Float32()*randomAmount - randomAmount
+			}
+		}
+	}
+}
+
+func (n *NeuralLayer) CrossMerge(first, second *NeuralLayer, crossoverProbability float32) {
+	for i, _ := range n.neurons {
+		for j, _ := range n.neurons[i].weights {
+			if rand.Float32() < crossoverProbability {
+				n.neurons[i].weights[j] = second.neurons[i].weights[j]
+			} else {
+				n.neurons[i].weights[j] = first.neurons[i].weights[j]
+			}
 		}
 	}
 }

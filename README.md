@@ -4,8 +4,8 @@ This repository contains a series of experimental projects to learn more about t
 ## Fractal Rendering
 ![Fractal.PNG](./Fractal.PNG "Rendering Fractals with Go")
 
-## Voxel Rendering
-![Voxelli.PNG](./Voxelli.PNG "Rendering Voxel Cars with Go")
+## Voxel Cars
+![VoxelliDriving.gif](./VoxelliDriving.gif "Voxel cars that learned to drive themselves")
 
-Rendering one hundred 1,640 voxel cars in a very inefficient manner
-
+Inspired from [this GitHub project](https://github.com/ArztSamuel/Applying_EANNs), these 
+voxel cars use a genetic algorithm to teach a small fully-connected neural network how to navigate a course.

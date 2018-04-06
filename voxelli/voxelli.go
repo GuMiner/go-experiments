@@ -95,16 +95,13 @@ func main() {
 	defer carModel.Delete()
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
-	var cars []*genetics.Agent
-	for i := 0; i < 100; i++ {
-		car := genetics.NewAgent(i, carModel, mgl32.Vec2{10, 10})
-		cars = append(cars, car)
-	}
+	agentEvolver := genetics.NewPopulation(100, func(id int) *genetics.Agent {
+		return genetics.NewAgent(id, carModel, mgl32.Vec2{10, 10})
+	})
 
-	controllableCar := ControllableCar{Car: vehicle.NewVehicle(-1, carModel)}
-
+	// controllableCar := ControllableCar{Car: vehicle.NewVehicle(-1, carModel)}
 	// TODO: This should be a parameter, not exposed directly like this
-	controllableCar.Car.RandomizeOnWallHit = false
+	// controllableCar.Car.RandomizeOnWallHit = false
 
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
@@ -141,41 +138,31 @@ func main() {
 
 		roadwayDisplayer.Render(simpleRoadway)
 
-		anyAlive := false
-		for _, car := range cars {
-			if car.Update(frameTime, simpleRoadway) {
-				anyAlive = true
-			}
+		agentEvolver.Update(frameTime, func(agent *genetics.Agent) {
+			agent.Update(frameTime, simpleRoadway)
 
-			eyePositions, eyeDirections := car.GetCar().GetEyes()
+			eyePositions, eyeDirections := agent.GetCar().GetEyes()
 			boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
 			if debug.IsDebug() {
-				debugDrawCarInfo(car.GetCar(), elapsed, boundaryLengths)
+				debugDrawCarInfo(agent.GetCar(), elapsed, boundaryLengths)
 			}
-		}
+		})
 
-		if !anyAlive {
-			// TODO: Also check to see if the generation time has been exceeded,
-			//  and then generate a new generation and repeat.
-			fmt.Printf("done\n")
-		}
+		agentEvolver.Render(func(agent *genetics.Agent) {
+			agent.Render(voxelArrayObjectRenderer)
+		})
 
-		for _, car := range cars {
-			car.Render(voxelArrayObjectRenderer)
-		}
+		// controllableCar.Update(frameTime, simpleRoadway)
+		// controllableCar.Render(voxelArrayObjectRenderer, simpleRoadway)
+		// // TODO: Don't break abstraction like this...
+		// eyePositions, eyeDirections := controllableCar.Car.GetEyes()
+		// boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
+		// if debug.IsDebug() {
+		// 	debugDrawCarInfo(controllableCar.Car, elapsed, boundaryLengths)
+		// }
 
-		controllableCar.Update(frameTime, simpleRoadway)
-		controllableCar.Render(voxelArrayObjectRenderer, simpleRoadway)
-
-		// TODO: Don't break abstraction like this...
-		eyePositions, eyeDirections := controllableCar.Car.GetEyes()
-		boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
-		if debug.IsDebug() {
-			debugDrawCarInfo(controllableCar.Car, elapsed, boundaryLengths)
-		}
-
-		ident := mgl32.Ident4()
-		textRenderer.Render("Hello World!", &ident)
+		moveOver := mgl32.Translate3D(200, 200, 50)
+		textRenderer.Render("Hello World!", &moveOver)
 
 		window.SwapBuffers()
 		glfw.PollEvents()

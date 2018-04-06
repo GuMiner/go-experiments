@@ -5,7 +5,6 @@ import (
 	"go-experiments/voxelli/roadway"
 	"go-experiments/voxelli/voxelArray"
 	"math"
-	"math/rand"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -30,8 +29,6 @@ type Vehicle struct {
 
 	Id    int
 	Score float32
-
-	RandomizeOnWallHit bool
 }
 
 const MaxVelocity = 200.0
@@ -96,14 +93,6 @@ func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) bool {
 
 	// Stop at the wall if we hit a wall.
 	if !roadway.InAllBounds(v.GetBounds()) {
-
-		// Randomize the accelerator and steering after hitting a wall
-		// Remove once the neural net starts driving
-		if v.RandomizeOnWallHit {
-			v.AccelPos = rand.Float32()*2 - 1
-			v.SteeringPos = rand.Float32()*2 - 1
-		}
-
 		v.Velocity = 0
 		v.Position = oldPosition
 		v.Orientation = oldOrientation
@@ -157,6 +146,5 @@ func NewVehicle(id int, shape *voxelArray.VoxelArrayObject) *Vehicle {
 		float32(vehicle.Shape.VoxelObject.MinBounds.X()) + vehicle.HalfSize.X(),
 		float32(vehicle.Shape.VoxelObject.MinBounds.Y()) + vehicle.HalfSize.Y()}
 
-	vehicle.RandomizeOnWallHit = true
 	return &vehicle
 }

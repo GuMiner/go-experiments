@@ -18,23 +18,31 @@ const accelScaleFactor = 0.1
 const steerScaleFactor = 0.1
 
 func (c *ControllableCar) Update(frameTime float32, roadway *roadway.Roadway) {
+
+	pressedKey := false
 	if input.PressedKeys[glfw.KeyI] {
 		c.Car.AccelPos += accelScaleFactor * frameTime
+		pressedKey = true
 	}
 
 	if input.PressedKeys[glfw.KeyK] {
 		c.Car.AccelPos -= accelScaleFactor * frameTime
+		pressedKey = true
 	}
 
 	if input.PressedKeys[glfw.KeyJ] {
 		c.Car.SteeringPos += steerScaleFactor * frameTime
+		pressedKey = true
 	}
 
 	if input.PressedKeys[glfw.KeyL] {
 		c.Car.SteeringPos -= steerScaleFactor * frameTime
+		pressedKey = true
 	}
 
-	fmt.Printf("A: %.2f S: %.2f\n", c.Car.AccelPos, c.Car.SteeringPos)
+	if pressedKey {
+		fmt.Printf("A: %.2f S: %.2f\n", c.Car.AccelPos, c.Car.SteeringPos)
+	}
 
 	c.Car.Update(frameTime, roadway)
 }
