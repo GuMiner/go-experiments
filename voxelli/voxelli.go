@@ -1,8 +1,10 @@
 package main
 
+// See https://github.com/ArztSamuel/Applying_EANNs for the inspiration for this.
+
 import (
 	"fmt"
-	"go-experiments/voxelli/debug"
+	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/genetics"
 	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/opengl"
@@ -37,20 +39,27 @@ func debugDrawCarInfo(car *vehicle.Vehicle, elapsed float32, boundaries []float3
 
 	// Debug draw where we are looking, assuming two eyes only
 	model := mgl32.Translate3D(eyePositions[0].X()+2*eyeDirections[0].X(), eyePositions[0].Y()+2*eyeDirections[0].Y(), 8)
-	debug.Render(elapsed, mgl32.Vec4{0.0, 1.0, 0.0, 1.0}, &model)
+	diagnostics.Render(mgl32.Vec4{0.0, 1.0, 0.0, 1.0}, &model)
 
 	model = mgl32.Translate3D(eyePositions[1].X()+2*eyeDirections[1].X(), eyePositions[1].Y()+2*eyeDirections[1].Y(), 8)
-	debug.Render(elapsed, mgl32.Vec4{0.0, 1.0, 1.0, 1.0}, &model) // Cyan
+	diagnostics.Render(mgl32.Vec4{0.0, 1.0, 1.0, 1.0}, &model) // Cyan
+
+	model = mgl32.Translate3D(eyePositions[2].X()+2*eyeDirections[2].X(), eyePositions[2].Y()+2*eyeDirections[2].Y(), 8)
+	diagnostics.Render(mgl32.Vec4{1.0, 1.0, 1.0, 1.0}, &model) // Cyan
 
 	// Debug draw where the boundaries are.
 	eyePositions[0] = eyePositions[0].Add(eyeDirections[0].Mul(boundaries[0]))
 	eyePositions[1] = eyePositions[1].Add(eyeDirections[1].Mul(boundaries[1]))
+	eyePositions[2] = eyePositions[2].Add(eyeDirections[2].Mul(boundaries[2]))
 
 	model = mgl32.Translate3D(eyePositions[0].X(), eyePositions[0].Y(), 8)
-	debug.Render(elapsed, mgl32.Vec4{1.0, 0.0, 0.0, 1.0}, &model)
+	diagnostics.Render(mgl32.Vec4{1.0, 0.0, 0.0, 1.0}, &model)
 
 	model = mgl32.Translate3D(eyePositions[1].X(), eyePositions[1].Y(), 8)
-	debug.Render(elapsed, mgl32.Vec4{1.0, 1.0, 0.0, 1.0}, &model) // Yellow
+	diagnostics.Render(mgl32.Vec4{1.0, 1.0, 0.0, 1.0}, &model) // Yellow
+
+	model = mgl32.Translate3D(eyePositions[2].X(), eyePositions[2].Y(), 8)
+	diagnostics.Render(mgl32.Vec4{1.0, 1.0, 1.0, 1.0}, &model) // Yellow
 }
 
 func main() {
@@ -68,8 +77,8 @@ func main() {
 	opengl.ConfigureOpenGl()
 
 	// Create renderers
-	debug.InitCube()
-	defer debug.DeleteCube()
+	diagnostics.InitCube()
+	defer diagnostics.DeleteCube()
 
 	voxelArrayObjectRenderer := renderer.NewVoxelArrayObjectRenderer()
 	defer voxelArrayObjectRenderer.Delete()
@@ -80,7 +89,7 @@ func main() {
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
 	renderers = append(renderers, textRenderer)
-	renderers = append(renderers, debug.GetCube())
+	renderers = append(renderers, diagnostics.GetCube())
 
 	// Create roadway
 	simpleRoadway := roadway.NewRoadway("./data/roadways/straight_with_s-curve.txt")
@@ -122,7 +131,7 @@ func main() {
 
 		if input.AnyEvent() {
 			opengl.CheckWireframeToggle()
-			debug.CheckDebugToggle()
+			diagnostics.CheckDebugToggle()
 		}
 
 		// Update our camera if we have motion
@@ -143,7 +152,7 @@ func main() {
 
 			eyePositions, eyeDirections := agent.GetCar().GetEyes()
 			boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
-			if debug.IsDebug() {
+			if diagnostics.IsDebug() {
 				debugDrawCarInfo(agent.GetCar(), elapsed, boundaryLengths)
 			}
 		})
@@ -157,7 +166,7 @@ func main() {
 		// // TODO: Don't break abstraction like this...
 		// eyePositions, eyeDirections := controllableCar.Car.GetEyes()
 		// boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
-		// if debug.IsDebug() {
+		// if diagnostics.IsDebug() {
 		// 	debugDrawCarInfo(controllableCar.Car, elapsed, boundaryLengths)
 		// }
 

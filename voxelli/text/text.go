@@ -150,7 +150,7 @@ func loadContext(fontFileName string) *freetype.Context {
 func NewTextRenderer(fontFile string) *TextRenderer {
 	var renderer TextRenderer
 	// Setup shader
-	renderer.shaderProgram = opengl.CreateProgram("./shaders/textRenderer")
+	renderer.shaderProgram = opengl.CreateProgram("./text/textRenderer")
 
 	renderer.projectionLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("projection\x00"))
 	renderer.cameraLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("camera\x00"))

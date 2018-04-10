@@ -1,4 +1,4 @@
-package debug
+package diagnostics
 
 import (
 	"go-experiments/voxelli/input"

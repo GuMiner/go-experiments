@@ -36,10 +36,6 @@ func (a *Agent) GetFinalScore() float32 {
 
 // Updates the agent, returning true if the agent is alive, false otherwise
 func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
-	if !a.isAlive {
-		return
-	}
-
 	hitWall := a.car.Update(frameTime, roadway)
 	if hitWall {
 		a.isAlive = false
@@ -54,9 +50,7 @@ func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
 }
 
 func (a *Agent) Render(renderer *renderer.VoxelArrayObjectRenderer) {
-	if a.isAlive {
-		a.car.Render(renderer)
-	}
+	a.car.Render(renderer)
 }
 
 // Modifies this agent by crossbreeding it with the two given agents.
@@ -69,7 +63,7 @@ func (a *Agent) CrossBreed(first, second *Agent, crossoverProbability float32) {
 func NewAgent(id int, carModel *voxelArray.VoxelArrayObject, startingPosition mgl32.Vec2) *Agent {
 	agent := Agent{
 		car:              vehicle.NewVehicle(id, carModel),
-		net:              neural.NewNeuralNet([]int{3, 6, 5, 4}, 2),
+		net:              neural.NewNeuralNet([]int{4, 7, 7, 7, 7}, 2),
 		startingPosition: startingPosition}
 	agent.reset()
 

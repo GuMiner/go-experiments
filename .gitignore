@@ -13,5 +13,6 @@
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
-# Voxelli ached data from previous runs
+# Voxelli cached data from previous runs
 voxelli/data/cache
+voxelli/debug

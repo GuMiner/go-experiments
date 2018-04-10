@@ -1,13 +1,9 @@
 package main
 
 import (
-	"bytes"
-	"encoding/gob"
-	"fmt"
-	"io/ioutil"
 	"math"
-	"os"
 
+	"go-experiments/voxelli/cache"
 	"go-experiments/voxelli/input"
 
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -31,7 +27,7 @@ type Camera struct {
 
 const motionSpeed = 20.0
 const rotationSpeed = 1.0
-const cacheFilename = "./data/cache/camera.gob"
+const cacheName = "camera"
 
 func (c *Camera) normalize() {
 	c.Up = c.Up.Normalize()
@@ -145,32 +141,13 @@ func (c *Camera) GetLookAtMatrix() mgl32.Mat4 {
 }
 
 func (c *Camera) CachePosition() {
-	byteBuffer := new(bytes.Buffer)
-	err := gob.NewEncoder(byteBuffer).Encode(c)
-	if err != nil {
-		fmt.Printf("Unable to encode the camera Position: %v\n", err)
-	} else {
-		err = ioutil.WriteFile(cacheFilename, byteBuffer.Bytes(), os.ModePerm)
-		if err != nil {
-			fmt.Printf("Unable to cache the encoded camera Position: %v\n", err)
-		}
-	}
+	cache.SaveToCache(cacheName, c)
 }
 
 func NewCamera(Position mgl32.Vec3, Forwards mgl32.Vec3, Up mgl32.Vec3) *Camera {
 	camera := Camera{wasMouseDown: false, lastMousePos: mgl32.Vec2{-1.0, -1.0}}
 
-	cacheFileAsBytes, err := ioutil.ReadFile(cacheFilename)
-	cacheMiss := true
-	if err == nil {
-		// Decode from cache, ignore failures
-		err = gob.NewDecoder(bytes.NewBuffer(cacheFileAsBytes)).Decode(&camera)
-		if err == nil {
-			cacheMiss = false
-			fmt.Printf("Loaded cached camera at: %+v\n", camera)
-		}
-	}
-
+	cacheMiss := cache.LoadFromCache(cacheName, true, &camera)
 	if cacheMiss {
 		// TODO: This original logic from Fractal / etc doesn't properly Update
 		//  Forwards / Up / Right to be at proper Right angles to each other

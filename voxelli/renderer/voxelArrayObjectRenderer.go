@@ -41,7 +41,7 @@ func (renderer *VoxelArrayObjectRenderer) Delete() {
 func NewVoxelArrayObjectRenderer() *VoxelArrayObjectRenderer {
 	var renderer VoxelArrayObjectRenderer
 
-	renderer.shaderProgram = opengl.CreateProgram("./shaders/voxelArrayRenderer")
+	renderer.shaderProgram = opengl.CreateProgram("./voxelArray/voxelArrayRenderer")
 
 	// Get locations of everything used in this program.
 	renderer.projectionLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("projection\x00"))

@@ -31,11 +31,11 @@ type Vehicle struct {
 	Score float32
 }
 
-const MaxVelocity = 200.0
+const MaxVelocity = 50.0
 const MinVelocity = -50.0
 
 const AccelScaleFactor = 20
-const SteeringScaleFactor = 30
+const SteeringScaleFactor = 5
 
 func boundValue(value float32, min float32, max float32) float32 {
 	if value > max {
@@ -54,11 +54,12 @@ func (v *Vehicle) GetEyes() ([]mgl32.Vec2, []mgl32.Vec2) {
 	eyePositions := []mgl32.Vec2{
 		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{-v.HalfSize.X(), v.HalfSize.Y() * 2})),
 		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{v.HalfSize.X(), v.HalfSize.Y() * 2})),
-	}
+		v.Position.Add(rotation.Mul2x1(mgl32.Vec2{0, v.HalfSize.Y() * 2}))}
 
 	eyeDirections := []mgl32.Vec2{
 		rotation.Mul2x1(mgl32.Vec2{-1, 1}.Normalize()),
-		rotation.Mul2x1(mgl32.Vec2{1, 1}.Normalize())}
+		rotation.Mul2x1(mgl32.Vec2{1, 1}.Normalize()),
+		rotation.Mul2x1(mgl32.Vec2{0, 1}.Normalize())}
 
 	return eyePositions, eyeDirections
 }
