@@ -98,8 +98,10 @@ func (r *Roadway) InAllBounds(positions []mgl32.Vec2) bool {
 	return true
 }
 
-func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2) []float32 {
+// Given positions and directions, gets the distance and normal of each intersection.
+func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2) ([]float32, []mgl32.Vec2) {
 	boundaryLengths := make([]float32, len(positions))
+	normals := make([]mgl32.Vec2, len(positions))
 
 	for i, position := range positions {
 		if !r.InBounds(position) {
@@ -112,12 +114,14 @@ func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2)
 		// Brute-force find the closest intersection by looking at the *entire* roadway
 		hasIntersection := false
 		minIntersectionDist := float32(math.MaxFloat32)
+		minNormal := mgl32.Vec2{0, 0}
 		for _, intersectable := range r.roadParts {
-			if intersects, intersectionPoint := intersectable.Intersects(vector); intersects {
+			if intersects, intersectionPoint, intersectionNormal := intersectable.Intersects(vector); intersects {
 				realPos := getRealPosition(intersectionPoint)
 				intersectionLen := realPos.Sub(position).Len()
 				if intersectionLen < minIntersectionDist {
 					minIntersectionDist = intersectionLen
+					minNormal = intersectionNormal
 					hasIntersection = true
 				}
 			}
@@ -125,12 +129,14 @@ func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2)
 
 		if hasIntersection {
 			boundaryLengths[i] = minIntersectionDist
+			normals[i] = minNormal
 		} else {
-			boundaryLengths[i] = 0.0
+			boundaryLengths[i] = 10000.0 // External bounding box
+			normals[i] = mgl32.Vec2{1, 0}
 		}
 	}
 
-	return boundaryLengths
+	return boundaryLengths, normals
 }
 
 // Defines the 2D bounds of road elements

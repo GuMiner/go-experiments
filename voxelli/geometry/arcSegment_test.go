@@ -11,25 +11,25 @@ func TestEdgeArcIntersections(t *testing.T) {
 	seg := NewArcSegment(mgl32.Vec2{2, 2}, 2.0, math.Pi, 2*math.Pi)
 
 	vec := NewVector(mgl32.Vec2{-1, -1}, mgl32.Vec2{0, 1})
-	doesIntersect, intersectPos := seg.Intersects(vec)
+	doesIntersect, intersectPos, _ := seg.Intersects(vec)
 	if doesIntersect {
 		t.Error("Vector did intersect")
 	}
 
 	vec = NewVector(mgl32.Vec2{-1, -1}, mgl32.Vec2{1, 0})
-	doesIntersect, _ = seg.Intersects(vec)
+	doesIntersect, _, _ = seg.Intersects(vec)
 	if doesIntersect {
 		t.Error("Vector did intersect")
 	}
 
 	vec = NewVector(mgl32.Vec2{-1, -1}, mgl32.Vec2{1, -1})
-	doesIntersect, _ = seg.Intersects(vec)
+	doesIntersect, _, _ = seg.Intersects(vec)
 	if doesIntersect {
 		t.Error("Vector did intersect")
 	}
 
 	vec = NewVector(mgl32.Vec2{0, 0}, mgl32.Vec2{1, 0})
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -41,7 +41,7 @@ func TestMoreArcIntersections(t *testing.T) {
 	seg := NewArcSegment(mgl32.Vec2{2, 2}, 2.0, math.Pi, 2*math.Pi)
 
 	vec := NewVector(mgl32.Vec2{0, 0}, mgl32.Vec2{1, 1})
-	doesIntersect, intersectPos := seg.Intersects(vec)
+	doesIntersect, intersectPos, _ := seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -49,7 +49,7 @@ func TestMoreArcIntersections(t *testing.T) {
 	verifyEffectivelyEqual(t, mgl32.Vec2{0.5857865, 0.5857865}, intersectPos)
 
 	vec = NewVector(mgl32.Vec2{2, -2}, mgl32.Vec2{0, 1})
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -62,7 +62,7 @@ func TestSimpleArcIntersections(t *testing.T) {
 	seg := NewArcSegment(mgl32.Vec2{0, 0}, 1.0, 0.0, 2*math.Pi)
 	vec := NewVector(mgl32.Vec2{0, 0}, mgl32.Vec2{0, 1})
 
-	doesIntersect, intersectPos := seg.Intersects(vec)
+	doesIntersect, intersectPos, _ := seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -72,7 +72,7 @@ func TestSimpleArcIntersections(t *testing.T) {
 	// Bottom of circle
 	vec = NewVector(mgl32.Vec2{0, -10}, mgl32.Vec2{0, 1})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -83,7 +83,7 @@ func TestSimpleArcIntersections(t *testing.T) {
 	seg = NewArcSegment(mgl32.Vec2{0, 0}, 1.0, 0.0, math.Pi)
 	vec = NewVector(mgl32.Vec2{0, 0}, mgl32.Vec2{0, 1})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -93,7 +93,7 @@ func TestSimpleArcIntersections(t *testing.T) {
 	// Top of circle
 	vec = NewVector(mgl32.Vec2{0, -2}, mgl32.Vec2{0, 1})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 		return
@@ -104,7 +104,7 @@ func TestSimpleArcIntersections(t *testing.T) {
 	// Misses half circle
 	vec = NewVector(mgl32.Vec2{0, 0}, mgl32.Vec2{0, -1})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if doesIntersect {
 		t.Error("Vector did intersect")
 	}

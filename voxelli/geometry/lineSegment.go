@@ -22,13 +22,13 @@ func intersectionImplementation(first, second Vector) (float32, float32) {
 }
 
 // Returns true and the intersection point on an intersection, false otherwise
-func (seg LineSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
+func (seg LineSegment) Intersects(vector Vector) (bool, mgl32.Vec2, mgl32.Vec2) {
 	// Convert the line segment to vector form.
 	lineVector := Vector{point: seg.start, direction: seg.end.Sub(seg.start)}
 
 	if math.Abs(float64(lineVector.direction.Normalize().Dot(vector.direction))) > 0.9999 { // Small wiggle factor for floating point precision
 		// The line and the vector are essentially pointing in the same direction, so they can be coincident but don't intersect
-		return false, mgl32.Vec2{0, 0}
+		return false, mgl32.Vec2{0, 0}, mgl32.Vec2{0, 0}
 	}
 
 	var r, s float32 // r == % distance on the line. s == % distance on the vector
@@ -42,10 +42,10 @@ func (seg LineSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
 
 	// We are not on the line or we intersected backwards from the vector
 	if s < 0 || r < 0 || r > 1 {
-		return false, mgl32.Vec2{0, 0}
+		return false, mgl32.Vec2{0, 0}, mgl32.Vec2{0, 0}
 	}
 
-	return true, lineVector.point.Add(lineVector.direction.Mul(r))
+	return true, lineVector.point.Add(lineVector.direction.Mul(r)), lineVector.direction.Normalize()
 }
 
 func NewLineSegment(start, end mgl32.Vec2) LineSegment {

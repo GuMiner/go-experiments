@@ -18,7 +18,7 @@ type Population struct {
 	currentGenerationLifetime float32
 }
 
-const maxGenerationLifetime = 20.0 // seconds
+const maxGenerationLifetime = 30.0 // seconds
 
 const mutationProbability = 0.20
 const mutationAmount = 1.5
@@ -29,26 +29,16 @@ const crossoverProbability = 0.20
 
 func NewPopulation(agentCount int, agentCreator func(int) *Agent) *Population {
 	population := Population{
-		currentGenerationLifetime: 0.0,
-		generationCount:           0,
-		agents:                    make([]*Agent, agentCount)}
+		generationCount: 0,
+		agents:          make([]*Agent, agentCount)}
 
 	for i := 0; i < agentCount; i++ {
 		population.agents[i] = agentCreator(i)
 	}
 
+	population.prepareNewGeneration()
+
 	return &population
-}
-
-func mostAgentsDead(agents Agents) bool {
-	agentsDead := 0
-	for _, agent := range agents {
-		if !agent.isAlive {
-			agentsDead++
-		}
-	}
-
-	return agentsDead > len(agents)/2
 }
 
 func allAgentsDead(agents Agents) bool {
@@ -87,10 +77,26 @@ func mutate(agents Agents) {
 	}
 }
 
+func agentAliveCount(agents Agents) int {
+	alive := 0
+	for _, agent := range agents {
+		if agent.isAlive {
+			alive++
+		}
+	}
+
+	return alive
+}
+
 func (p *Population) prepareNewGeneration() {
 	p.generationCount++
 	p.currentGenerationLifetime = 0.0
+
+	fmt.Printf("==Generation: %v\n==", p.generationCount)
+	lastFrameDivisor = 0
 }
+
+var lastFrameDivisor int = 0
 
 func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 	for _, agent := range p.agents {
@@ -98,7 +104,7 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 	}
 
 	p.currentGenerationLifetime += frameTime
-	if (p.currentGenerationLifetime > maxGenerationLifetime && mostAgentsDead(p.agents)) || allAgentsDead(p.agents) {
+	if p.currentGenerationLifetime > maxGenerationLifetime || allAgentsDead(p.agents) {
 
 		// Create a new generation by sorting, creating (in-place) new agents, and mutating them
 		sort.Sort(sort.Reverse(p.agents))
@@ -108,7 +114,11 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 		mutate(p.agents)
 
 		p.prepareNewGeneration()
-		fmt.Printf("==Generation: %v\n==", p.generationCount)
+	} else {
+		if int(p.currentGenerationLifetime/5) != lastFrameDivisor {
+			fmt.Printf("  %v seconds into generation %v (%v agents left)\n", int(p.currentGenerationLifetime), p.generationCount, agentAliveCount(p.agents))
+			lastFrameDivisor = int(p.currentGenerationLifetime / 5)
+		}
 	}
 }
 

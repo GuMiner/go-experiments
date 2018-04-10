@@ -55,11 +55,12 @@ func findVectorCircleIntersection(seg ArcSegment, vector Vector) []float32 {
 }
 
 // Returns true and the intersection point on an intersection, false otherwise
-func (seg ArcSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
+func (seg ArcSegment) Intersects(vector Vector) (bool, mgl32.Vec2, mgl32.Vec2) {
 	intersectionPercentDistances := findVectorCircleIntersection(seg, vector)
 
 	doesIntersect := false
 	foundIntersectionPoint := mgl32.Vec2{0, 0}
+	intersectionNormal := mgl32.Vec2{0, 0}
 	lastIntersectionDistancePercent := float32(math.MaxFloat32)
 	for _, intersectionDistancePercent := range intersectionPercentDistances {
 		if intersectionDistancePercent > 0 && intersectionDistancePercent < lastIntersectionDistancePercent {
@@ -80,11 +81,12 @@ func (seg ArcSegment) Intersects(vector Vector) (bool, mgl32.Vec2) {
 				doesIntersect = true
 				foundIntersectionPoint = intersectionPoint
 				lastIntersectionDistancePercent = intersectionDistancePercent
+				intersectionNormal = mgl32.Vec2{float32(math.Sin(float64(angle))), float32(math.Cos(float64(angle)))}
 			}
 		}
 	}
 
-	return doesIntersect, foundIntersectionPoint
+	return doesIntersect, foundIntersectionPoint, intersectionNormal
 }
 
 func NewArcSegment(center mgl32.Vec2, radius, angleStart, angleEnd float32) ArcSegment {

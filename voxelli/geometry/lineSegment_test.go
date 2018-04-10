@@ -18,7 +18,7 @@ func TestSimpleIntersections(t *testing.T) {
 	seg := NewLineSegment(mgl32.Vec2{0, 0}, mgl32.Vec2{20, 0})
 	vec := NewVector(mgl32.Vec2{10, 1}, mgl32.Vec2{0, -1})
 
-	doesIntersect, intersectPos := seg.Intersects(vec)
+	doesIntersect, intersectPos, _ := seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -29,7 +29,7 @@ func TestSimpleIntersections(t *testing.T) {
 	seg = NewLineSegment(mgl32.Vec2{0, 0}, mgl32.Vec2{0, 20})
 	vec = NewVector(mgl32.Vec2{1, 10}, mgl32.Vec2{-1, 0})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}
@@ -41,7 +41,7 @@ func TestVectorDirectionIntersection(t *testing.T) {
 	seg := NewLineSegment(mgl32.Vec2{0, 0}, mgl32.Vec2{20, 0})
 	vec := NewVector(mgl32.Vec2{10, 1}, mgl32.Vec2{0, 1})
 
-	doesIntersect, intersectPos := seg.Intersects(vec)
+	doesIntersect, intersectPos, _ := seg.Intersects(vec)
 	if doesIntersect {
 		t.Errorf("Vector should not intersect, did at %v", intersectPos)
 	}
@@ -50,7 +50,7 @@ func TestVectorDirectionIntersection(t *testing.T) {
 	seg = NewLineSegment(mgl32.Vec2{0, 0}, mgl32.Vec2{0, 20})
 	vec = NewVector(mgl32.Vec2{1, 10}, mgl32.Vec2{1, 0})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if doesIntersect {
 		t.Errorf("Vector should not intersect, did at %v", intersectPos)
 	}
@@ -60,7 +60,7 @@ func TestCoincidenceIntersection(t *testing.T) {
 	seg := NewLineSegment(mgl32.Vec2{0, 0}, mgl32.Vec2{20, 0})
 	vec := NewVector(mgl32.Vec2{0, 0}, mgl32.Vec2{1, 0})
 
-	doesIntersect, intersectPos := seg.Intersects(vec)
+	doesIntersect, intersectPos, _ := seg.Intersects(vec)
 	if doesIntersect {
 		t.Errorf("Vector should not intersect, did at %v", intersectPos)
 	}
@@ -68,14 +68,14 @@ func TestCoincidenceIntersection(t *testing.T) {
 	// Test with different positions
 	vec = NewVector(mgl32.Vec2{10, 0}, mgl32.Vec2{-1, 0})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if doesIntersect {
 		t.Errorf("Vector should not intersect, did at %v", intersectPos)
 	}
 
 	vec = NewVector(mgl32.Vec2{15, 0}, mgl32.Vec2{1, 0})
 
-	doesIntersect, intersectPos = seg.Intersects(vec)
+	doesIntersect, intersectPos, _ = seg.Intersects(vec)
 	if doesIntersect {
 		t.Errorf("Vector should not intersect, did at %v", intersectPos)
 	}
@@ -85,7 +85,7 @@ func TestAngledIntersection(t *testing.T) {
 	seg := NewLineSegment(mgl32.Vec2{0, 40}, mgl32.Vec2{40, 0})
 	vec := NewVector(mgl32.Vec2{2, 2}, mgl32.Vec2{1, 1})
 
-	doesIntersect, intersectPos := seg.Intersects(vec)
+	doesIntersect, intersectPos, _ := seg.Intersects(vec)
 	if !doesIntersect {
 		t.Error("Vector did not intersect")
 	}

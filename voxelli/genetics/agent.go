@@ -10,6 +10,10 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
+// If a car is this close to a wall and hits it, this lets it scoot along the wall slowly.
+const wiggleDistance = 4.0
+const wiggleSpeed = 0.03
+
 type Agent struct {
 	startingPosition mgl32.Vec2
 
@@ -34,14 +38,38 @@ func (a *Agent) GetFinalScore() float32 {
 	return a.car.Score
 }
 
+func getSmallestBoundary(boundaryLengths []float32, boundaryNormals []mgl32.Vec2) (float32, mgl32.Vec2) {
+	if boundaryLengths[0] < boundaryLengths[2] {
+		if boundaryLengths[0] < boundaryLengths[1] {
+			return boundaryLengths[0], boundaryNormals[0]
+		} else {
+			return boundaryLengths[1], boundaryNormals[1]
+		}
+	} else {
+		if boundaryLengths[2] < boundaryLengths[1] {
+			return boundaryLengths[2], boundaryNormals[2]
+		} else {
+			return boundaryLengths[1], boundaryNormals[1]
+		}
+	}
+}
+
 // Updates the agent, returning true if the agent is alive, false otherwise
 func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
-	hitWall := a.car.Update(frameTime, roadway)
-	if hitWall {
-		a.isAlive = false
-	} else {
+	if a.isAlive {
+		hitWall := a.car.Update(frameTime, roadway)
 		eyePositions, eyeDirections := a.car.GetEyes()
-		boundaryLengths := roadway.GetBoundaries(eyePositions, eyeDirections)
+		boundaryLengths, boundaryNormals := roadway.GetBoundaries(eyePositions, eyeDirections)
+		if hitWall {
+			// Bounce along the direction with the shortest normal, to let cars that just miss turns (and which are moving straight) keep going.
+			boundaryLength, boundaryNormal := getSmallestBoundary(boundaryLengths, boundaryNormals)
+			if boundaryLength < wiggleDistance {
+				a.car.Position = a.car.Position.Add(boundaryNormal.Normalize().Mul(wiggleSpeed))
+			} else {
+				// We can't wiggle, so we are dead.
+				a.isAlive = false
+			}
+		}
 
 		steeringAndAccel := a.net.Evaluate(append(boundaryLengths, a.car.Velocity))
 		a.car.SteeringPos = steeringAndAccel[0]*2 - 1
@@ -50,7 +78,9 @@ func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
 }
 
 func (a *Agent) Render(renderer *renderer.VoxelArrayObjectRenderer) {
-	a.car.Render(renderer)
+	if a.isAlive {
+		a.car.Render(renderer)
+	}
 }
 
 // Modifies this agent by crossbreeding it with the two given agents.
