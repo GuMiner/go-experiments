@@ -119,7 +119,7 @@ func (v *Vehicle) GetBounds() []mgl32.Vec2 {
 }
 
 func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer) {
-	height := float32(5.0)
+	height := float32(1.0)
 
 	offset := mgl32.Translate3D(-v.HalfSize.X(), -v.HalfSize.Y()*2, height) // 1 bumps us up to the road level, *2 means we rotate from the back and appear to steer.
 	rotation := mgl32.HomogRotate3DZ(v.Orientation)

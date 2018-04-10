@@ -116,7 +116,7 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 		p.prepareNewGeneration()
 	} else {
 		if int(p.currentGenerationLifetime/5) != lastFrameDivisor {
-			fmt.Printf("  %v seconds (%v agents left)\n", int(p.currentGenerationLifetime), p.generationCount, agentAliveCount(p.agents))
+			fmt.Printf("  %v seconds (%v agents left)\n", int(p.currentGenerationLifetime), agentAliveCount(p.agents))
 			lastFrameDivisor = int(p.currentGenerationLifetime / 5)
 		}
 	}

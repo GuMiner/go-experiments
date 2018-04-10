@@ -8,7 +8,7 @@ in vec3 fs_lightVector;
 out vec4 color;
 
 uniform vec3 ambient = vec3(0.1, 0.1, 0.1);
-uniform vec3 diffuseAlbedo = vec3(0.5, 0.4, 0.6);
+uniform vec3 diffuseAlbedo = vec3(0.6, 0.5, 0.8);
 
 // Pass-thru the color
 void main(void)
@@ -18,5 +18,5 @@ void main(void)
 
     vec3 diffuse = max(abs(dot(N, L)), 0.0) * diffuseAlbedo;
 
-    color = vec4(fs_color.xyz * (ambient * 4 + diffuse), 1.0f);
+    color = vec4(fs_color.xyz * (ambient * 5 + diffuse), 1.0f);
 }

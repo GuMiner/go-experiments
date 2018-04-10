@@ -12,9 +12,6 @@ out vec3 fs_color;
 
 out vec3 fs_lightNormalVector;
 out vec3 fs_lightVector;
-out vec3 fs_lightViewVector;
-
-uniform vec3 lightPos = vec3(200.0, 100.0, 200.0);
 
 // Basic renderer for voxels (no shading)
 void main(void)
@@ -24,7 +21,6 @@ void main(void)
     vec4 viewSpace = model * vec4(position, 1.0f);
 
     fs_lightNormalVector = mat3(model) * normal;
-    fs_lightVector = lightPos - viewSpace.xyz;
-    fs_lightViewVector = -viewSpace.xyz;
+    fs_lightVector = normalize(vec3(-1, -1, -2));
     gl_Position = projection * camera * viewSpace;
 }
