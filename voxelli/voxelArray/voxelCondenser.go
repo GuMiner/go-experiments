@@ -57,15 +57,17 @@ var ZPos = []mgl32.Vec3{
 
 type collapsedVertices struct {
 	positionVertices []mgl32.Vec3
+	normalVertices   []mgl32.Vec3
 	colorVertices    []mgl32.Vec3
 }
 
-func (c *collapsedVertices) addPlane(positionVertices []mgl32.Vec3, offset utils.IntVec3, color mgl32.Vec3) {
+func (c *collapsedVertices) addPlane(positionVertices []mgl32.Vec3, offset utils.IntVec3, normal mgl32.Vec3, color mgl32.Vec3) {
 	c.positionVertices = append(c.positionVertices, positionVertices...)
 	for i := 0; i < len(positionVertices); i++ {
 		j := (len(c.positionVertices) - len(positionVertices)) + i
-		c.positionVertices[j] = c.positionVertices[j].Add(offset.AsFloatVector())
 
+		c.positionVertices[j] = c.positionVertices[j].Add(offset.AsFloatVector())
+		c.normalVertices = append(c.normalVertices, normal)
 		c.colorVertices = append(c.colorVertices, color)
 	}
 }
@@ -88,24 +90,24 @@ func collapseVoxels(voxelObject *voxel.VoxelObject) *collapsedVertices {
 
 			// Check each plane to see if there is a corresponding voxel. If there is, we don't add a plane for it as that plane is hidden right now.
 			if !voxelExistenceMap[utils.IntVec3{voxel.Position.X() - 1, voxel.Position.Y(), voxel.Position.Z()}] {
-				vertices.addPlane(XNeg, voxel.Position, color)
+				vertices.addPlane(XNeg, voxel.Position, mgl32.Vec3{-1, 0, 0}, color)
 			}
 			if !voxelExistenceMap[utils.IntVec3{voxel.Position.X() + 1, voxel.Position.Y(), voxel.Position.Z()}] {
-				vertices.addPlane(XPos, voxel.Position, color)
+				vertices.addPlane(XPos, voxel.Position, mgl32.Vec3{1, 0, 0}, color)
 			}
 
 			if !voxelExistenceMap[utils.IntVec3{voxel.Position.X(), voxel.Position.Y() - 1, voxel.Position.Z()}] {
-				vertices.addPlane(YNeg, voxel.Position, color)
+				vertices.addPlane(YNeg, voxel.Position, mgl32.Vec3{0, -1, 0}, color)
 			}
 			if !voxelExistenceMap[utils.IntVec3{voxel.Position.X(), voxel.Position.Y() + 1, voxel.Position.Z()}] {
-				vertices.addPlane(YPos, voxel.Position, color)
+				vertices.addPlane(YPos, voxel.Position, mgl32.Vec3{0, 1, 0}, color)
 			}
 
 			if !voxelExistenceMap[utils.IntVec3{voxel.Position.X(), voxel.Position.Y(), voxel.Position.Z() - 1}] {
-				vertices.addPlane(ZNeg, voxel.Position, color)
+				vertices.addPlane(ZNeg, voxel.Position, mgl32.Vec3{0, 0, -1}, color)
 			}
 			if !voxelExistenceMap[utils.IntVec3{voxel.Position.X(), voxel.Position.Y(), voxel.Position.Z() + 1}] {
-				vertices.addPlane(ZPos, voxel.Position, color)
+				vertices.addPlane(ZPos, voxel.Position, mgl32.Vec3{0, 0, 1}, color)
 			}
 		}
 	}
