@@ -76,6 +76,9 @@ func main() {
 	setInputCallbacks(window)
 	opengl.ConfigureOpenGl()
 
+	input.LoadKeyAssignments()
+	defer input.SaveKeyAssignments()
+
 	// Create renderers
 	diagnostics.InitCube()
 	defer diagnostics.DeleteCube()
@@ -97,20 +100,18 @@ func main() {
 	roadwayDisplayer := roadway.NewRoadwayDisplayer(voxelArrayObjectRenderer)
 	defer roadwayDisplayer.Delete()
 
-	carRaw := voxel.NewVoxelObject("./data/models/car.vox")
-	fmt.Printf("Vehicle objects: %v\n", len(carRaw.SubObjects))
+	// Create car
+	carVoxelObject := voxel.NewVoxelObject("./data/models/car.vox")
+	fmt.Printf("Vehicle objects: %v\n", len(carVoxelObject.SubObjects))
 
-	carModel := voxelArray.NewVoxelArrayObject(carRaw)
+	carModel := voxelArray.NewVoxelArrayObject(carVoxelObject)
 	defer carModel.Delete()
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
+	// Create agent population
 	agentEvolver := genetics.NewPopulation(100, func(id int) *genetics.Agent {
 		return genetics.NewAgent(id, carModel, mgl32.Vec2{10, 10})
 	})
-
-	// controllableCar := ControllableCar{Car: vehicle.NewVehicle(-1, carModel)}
-	// TODO: This should be a parameter, not exposed directly like this
-	// controllableCar.Car.RandomizeOnWallHit = false
 
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
@@ -129,10 +130,8 @@ func main() {
 		// Start rendering and updating
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		if input.AnyEvent() {
-			opengl.CheckWireframeToggle()
-			diagnostics.CheckDebugToggle()
-		}
+		opengl.CheckWireframeToggle()
+		diagnostics.CheckDebugToggle()
 
 		// Update our camera if we have motion
 		if camera.Update(frameTime, &cameraMatrix) {
@@ -147,12 +146,13 @@ func main() {
 
 		roadwayDisplayer.Render(simpleRoadway)
 
+		// Update and render the agents
 		agentEvolver.Update(frameTime, func(agent *genetics.Agent) {
 			agent.Update(frameTime, simpleRoadway)
 
-			eyePositions, eyeDirections := agent.GetCar().GetEyes()
-			boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
 			if diagnostics.IsDebug() {
+				eyePositions, eyeDirections := agent.GetCar().GetEyes()
+				boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
 				debugDrawCarInfo(agent.GetCar(), elapsed, boundaryLengths)
 			}
 		})
@@ -160,15 +160,6 @@ func main() {
 		agentEvolver.Render(func(agent *genetics.Agent) {
 			agent.Render(voxelArrayObjectRenderer)
 		})
-
-		// controllableCar.Update(frameTime, simpleRoadway)
-		// controllableCar.Render(voxelArrayObjectRenderer, simpleRoadway)
-		// // TODO: Don't break abstraction like this...
-		// eyePositions, eyeDirections := controllableCar.Car.GetEyes()
-		// boundaryLengths := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
-		// if diagnostics.IsDebug() {
-		// 	debugDrawCarInfo(controllableCar.Car, elapsed, boundaryLengths)
-		// }
 
 		moveOver := mgl32.Translate3D(200, 200, 50)
 		textRenderer.Render("Hello World!", &moveOver)

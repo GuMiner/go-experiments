@@ -2,21 +2,13 @@ package diagnostics
 
 import (
 	"go-experiments/voxelli/input"
-
-	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
-var wasDebugPressed bool = false
 var isDebug bool = false
 
 func CheckDebugToggle() {
-	if !wasDebugPressed && input.PressedKeys[glfw.KeyT] {
-		wasDebugPressed = true
+	if input.IsTyped(input.ToggleDebug) {
 		isDebug = !isDebug
-	}
-
-	if wasDebugPressed && !input.PressedKeys[glfw.KeyT] {
-		wasDebugPressed = false
 	}
 }
 

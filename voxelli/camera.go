@@ -39,14 +39,14 @@ func (c *Camera) normalize() {
 	// fmt.Printf("Updated camera: %+v\n", c)
 }
 
-func (c *Camera) handleLinearMotion(positive glfw.Key, negative glfw.Key, direction mgl32.Vec3, scale float32) bool {
+func (c *Camera) handleLinearMotion(positive input.KeyAssignment, negative input.KeyAssignment, direction mgl32.Vec3, scale float32) bool {
 	Updated := false
-	if input.PressedKeys[positive] {
+	if input.IsPressed(positive) {
 		c.Position = c.Position.Add(direction.Mul(scale))
 		Updated = true
 	}
 
-	if input.PressedKeys[negative] {
+	if input.IsPressed(negative) {
 		c.Position = c.Position.Sub(direction.Mul(scale))
 		Updated = true
 	}
@@ -59,38 +59,38 @@ func (c *Camera) Update(frameTime float32, cameraMatrix *mgl32.Mat4) bool {
 	rotateSpeed := frameTime * rotationSpeed
 
 	Updated := false
-	Updated = c.handleLinearMotion(glfw.KeyA, glfw.KeyZ, c.Forwards, moveSpeed) || Updated
-	Updated = c.handleLinearMotion(glfw.KeyQ, glfw.KeyW, c.Right, moveSpeed) || Updated
-	Updated = c.handleLinearMotion(glfw.KeyS, glfw.KeyX, c.Up, moveSpeed) || Updated
+	Updated = c.handleLinearMotion(input.MoveForwards, input.MoveBackwards, c.Forwards, moveSpeed) || Updated
+	Updated = c.handleLinearMotion(input.MoveLeft, input.MoveRight, c.Right, moveSpeed) || Updated
+	Updated = c.handleLinearMotion(input.MoveUp, input.MoveDown, c.Up, moveSpeed) || Updated
 
 	// Key-based rotation
-	if input.PressedKeys[glfw.KeyE] {
+	if input.IsPressed(input.RotateClockwise) {
 		c.Up = mgl32.HomogRotate3D(rotateSpeed, c.Forwards).Mul4x1(c.Up.Vec4(1.0)).Vec3()
 		Updated = true
 	}
 
-	if input.PressedKeys[glfw.KeyD] {
+	if input.IsPressed(input.RotateCounterClockwise) {
 		c.Up = mgl32.HomogRotate3D(-rotateSpeed, c.Forwards).Mul4x1(c.Up.Vec4(1.0)).Vec3()
 		Updated = true
 	}
 
-	if input.PressedKeys[glfw.KeyLeft] {
+	if input.IsPressed(input.LookLeft) {
 		c.Forwards = mgl32.HomogRotate3D(rotateSpeed, c.Up).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
 		Updated = true
 	}
 
-	if input.PressedKeys[glfw.KeyRight] {
+	if input.IsPressed(input.LookRight) {
 		c.Forwards = mgl32.HomogRotate3D(-rotateSpeed, c.Up).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
 		Updated = true
 	}
 
-	if input.PressedKeys[glfw.KeyUp] {
+	if input.IsPressed(input.LookUp) {
 		c.Forwards = mgl32.HomogRotate3D(rotateSpeed, c.Right).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
 		c.Up = mgl32.HomogRotate3D(rotateSpeed, c.Right).Mul4x1(c.Up.Vec4(1.0)).Vec3()
 		Updated = true
 	}
 
-	if input.PressedKeys[glfw.KeyDown] {
+	if input.IsPressed(input.LookDown) {
 		c.Forwards = mgl32.HomogRotate3D(-rotateSpeed, c.Right).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
 		c.Up = mgl32.HomogRotate3D(-rotateSpeed, c.Right).Mul4x1(c.Up.Vec4(1.0)).Vec3()
 		Updated = true
