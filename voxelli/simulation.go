@@ -10,6 +10,7 @@ import (
 	"go-experiments/voxelli/vehicle"
 	"go-experiments/voxelli/voxel"
 	"go-experiments/voxelli/voxelArray"
+	"math"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -61,7 +62,7 @@ func InitSimulation(voxelArrayObjectRenderer *renderer.VoxelArrayObjectRenderer)
 
 	// Simulation
 	agentEvolver = genetics.NewPopulation(100, func(id int) *genetics.Agent {
-		return genetics.NewAgent(id, carModel, mgl32.Vec2{10, 10})
+		return genetics.NewAgent(id, carModel, float32(math.Pi*0.5), mgl32.Vec2{8, 38})
 	})
 }
 

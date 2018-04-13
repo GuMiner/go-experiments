@@ -7,6 +7,10 @@ import (
 	"image"
 	"image/draw"
 
+	"golang.org/x/image/math/fixed"
+
+	"github.com/golang/freetype/truetype"
+
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/golang/freetype"
@@ -88,6 +92,7 @@ func (s *Sentence) Delete() {
 
 type TextRenderer struct {
 	context *freetype.Context
+	font    *truetype.Font
 
 	shaderProgram uint32
 	projectionLoc int32
@@ -129,7 +134,7 @@ func (r *TextRenderer) Delete() {
 	gl.DeleteProgram(r.shaderProgram)
 }
 
-func loadContext(fontFileName string) *freetype.Context {
+func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
 	fontFile := utils.ReadFileAsBytes(fontFileName)
 
 	// Loads all the ASCII printable characters
@@ -144,7 +149,7 @@ func loadContext(fontFileName string) *freetype.Context {
 	context.SetHinting(font.HintingFull)
 	context.SetFont(parsedFont)
 
-	return context
+	return parsedFont, context
 }
 
 func NewTextRenderer(fontFile string) *TextRenderer {
@@ -160,7 +165,7 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 	renderer.sentence = NewSentence()
 
 	// Setup font
-	renderer.context = loadContext(fontFile)
+	renderer.font, renderer.context = loadContext(fontFile)
 
 	gl.GenTextures(1, &renderer.fontTexture)
 	gl.ActiveTexture(gl.TEXTURE0)
@@ -176,7 +181,35 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 	renderer.context.SetSrc(image.Black)
 	renderer.context.SetDst(dstImage)
 
-	point, err := renderer.context.DrawString("123456789 abcdefg!-=?αΩ♣", freetype.Pt(10, 10))
+	stringToDraw := "J23456789 abcdefg!-=?αΩ♣"
+
+	// Get max vertical ascent
+	maxSideBearing := 0
+	for _, runeVal := range stringToDraw {
+		vmetric := renderer.font.VMetric(fixed.I(16), renderer.font.Index(runeVal))
+		sideBearing := vmetric.TopSideBearing.Ceil()
+		if sideBearing > maxSideBearing {
+			maxSideBearing = sideBearing
+		}
+	}
+	//
+	// indexTwo := renderer.font.Index('2')
+	//
+	hmetric := renderer.font.HMetric(fixed.I(16), renderer.font.Index('J')) // If negative, we need to offset the string by this amount.
+	fmt.Printf("%v, %v\n\n", hmetric.AdvanceWidth.Floor(), hmetric.LeftSideBearing.Floor())
+	//
+	// kern := renderer.font.Kern(fixed.I(16), indexOne, indexTwo)
+	// fmt.Printf("%v\n", kern.Floor())
+
+	bounds := renderer.font.Bounds(fixed.I(16))
+	boundRanges := bounds.Max.Sub(bounds.Min)
+
+	// Offset height
+	yHeight := boundRanges.Y.Ceil() - maxSideBearing
+
+	// index := renderer.font.Index('J')
+
+	point, err := renderer.context.DrawString(stringToDraw, freetype.Pt(0, yHeight))
 	if err != nil {
 		panic(fmt.Sprintf("Unable to draw string to destination %v : %v", point, err))
 	}

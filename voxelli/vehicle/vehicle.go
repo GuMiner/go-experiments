@@ -32,9 +32,9 @@ type Vehicle struct {
 }
 
 const MaxVelocity = 50.0
-const MinVelocity = -50.0
+const MinVelocity = -5.0
 
-const AccelScaleFactor = 20
+const AccelScaleFactor = 25
 const SteeringScaleFactor = 5
 
 func boundValue(value float32, min float32, max float32) float32 {
@@ -45,6 +45,16 @@ func boundValue(value float32, min float32, max float32) float32 {
 	}
 
 	return value
+}
+
+func (v *Vehicle) Reset(orientation float32, position mgl32.Vec2) {
+	v.Position = position
+	v.Orientation = orientation
+	v.Velocity = 0
+	v.SteeringPos = 0.0
+	v.AccelPos = 0.0
+
+	v.Score = 0
 }
 
 // Returns the eye position and vectors of the vehicles 'eyes'
@@ -89,9 +99,6 @@ func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) bool {
 	oldPosition := v.Position
 	v.Position = v.Position.Add(step)
 
-	// Score == distance moved, significantly prioritizing straight-motion travel.
-	v.Score += step.Len() * float32(math.Pow(1.0-math.Abs(float64(v.SteeringPos)), 8))
-
 	// Stop at the wall if we hit a wall.
 	if !roadway.InAllBounds(v.GetBounds()) {
 		v.Velocity = 0
@@ -99,6 +106,12 @@ func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) bool {
 		v.Orientation = oldOrientation
 
 		return true
+	}
+
+	// Score == distance moved, significantly prioritizing forwards straight-motion travel
+	// We also score here to avoid giving you points for hitting walls.
+	if v.Velocity > 0 {
+		v.Score += step.Len() * float32(math.Pow(1.0-math.Abs(float64(v.SteeringPos)), 8))
 	}
 
 	return false
@@ -130,12 +143,9 @@ func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer) {
 }
 
 func NewVehicle(id int, shape *voxelArray.VoxelArrayObject) *Vehicle {
-	vehicle := Vehicle{
-		Id:          id,
-		Score:       0.0,
-		SteeringPos: 0, AccelPos: 0,
-		Velocity: 0.0, Orientation: 0.0, Position: mgl32.Vec2{0, 0}}
+	vehicle := Vehicle{Id: id}
 
+	vehicle.Reset(0, mgl32.Vec2{0, 0})
 	vehicle.Shape = shape
 
 	// Center the vehicle
