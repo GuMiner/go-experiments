@@ -3,6 +3,7 @@ package main
 // See https://github.com/ArztSamuel/Applying_EANNs for the inspiration for this.
 
 import (
+	"go-experiments/voxelli/color"
 	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/opengl"
@@ -48,6 +49,8 @@ func main() {
 	// Create renderers
 	diagnostics.InitCube()
 	defer diagnostics.DeleteCube()
+
+	color.InitializeColorGradient(400, 1.0, 0.5)
 
 	voxelArrayObjectRenderer := renderer.NewVoxelArrayObjectRenderer()
 	defer voxelArrayObjectRenderer.Delete()
@@ -95,9 +98,6 @@ func main() {
 		}
 
 		UpdateAndRenderSimulation(frameTime, elapsed, voxelArrayObjectRenderer)
-
-		moveOver := mgl32.Translate3D(200, 200, 50)
-		textRenderer.Render("Hello World!", &moveOver)
 
 		window.SwapBuffers()
 		glfw.PollEvents()

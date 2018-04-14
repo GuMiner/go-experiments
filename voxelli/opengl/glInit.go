@@ -9,9 +9,31 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
+type Capabilities struct {
+	MaxTextures    int32
+	MaxTextureSize int32
+}
+
+var globalCapabilities Capabilities
+
 func logOpenGlInfo() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
-	fmt.Println("OpenGL version: ", version)
+	fmt.Printf("OpenGL version: %v\n\n", version)
+
+	fmt.Printf("Capabilities:\n")
+
+	var intCapability int32
+	gl.GetIntegerv(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS, &intCapability)
+	fmt.Printf("  Max Texture Units: %v\n", intCapability)
+	globalCapabilities.MaxTextures = intCapability
+
+	gl.GetIntegerv(gl.MAX_TEXTURE_SIZE, &intCapability)
+	fmt.Printf("  Max Texture Size: %v\n", intCapability)
+	globalCapabilities.MaxTextureSize = intCapability
+}
+
+func GetGlCaps() *Capabilities {
+	return &globalCapabilities
 }
 
 func InitGlfw() {

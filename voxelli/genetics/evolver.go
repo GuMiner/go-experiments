@@ -23,7 +23,7 @@ const maxGenerationLifetime = 20.0 // seconds
 const speedCheckTime = 3.0         // Time after which we can check to make sure all agents are not stopped, in seconds.
 
 const mutationAmount = 1.5
-const selectionPercent = 0.04
+const selectionPercent = 0.01
 const mutationProbability = 0.20
 const crossoverProbability = 0.20
 
@@ -144,8 +144,15 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 	}
 }
 
-func (p *Population) Render(agentRenderer func(*Agent)) {
+func (p *Population) Render(agentRenderer func(*Agent, float32)) {
+	maxScore := float32(0)
 	for _, agent := range p.agents {
-		agentRenderer(agent)
+		if agent.car.Score > maxScore {
+			maxScore = agent.car.Score
+		}
+	}
+
+	for _, agent := range p.agents {
+		agentRenderer(agent, maxScore)
 	}
 }

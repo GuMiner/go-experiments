@@ -32,12 +32,12 @@ func (renderer *RoadwayDisplayer) Render(roadway *Roadway) {
 				}
 
 				modelMatrix := positionMatrix.Mul4(rotateMatrix.Mul4(rotateOffsetMatrix))
-				renderer.voxelRenderer.Render(renderer.straightRoad, &modelMatrix)
+				renderer.voxelRenderer.Render(renderer.straightRoad, &modelMatrix, mgl32.Vec3{1, 1, 1})
 			case CurvedRoad:
 				rotateMatrix := mgl32.HomogRotate3D(mgl32.DegToRad(90.0*float32(val.rotation)), mgl32.Vec3{0.0, 0.0, 1.0})
 
 				modelMatrix := positionMatrix.Mul4(rotateMatrix.Mul4(rotateOffsetMatrix))
-				renderer.voxelRenderer.Render(renderer.curvedRoad, &modelMatrix)
+				renderer.voxelRenderer.Render(renderer.curvedRoad, &modelMatrix, mgl32.Vec3{1, 1, 1})
 			}
 		}
 	}

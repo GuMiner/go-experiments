@@ -8,6 +8,8 @@ import (
 
 var isWireframe bool = false
 
+// Checks if the wireframe button has been toggled or not, toggling the GL setting
+// This function should be called within the OpenGL update loop
 func CheckWireframeToggle() {
 	if input.IsTyped(input.ToggleWireframe) {
 		isWireframe = !isWireframe

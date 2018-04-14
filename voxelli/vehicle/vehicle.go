@@ -1,6 +1,7 @@
 package vehicle
 
 import (
+	"go-experiments/voxelli/color"
 	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/roadway"
 	"go-experiments/voxelli/voxelArray"
@@ -35,7 +36,7 @@ const MaxVelocity = 50.0
 const MinVelocity = -5.0
 
 const AccelScaleFactor = 25
-const SteeringScaleFactor = 5
+const SteeringScaleFactor = 10
 
 func boundValue(value float32, min float32, max float32) float32 {
 	if value > max {
@@ -108,10 +109,11 @@ func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) bool {
 		return true
 	}
 
-	// Score == distance moved, significantly prioritizing forwards straight-motion travel
-	// We also score here to avoid giving you points for hitting walls.
+	// Score == distance moved, prioritizing forwards straight-motion travel
+	// We also score here to avoid giving points for hitting walls.
+	absSteering := math.Abs(float64(v.SteeringPos))
 	if v.Velocity > 0 {
-		v.Score += step.Len() * float32(math.Pow(1.0-math.Abs(float64(v.SteeringPos)), 8))
+		v.Score += step.Len() * float32(1.0-(absSteering*absSteering))
 	}
 
 	return false
@@ -131,7 +133,7 @@ func (v *Vehicle) GetBounds() []mgl32.Vec2 {
 	return bounds
 }
 
-func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer) {
+func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer, maxScore float32) {
 	height := float32(1.0)
 
 	offset := mgl32.Translate3D(-v.HalfSize.X(), -v.HalfSize.Y()*2, height) // 1 bumps us up to the road level, *2 means we rotate from the back and appear to steer.
@@ -139,7 +141,7 @@ func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer) {
 	translation := mgl32.Translate3D(v.Position.X(), v.Position.Y(), 0)
 
 	model := translation.Mul4(rotation.Mul4(offset))
-	renderer.Render(v.Shape, &model)
+	renderer.Render(v.Shape, &model, color.LookupColor(v.Score/maxScore))
 }
 
 func NewVehicle(id int, shape *voxelArray.VoxelArrayObject) *Vehicle {

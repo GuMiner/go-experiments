@@ -90,9 +90,9 @@ func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
 	}
 }
 
-func (a *Agent) Render(renderer *renderer.VoxelArrayObjectRenderer) {
+func (a *Agent) Render(renderer *renderer.VoxelArrayObjectRenderer, maxScore float32) {
 	if a.isAlive {
-		a.car.Render(renderer)
+		a.car.Render(renderer, maxScore)
 	}
 }
 

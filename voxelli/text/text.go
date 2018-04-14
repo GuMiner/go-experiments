@@ -17,121 +17,59 @@ import (
 	"golang.org/x/image/font"
 )
 
-type Sentence struct {
-	vao         uint32
-	positionVbo uint32
-	colorVbo    uint32
-	texPosVbo   uint32
-}
+var pixelsToVerticesScale float32 = 0.05 // Scales down the pixel size of a character to vertices
 
-// Temporary to demo drawing
-var ccwQuadVert = []mgl32.Vec3{
-	mgl32.Vec3{-50, 50, 40},
-	mgl32.Vec3{50, -50, 40},
-	mgl32.Vec3{50, 50, 40},
+// Defines the index of a character in the texture maps
+type characterIndex struct {
+	CharacterOffset mgl32.Vec2 // Offset (already scaled) when drawing the character from the baseline
 
-	mgl32.Vec3{-50, -50, 40},
-	mgl32.Vec3{50, -50, 40},
-	mgl32.Vec3{-50, 50, 40}}
-
-var ccwQuadColor = []mgl32.Vec3{
-	mgl32.Vec3{1.0, 1.0, 0.5},
-	mgl32.Vec3{1.0, 1.0, 0.5},
-	mgl32.Vec3{1.0, 1.0, 0.5},
-
-	mgl32.Vec3{1.0, 1.0, 0.5},
-	mgl32.Vec3{1.0, 1.0, 0.5},
-	mgl32.Vec3{1.0, 1.0, 0.5}}
-
-var ccwQuadUv = []mgl32.Vec2{
-	mgl32.Vec2{0, 0},
-	mgl32.Vec2{1, 1},
-	mgl32.Vec2{1, 0},
-
-	mgl32.Vec2{0, 1},
-	mgl32.Vec2{1, 1},
-	mgl32.Vec2{0, 0}}
-
-func NewSentence() *Sentence {
-	var sentence Sentence
-
-	gl.GenVertexArrays(1, &sentence.vao)
-	gl.BindVertexArray(sentence.vao)
-
-	gl.EnableVertexAttribArray(0)
-	gl.GenBuffers(1, &sentence.positionVbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, sentence.positionVbo)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
-
-	// 3 -- 3 floats / vertex. 4 -- float32
-	gl.BufferData(gl.ARRAY_BUFFER, len(ccwQuadVert)*3*4, gl.Ptr(ccwQuadVert), gl.STATIC_DRAW)
-
-	gl.EnableVertexAttribArray(1)
-	gl.GenBuffers(1, &sentence.colorVbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, sentence.colorVbo)
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 0, nil)
-
-	gl.BufferData(gl.ARRAY_BUFFER, len(ccwQuadColor)*3*4, gl.Ptr(ccwQuadColor), gl.STATIC_DRAW)
-
-	gl.EnableVertexAttribArray(2)
-	gl.GenBuffers(1, &sentence.texPosVbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, sentence.texPosVbo)
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 0, nil)
-
-	gl.BufferData(gl.ARRAY_BUFFER, len(ccwQuadUv)*3*4, gl.Ptr(ccwQuadUv), gl.STATIC_DRAW)
-
-	return &sentence
-}
-
-func (s *Sentence) Delete() {
-	gl.DeleteBuffers(1, &s.texPosVbo)
-	gl.DeleteBuffers(1, &s.colorVbo)
-	gl.DeleteBuffers(1, &s.positionVbo)
-	gl.DeleteVertexArrays(1, &s.vao)
+	MinBounds     utils.IntVec2 // Bounds of the character in pixels.
+	MaxBounds     utils.IntVec2
+	FontTextureId uint32
 }
 
 type TextRenderer struct {
 	context *freetype.Context
 	font    *truetype.Font
 
-	shaderProgram uint32
-	projectionLoc int32
-	cameraLoc     int32
-	modelLoc      int32
-	fontImageLoc  int32
+	program textRendererProgram
+	buffers textProgramBuffers
 
-	fontTexture uint32
+	halfMaxTextureSize int32
+	fontTextures       []uint32
+	nextLineOffset     int32
+	currentOffset      utils.IntVec2
 
-	// TODO: have more than one after we validate rendering works
-	sentence *Sentence
+	// Given a character, returns where it is on the textures for drawing
+	characterMap map[rune]characterIndex
 }
 
-func (r *TextRenderer) UpdateProjection(projection *mgl32.Mat4) {
-	gl.UseProgram(r.shaderProgram)
-	gl.UniformMatrix4fv(r.projectionLoc, 1, false, &projection[0])
+func (r *TextRenderer) preRender() {
+	gl.UseProgram(r.program.shaderProgram)
+	gl.BindVertexArray(r.buffers.vao)
 }
 
-func (r *TextRenderer) UpdateCamera(camera *mgl32.Mat4) {
-	gl.UseProgram(r.shaderProgram)
-	gl.UniformMatrix4fv(r.cameraLoc, 1, false, &camera[0])
-}
+// Renders the given rune using the provided model matrix.
+// preRender(...) must be called before this method is called.
+func (r *TextRenderer) render(character rune, model *mgl32.Mat4) mgl32.Vec2 {
+	// TODO: Add or get rune, position appropriately, and render, returning the character information.
+	runeData := r.addOrGetRuneData(character)
 
-func (r *TextRenderer) Render(text string, model *mgl32.Mat4) {
-	gl.UseProgram(r.shaderProgram)
+	gl.ActiveTexture(gl.TEXTURE0 + runeData.FontTextureId)
+	gl.BindTexture(gl.TEXTURE_2D, r.fontTextures[runeData.FontTextureId])
+	gl.Uniform1i(r.program.fontImageLoc, int32(runeData.FontTextureId))
 
-	gl.BindVertexArray(r.sentence.vao)
-
-	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, r.fontTexture)
-	gl.Uniform1i(r.fontImageLoc, 0)
-
-	gl.UniformMatrix4fv(r.modelLoc, 1, false, &model[0])
+	// TODO: First, this should be in character primitive. Second, we need to pass in the UV coordinates and the color foreground / background data.
+	// Third, that means we need to pass in that data here.
+	gl.UniformMatrix4fv(r.program.modelLoc, 1, false, &model[0])
 	gl.DrawArrays(gl.TRIANGLES, 0, 6)
+
+	return mgl32.Vec2{-1, -1}
 }
 
 func (r *TextRenderer) Delete() {
-	r.sentence.Delete()
-	gl.DeleteProgram(r.shaderProgram)
+	r.buffers.Delete()
+	r.program.Delete()
 }
 
 func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
@@ -141,40 +79,20 @@ func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
 	context := freetype.NewContext()
 	parsedFont, err := freetype.ParseFont(fontFile)
 	if err != nil {
-		panic("Failed to parse a TrueType font from the font file!")
+		panic(fmt.Sprintf("Failed to parse a TrueType font from the font file: %v", err))
 	}
 
 	context.SetDPI(72.0)
-	context.SetFontSize(16.0)
+	context.SetFontSize(72.0) // Large enough to not look pixellated, small enough to be reasonable.
 	context.SetHinting(font.HintingFull)
 	context.SetFont(parsedFont)
 
 	return parsedFont, context
 }
 
-func NewTextRenderer(fontFile string) *TextRenderer {
-	var renderer TextRenderer
-	// Setup shader
-	renderer.shaderProgram = opengl.CreateProgram("./text/textRenderer")
-
-	renderer.projectionLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("projection\x00"))
-	renderer.cameraLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("camera\x00"))
-	renderer.modelLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("model\x00"))
-	renderer.fontImageLoc = gl.GetUniformLocation(renderer.shaderProgram, gl.Str("fontImage\x00"))
-
-	renderer.sentence = NewSentence()
-
-	// Setup font
-	renderer.font, renderer.context = loadContext(fontFile)
-
-	gl.GenTextures(1, &renderer.fontTexture)
-	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, renderer.fontTexture)
-
-	// TODO: Implement dynamic scaling as needed
-	gl.TexStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 512, 512)
-
-	dstImage := image.NewRGBA(image.Rect(0, 0, 512, 512))
+// Adds a rune to the list of characters
+func (renderer *TextRenderer) addRune(character rune) {
+	dstImage := image.NewRGBA(image.Rect(0, 0, int(renderer.halfMaxTextureSize), int(renderer.halfMaxTextureSize)))
 	draw.Draw(dstImage, dstImage.Bounds(), image.White, image.ZP, draw.Src)
 
 	renderer.context.SetClip(dstImage.Bounds())
@@ -216,5 +134,69 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 
 	// fmt.Printf("%v", dstImage.Pix)
 	gl.TexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 512, 512, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(dstImage.Pix))
+}
+
+func (r *TextRenderer) addOrGetRuneData(runeChar rune) characterIndex {
+	if _, hasRune := r.characterMap[runeChar]; !hasRune {
+		r.addRune(runeChar)
+	}
+
+	return r.characterMap[runeChar]
+}
+
+// Adds in a new font texture
+func (r *TextRenderer) addFontTexture() {
+	maxTextures := opengl.GetGlCaps().MaxTextures
+	if int32(len(r.fontTextures)) >= maxTextures {
+		howToFix := "Either reduce the number of unique characters being rendered or upgrade your graphics hardware."
+		panic(fmt.Sprintf("Cannot add a new font texture as we've exceeded the maximum number of textures (%v).\n%v\n", maxTextures, howToFix))
+	}
+
+	var newTextureId uint32
+	gl.GenTextures(1, &newTextureId)
+	gl.ActiveTexture(gl.TEXTURE0 + uint32(len(r.fontTextures)))
+	gl.BindTexture(gl.TEXTURE_2D, newTextureId)
+	gl.TexStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, r.halfMaxTextureSize, r.halfMaxTextureSize)
+
+	r.fontTextures = append(r.fontTextures, newTextureId)
+}
+
+func NewTextRenderer(fontFile string) *TextRenderer {
+	renderer := TextRenderer{
+		nextLineOffset: 0,
+		currentOffset:  utils.IntVec2{0, 0}}
+
+	renderer.program = newTextRendererProgram()
+	renderer.font, renderer.context = loadContext(fontFile)
+
+	renderer.halfMaxTextureSize = opengl.GetGlCaps().MaxTextureSize
+	renderer.fontTextures = make([]uint32, 0)
+	renderer.addFontTexture()
+
 	return &renderer
+}
+
+// Retrieves the size that a given string will be when rendered without any model manipulation.
+func (r *TextRenderer) GetSize(text string) mgl32.Vec2 {
+	size := mgl32.Vec2{0, 0}
+
+	// TODO: we probably need to actually return an array so rendering functions can take care of alignment themselves.
+	for _, char := range text {
+		characterInfo := r.addOrGetRuneData(char)
+		size[0] += float32(characterInfo.MaxBounds.X()-characterInfo.MinBounds.X())*pixelsToVerticesScale + characterInfo.CharacterOffset.X()
+		size[1] = utils.MaxFloat32(size[1], float32(characterInfo.MaxBounds.Y())*pixelsToVerticesScale+characterInfo.CharacterOffset.Y())
+	}
+
+	return size
+}
+
+// Implement Renderer
+func (r *TextRenderer) UpdateProjection(projection *mgl32.Mat4) {
+	gl.UseProgram(r.program.shaderProgram)
+	gl.UniformMatrix4fv(r.program.projectionLoc, 1, false, &projection[0])
+}
+
+func (r *TextRenderer) UpdateCamera(camera *mgl32.Mat4) {
+	gl.UseProgram(r.program.shaderProgram)
+	gl.UniformMatrix4fv(r.program.cameraLoc, 1, false, &camera[0])
 }

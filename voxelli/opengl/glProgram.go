@@ -35,6 +35,7 @@ func compileShader(shaderPath string, shaderType uint32) (shader uint32, errorIf
 	return shader, nil
 }
 
+// Creates an OpenGL program from a vertex shader and fragment shader, returning the program ID.
 // Pulled mostly directly from https://github.com/go-gl/example/blob/master/gl41core-cube/cube.go
 func CreateProgram(baseProgramName string) (program uint32) {
 	vertexShader, err := compileShader(baseProgramName+".vs", gl.VERTEX_SHADER)
