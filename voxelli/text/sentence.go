@@ -10,24 +10,16 @@ type Sentence struct {
 	Foreground   mgl32.Vec3
 }
 
-type SentenceBatch struct {
-}
-
-type OptimizedSentence struct {
-	vao         uint32
-	positionVbo uint32
-	colorVbo    uint32
-	texPosVbo   uint32
-	sentence    Sentence
-}
-
 // Renders the given text character by character with minimal overhead.
 // Useful for small snippets of text that change frequently
 func (r *Sentence) Render(text string, model *mgl32.Mat4) {
 	r.textRenderer.preRender()
 
+	// TODO: Use background and foreground, by sending to shader.
+	currentOffset := float32(0.0)
 	for _, runeChar := range text {
-		r.textRenderer.render(runeChar, model)
+		characterOffset := r.textRenderer.render(runeChar, currentOffset, model)
+		currentOffset += characterOffset
 	}
 }
 
@@ -45,23 +37,7 @@ func (r *Sentence) Optimize(text string) *OptimizedSentence {
 	return &optimized
 }
 
-// Renders a pre-batched set of text
-func (r *SentenceBatch) Render(model *mgl32.Mat4) {
-}
-
-// Deletes resources allocated by the SentenceBatch
-func (r *SentenceBatch) Delete() {
-}
-
-// Renders an optimized set of text
-func (r *OptimizedSentence) Render(model *mgl32.Mat4) {
-}
-
-// Deletes resources allocated by the OptimizedSentence
-func (r *OptimizedSentence) Delete() {
-}
-
-func NewSentence(renderer *TextRenderer) *Sentence {
-	sentence := Sentence{textRenderer: renderer}
+func NewSentence(renderer *TextRenderer, background, foreground mgl32.Vec3) *Sentence {
+	sentence := Sentence{textRenderer: renderer, Background: background, Foreground: foreground}
 	return &sentence
 }

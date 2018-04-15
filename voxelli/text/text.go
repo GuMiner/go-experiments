@@ -18,14 +18,23 @@ import (
 )
 
 var pixelsToVerticesScale float32 = 0.05 // Scales down the pixel size of a character to vertices
+var runeFontSize int = 72                // Large enough to not look pixellated, small enough to be reasonable.
 
 // Defines the index of a character in the texture maps
 type characterIndex struct {
 	CharacterOffset mgl32.Vec2 // Offset (already scaled) when drawing the character from the baseline
 
-	MinBounds     utils.IntVec2 // Bounds of the character in pixels.
+	MinBounds     utils.IntVec2 // Bounds of the character *in pixels.*
 	MaxBounds     utils.IntVec2
 	FontTextureId uint32
+}
+
+func (c *characterIndex) MinBoundsAsTextureCoords(textureSize float32) mgl32.Vec2 {
+	return mgl32.Vec2{float32(c.MinBounds.X()) / float32(textureSize), float32(c.MinBounds.Y()) / float32(textureSize)}
+}
+
+func (c *characterIndex) MaxBoundsAsTextureCoords(textureSize float32) mgl32.Vec2 {
+	return mgl32.Vec2{float32(c.MaxBounds.X()) / float32(textureSize), float32(c.MaxBounds.Y()) / float32(textureSize)}
 }
 
 type TextRenderer struct {
@@ -37,7 +46,7 @@ type TextRenderer struct {
 
 	halfMaxTextureSize int32
 	fontTextures       []uint32
-	nextLineOffset     int32
+	nextLineOffset     int
 	currentOffset      utils.IntVec2
 
 	// Given a character, returns where it is on the textures for drawing
@@ -49,9 +58,10 @@ func (r *TextRenderer) preRender() {
 	gl.BindVertexArray(r.buffers.vao)
 }
 
-// Renders the given rune using the provided model matrix.
+// Renders the given rune using the provided model matrix and text-based offset.
 // preRender(...) must be called before this method is called.
-func (r *TextRenderer) render(character rune, model *mgl32.Mat4) mgl32.Vec2 {
+// Returns the x-offset of the text that was drawn.
+func (r *TextRenderer) render(character rune, offset float32, model *mgl32.Mat4) float32 {
 	// TODO: Add or get rune, position appropriately, and render, returning the character information.
 	runeData := r.addOrGetRuneData(character)
 
@@ -59,12 +69,16 @@ func (r *TextRenderer) render(character rune, model *mgl32.Mat4) mgl32.Vec2 {
 	gl.BindTexture(gl.TEXTURE_2D, r.fontTextures[runeData.FontTextureId])
 	gl.Uniform1i(r.program.fontImageLoc, int32(runeData.FontTextureId))
 
-	// TODO: First, this should be in character primitive. Second, we need to pass in the UV coordinates and the color foreground / background data.
-	// Third, that means we need to pass in that data here.
 	gl.UniformMatrix4fv(r.program.modelLoc, 1, false, &model[0])
-	gl.DrawArrays(gl.TRIANGLES, 0, 6)
 
-	return mgl32.Vec2{-1, -1}
+	runeOffset := runeData.CharacterOffset.Add(mgl32.Vec2{offset, 0})
+	sendPrimitivesToDevice(r.buffers.positionVbo, r.buffers.colorVbo, r.buffers.texPosVbo,
+		runeOffset,
+		runeData.MinBoundsAsTextureCoords(float32(r.halfMaxTextureSize)),
+		runeData.MaxBoundsAsTextureCoords(float32(r.halfMaxTextureSize)))
+	renderPrimitive()
+
+	return float32(runeData.MaxBounds.X()-runeData.MinBounds.X())*pixelsToVerticesScale + runeData.CharacterOffset.X()
 }
 
 func (r *TextRenderer) Delete() {
@@ -83,7 +97,7 @@ func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
 	}
 
 	context.SetDPI(72.0)
-	context.SetFontSize(72.0) // Large enough to not look pixellated, small enough to be reasonable.
+	context.SetFontSize(float64(runeFontSize))
 	context.SetHinting(font.HintingFull)
 	context.SetFont(parsedFont)
 
@@ -92,48 +106,72 @@ func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
 
 // Adds a rune to the list of characters
 func (renderer *TextRenderer) addRune(character rune) {
-	dstImage := image.NewRGBA(image.Rect(0, 0, int(renderer.halfMaxTextureSize), int(renderer.halfMaxTextureSize)))
+	runeIndex := renderer.font.Index(character)
+	fixedRuneFontSize := fixed.I(runeFontSize)
+
+	hMetric := renderer.font.HMetric(fixedRuneFontSize, runeIndex)
+	vMetric := renderer.font.VMetric(fixedRuneFontSize, runeIndex)
+
+	bounds := renderer.font.Bounds(fixedRuneFontSize)
+	boundRanges := bounds.Max.Sub(bounds.Min)
+
+	// Compute image height so we just draw the character inside the box.
+	maxHeight := boundRanges.Y.Ceil() - vMetric.TopSideBearing.Ceil()
+	maxWidth := boundRanges.X.Ceil() - hMetric.LeftSideBearing.Ceil()
+
+	// Move to the next line if needed
+	if maxWidth+renderer.currentOffset.X() >= int(renderer.halfMaxTextureSize) {
+		renderer.currentOffset[0] = 0
+
+		if renderer.nextLineOffset == -1 {
+			panic("Attempted to draw a character that is wider than the texture image. This is not supported.")
+		}
+
+		renderer.currentOffset[1] += renderer.nextLineOffset
+	}
+
+	// We have filled this texture image, so move onto the next one.
+	if maxHeight+renderer.currentOffset.Y() >= int(renderer.halfMaxTextureSize) {
+		renderer.addFontTexture()
+		renderer.currentOffset = utils.IntVec2{0, 0}
+		renderer.nextLineOffset = -1
+	}
+
+	dstImage := image.NewRGBA(image.Rect(0, 0, maxWidth, maxHeight))
 	draw.Draw(dstImage, dstImage.Bounds(), image.White, image.ZP, draw.Src)
 
 	renderer.context.SetClip(dstImage.Bounds())
 	renderer.context.SetSrc(image.Black)
 	renderer.context.SetDst(dstImage)
 
-	stringToDraw := "J23456789 abcdefg!-=?αΩ♣"
+	xOffset := -hMetric.LeftSideBearing.Ceil()
+	yHeight := vMetric.TopSideBearing.Ceil()
 
-	// Get max vertical ascent
-	maxSideBearing := 0
-	for _, runeVal := range stringToDraw {
-		vmetric := renderer.font.VMetric(fixed.I(16), renderer.font.Index(runeVal))
-		sideBearing := vmetric.TopSideBearing.Ceil()
-		if sideBearing > maxSideBearing {
-			maxSideBearing = sideBearing
-		}
-	}
-	//
-	// indexTwo := renderer.font.Index('2')
-	//
-	hmetric := renderer.font.HMetric(fixed.I(16), renderer.font.Index('J')) // If negative, we need to offset the string by this amount.
-	fmt.Printf("%v, %v\n\n", hmetric.AdvanceWidth.Floor(), hmetric.LeftSideBearing.Floor())
-	//
-	// kern := renderer.font.Kern(fixed.I(16), indexOne, indexTwo)
-	// fmt.Printf("%v\n", kern.Floor())
-
-	bounds := renderer.font.Bounds(fixed.I(16))
-	boundRanges := bounds.Max.Sub(bounds.Min)
-
-	// Offset height
-	yHeight := boundRanges.Y.Ceil() - maxSideBearing
-
-	// index := renderer.font.Index('J')
-
-	point, err := renderer.context.DrawString(stringToDraw, freetype.Pt(0, yHeight))
+	// Draw, copy, and save the new character.
+	point, err := renderer.context.DrawString(string(character), freetype.Pt(xOffset, yHeight))
 	if err != nil {
-		panic(fmt.Sprintf("Unable to draw string to destination %v : %v", point, err))
+		panic(fmt.Sprintf("Unable to draw rune '%v' to destination %v : %v", character, point, err))
 	}
 
-	// fmt.Printf("%v", dstImage.Pix)
-	gl.TexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 512, 512, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(dstImage.Pix))
+	gl.TexSubImage2D(gl.TEXTURE_2D, 0,
+		int32(renderer.currentOffset.X()), int32(renderer.currentOffset.Y()),
+		int32(maxWidth), int32(maxHeight),
+		gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(dstImage.Pix))
+
+	renderer.characterMap[character] = characterIndex{
+		FontTextureId: uint32(len(renderer.fontTextures) - 1),
+		MinBounds:     renderer.currentOffset,
+		MaxBounds:     utils.IntVec2{renderer.currentOffset.X() + maxWidth, renderer.currentOffset.Y() + maxHeight},
+		CharacterOffset: mgl32.Vec2{
+			float32(hMetric.LeftSideBearing.Ceil()) * pixelsToVerticesScale,
+			float32(vMetric.TopSideBearing.Ceil()) * pixelsToVerticesScale,
+		}}
+
+	// Update the offset and save our rune
+	renderer.currentOffset[0] += maxWidth
+	if maxHeight > renderer.nextLineOffset {
+		renderer.nextLineOffset = maxHeight
+	}
 }
 
 func (r *TextRenderer) addOrGetRuneData(runeChar rune) characterIndex {
@@ -163,14 +201,16 @@ func (r *TextRenderer) addFontTexture() {
 
 func NewTextRenderer(fontFile string) *TextRenderer {
 	renderer := TextRenderer{
-		nextLineOffset: 0,
-		currentOffset:  utils.IntVec2{0, 0}}
+		nextLineOffset: -1,
+		currentOffset:  utils.IntVec2{0, 0},
+		fontTextures:   make([]uint32, 0),
+		characterMap:   make(map[rune]characterIndex)}
 
 	renderer.program = newTextRendererProgram()
+	renderer.buffers = newTextProgramBuffers()
 	renderer.font, renderer.context = loadContext(fontFile)
 
 	renderer.halfMaxTextureSize = opengl.GetGlCaps().MaxTextureSize
-	renderer.fontTextures = make([]uint32, 0)
 	renderer.addFontTexture()
 
 	return &renderer

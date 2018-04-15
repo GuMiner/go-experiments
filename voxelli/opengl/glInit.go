@@ -68,7 +68,7 @@ func ConfigureOpenGl() {
 	gl.Enable(gl.PROGRAM_POINT_SIZE)
 
 	// TODO: Re-enable post-debug to get a performance boost
-	gl.Enable(gl.CULL_FACE)
+	gl.Disable(gl.CULL_FACE)
 	gl.FrontFace(gl.CCW)
 
 	gl.Enable(gl.DEPTH_TEST)

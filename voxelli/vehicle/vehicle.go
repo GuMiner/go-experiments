@@ -113,7 +113,7 @@ func (v *Vehicle) Update(frameTime float32, roadway *roadway.Roadway) bool {
 	// We also score here to avoid giving points for hitting walls.
 	absSteering := math.Abs(float64(v.SteeringPos))
 	if v.Velocity > 0 {
-		v.Score += step.Len() * float32(1.0-(absSteering*absSteering))
+		v.Score += step.Len() * float32(math.Pow(1.0-absSteering, 5))
 	}
 
 	return false
@@ -141,7 +141,13 @@ func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer, maxScore f
 	translation := mgl32.Translate3D(v.Position.X(), v.Position.Y(), 0)
 
 	model := translation.Mul4(rotation.Mul4(offset))
-	renderer.Render(v.Shape, &model, color.LookupColor(v.Score/maxScore))
+
+	overlayColor := mgl32.Vec3{1, 1, 1}
+	if isColorOverlayEnabled {
+		overlayColor = color.LookupColor(v.Score / maxScore)
+	}
+
+	renderer.Render(v.Shape, &model, overlayColor)
 }
 
 func NewVehicle(id int, shape *voxelArray.VoxelArrayObject) *Vehicle {

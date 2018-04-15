@@ -9,6 +9,7 @@ import (
 	"go-experiments/voxelli/opengl"
 	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/text"
+	"go-experiments/voxelli/vehicle"
 	"go-experiments/voxelli/viewport"
 	"runtime"
 	"time"
@@ -58,6 +59,8 @@ func main() {
 	textRenderer := text.NewTextRenderer("./data/font/DejaVuSans.ttf")
 	defer textRenderer.Delete()
 
+	sentence := text.NewSentence(textRenderer, mgl32.Vec3{1, 1, 1}, mgl32.Vec3{0, 0.5, 0})
+
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
 	renderers = append(renderers, textRenderer)
@@ -85,6 +88,7 @@ func main() {
 
 		opengl.CheckWireframeToggle()
 		diagnostics.CheckDebugToggle()
+		vehicle.CheckColorOverlayToggle()
 
 		// Update our camera if we have motion
 		if camera.Update(frameTime, &cameraMatrix) {
@@ -97,7 +101,10 @@ func main() {
 			renderer.UpdateProjections(renderers, &projection)
 		}
 
-		UpdateAndRenderSimulation(frameTime, elapsed, voxelArrayObjectRenderer)
+		// UpdateAndRenderSimulation(frameTime, elapsed, voxelArrayObjectRenderer)
+
+		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(30, 30, 30))
+		sentence.Render("Hello world!.,J12359?/~\n\t124$", &textModelMatrix)
 
 		window.SwapBuffers()
 		glfw.PollEvents()
