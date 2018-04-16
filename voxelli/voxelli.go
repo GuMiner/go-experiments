@@ -59,7 +59,7 @@ func main() {
 	textRenderer := text.NewTextRenderer("./data/font/DejaVuSans.ttf")
 	defer textRenderer.Delete()
 
-	sentence := text.NewSentence(textRenderer, mgl32.Vec3{1, 1, 1}, mgl32.Vec3{0, 0.5, 0})
+	sentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{1, 1, 0})
 
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
@@ -101,10 +101,10 @@ func main() {
 			renderer.UpdateProjections(renderers, &projection)
 		}
 
-		// UpdateAndRenderSimulation(frameTime, elapsed, voxelArrayObjectRenderer)
+		UpdateAndRenderSimulation(frameTime, elapsed, voxelArrayObjectRenderer)
 
-		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(30, 30, 30))
-		sentence.Render("Hello world!.,J12359?/~\n\t124$", &textModelMatrix)
+		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(3, 3, 1))
+		sentence.Render("Hello world!.,J12359?/~╠>B☢>124$", &textModelMatrix)
 
 		window.SwapBuffers()
 		glfw.PollEvents()

@@ -2,23 +2,15 @@
 
 uniform sampler2D fontImage;
 
-in vec4 vs_color;
+uniform vec3 foregroundColor;
+uniform vec3 backgroundColor;
+
 in vec2 vs_texPos;
 
 out vec4 color;
 
-// Render our text with a sharp boundary.
 void main(void)
 {
-    color = vs_color * texture2D(fontImage, vs_texPos);
-    
-    // Reduce font transparency to 0.
-    if (color.a > 0.20)
-    {
-        color.a = 1.0f;
-    }
-    else
-    {
-        color.a = 0.0f;
-    }
+    vec4 lookupColor = texture2D(fontImage, vs_texPos);
+    color = mix(vec4(foregroundColor, 1.0), vec4(backgroundColor, 1.0), lookupColor.x);
 }

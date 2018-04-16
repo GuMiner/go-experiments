@@ -29,11 +29,9 @@ func configureOpenGl() {
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	gl.Enable(gl.LINE_SMOOTH)
-
 	gl.Enable(gl.PROGRAM_POINT_SIZE)
 
-	// TODO: Re-enable post-debug to get a performance boost
-	// gl.Disable(gl.CULL_FACE)
+	gl.Enable(gl.CULL_FACE)
 	gl.FrontFace(gl.CCW)
 
 	gl.Enable(gl.DEPTH_TEST)

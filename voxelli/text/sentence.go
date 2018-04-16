@@ -13,12 +13,12 @@ type Sentence struct {
 // Renders the given text character by character with minimal overhead.
 // Useful for small snippets of text that change frequently
 func (r *Sentence) Render(text string, model *mgl32.Mat4) {
-	r.textRenderer.preRender()
+	r.textRenderer.preRender(r.Background, r.Foreground, model)
 
 	// TODO: Use background and foreground, by sending to shader.
 	currentOffset := float32(0.0)
 	for _, runeChar := range text {
-		characterOffset := r.textRenderer.render(runeChar, currentOffset, model)
+		characterOffset := r.textRenderer.render(runeChar, currentOffset)
 		currentOffset += characterOffset
 	}
 }

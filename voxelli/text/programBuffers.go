@@ -5,7 +5,6 @@ import "github.com/go-gl/gl/v4.5-core/gl"
 type textProgramBuffers struct {
 	vao         uint32
 	positionVbo uint32
-	colorVbo    uint32
 	texPosVbo   uint32
 }
 
@@ -22,21 +21,15 @@ func newTextProgramBuffers() textProgramBuffers {
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
 
 	gl.EnableVertexAttribArray(1)
-	gl.GenBuffers(1, &buffers.colorVbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, buffers.colorVbo)
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 0, nil)
-
-	gl.EnableVertexAttribArray(2)
 	gl.GenBuffers(1, &buffers.texPosVbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, buffers.texPosVbo)
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 0, nil)
+	gl.VertexAttribPointer(1, 2, gl.FLOAT, false, 0, nil)
 
 	return buffers
 }
 
 func (s textProgramBuffers) Delete() {
 	gl.DeleteBuffers(1, &s.texPosVbo)
-	gl.DeleteBuffers(1, &s.colorVbo)
 	gl.DeleteBuffers(1, &s.positionVbo)
 	gl.DeleteVertexArrays(1, &s.vao)
 }

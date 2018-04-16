@@ -12,6 +12,9 @@ type textRendererProgram struct {
 	cameraLoc     int32
 	modelLoc      int32
 	fontImageLoc  int32
+
+	foregroundColorLoc int32
+	backgroundColorLoc int32
 }
 
 func newTextRendererProgram() textRendererProgram {
@@ -22,6 +25,9 @@ func newTextRendererProgram() textRendererProgram {
 	program.cameraLoc = gl.GetUniformLocation(program.shaderProgram, gl.Str("camera\x00"))
 	program.modelLoc = gl.GetUniformLocation(program.shaderProgram, gl.Str("model\x00"))
 	program.fontImageLoc = gl.GetUniformLocation(program.shaderProgram, gl.Str("fontImage\x00"))
+
+	program.foregroundColorLoc = gl.GetUniformLocation(program.shaderProgram, gl.Str("foregroundColor\x00"))
+	program.backgroundColorLoc = gl.GetUniformLocation(program.shaderProgram, gl.Str("backgroundColor\x00"))
 
 	return program
 }
