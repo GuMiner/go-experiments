@@ -102,19 +102,6 @@ func generateCharacterPrimitive(
 	return positionBuffer, texturePositionBuffer, xScale
 }
 
-func sendPrimitivesToDevice(
-	positionVbo, texPosVbo uint32,
-	positionBuffer []mgl32.Vec3,
-	texturePositionBuffer []mgl32.Vec2) {
-
-	// 3 -- 3 floats / vertex. 4 -- float32
-	gl.BindBuffer(gl.ARRAY_BUFFER, positionVbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(positionBuffer)*3*4, gl.Ptr(positionBuffer), gl.STATIC_DRAW)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, texPosVbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(texturePositionBuffer)*2*4, gl.Ptr(texturePositionBuffer), gl.STATIC_DRAW)
-}
-
 func renderPrimitive() {
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(ccwQuadVert)))
 }

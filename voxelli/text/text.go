@@ -3,6 +3,7 @@ package text
 import (
 	"fmt"
 	"go-experiments/voxelli/opengl"
+	"go-experiments/voxelli/text/renderer"
 	"go-experiments/voxelli/utils"
 	"image"
 	"image/draw"
@@ -31,8 +32,8 @@ type TextRenderer struct {
 	context *freetype.Context
 	font    *truetype.Font
 
-	program textRendererProgram
-	buffers textProgramBuffers
+	program *textRenderer.TextRendererProgram
+	buffers *textRenderer.TextProgramBuffers
 
 	textureSize    int32
 	fontTextures   []uint32
@@ -44,12 +45,9 @@ type TextRenderer struct {
 }
 
 func (r *TextRenderer) preRender(background, foreground mgl32.Vec3, model *mgl32.Mat4) {
-	gl.UseProgram(r.program.shaderProgram)
-	gl.BindVertexArray(r.buffers.vao)
-
-	gl.Uniform3f(r.program.backgroundColorLoc, background.X(), background.Y(), background.Z())
-	gl.Uniform3f(r.program.foregroundColorLoc, foreground.X(), foreground.Y(), foreground.Z())
-	gl.UniformMatrix4fv(r.program.modelLoc, 1, false, &model[0])
+	r.program.UseProgram(r.buffers)
+	r.program.SetColors(background, foreground)
+	r.program.SetModel(model)
 }
 
 // Renders the given rune using the provided model matrix and text-based offset.
@@ -58,17 +56,14 @@ func (r *TextRenderer) preRender(background, foreground mgl32.Vec3, model *mgl32
 func (r *TextRenderer) render(character rune, offset float32) float32 {
 	runeData := r.addOrGetRuneData(character)
 
-	gl.ActiveTexture(gl.TEXTURE0 + runeData.FontTextureId)
-	gl.BindTexture(gl.TEXTURE_2D, r.fontTextures[runeData.FontTextureId])
-	gl.Uniform1i(r.program.fontImageLoc, int32(runeData.FontTextureId))
-
+	r.program.SetTexture(runeData.FontTextureId, r.fontTextures[runeData.FontTextureId])
 	positionBuffer, uvBuffer, runeOffset := generateCharacterPrimitive(
 		offset,
 		runeData.Offset, runeData.Scale,
 		r.textureSize,
 		false)
 
-	sendPrimitivesToDevice(r.buffers.positionVbo, r.buffers.texPosVbo, positionBuffer, uvBuffer)
+	r.buffers.SendToDevice(positionBuffer, uvBuffer)
 	renderPrimitive()
 
 	return runeOffset
@@ -78,9 +73,7 @@ func (r *TextRenderer) render(character rune, offset float32) float32 {
 func (r *TextRenderer) renderReverse(character rune, offset float32, reverseOffset float32) float32 {
 	runeData := r.addOrGetRuneData(character)
 
-	gl.ActiveTexture(gl.TEXTURE0 + runeData.FontTextureId)
-	gl.BindTexture(gl.TEXTURE_2D, r.fontTextures[runeData.FontTextureId])
-	gl.Uniform1i(r.program.fontImageLoc, int32(runeData.FontTextureId))
+	r.program.SetTexture(runeData.FontTextureId, r.fontTextures[runeData.FontTextureId])
 
 	positionBuffer, uvBuffer, runeOffset := generateCharacterPrimitive(
 		reverseOffset-(offset+computeCharacterWidth(runeData.Scale)),
@@ -88,7 +81,7 @@ func (r *TextRenderer) renderReverse(character rune, offset float32, reverseOffs
 		r.textureSize,
 		true)
 
-	sendPrimitivesToDevice(r.buffers.positionVbo, r.buffers.texPosVbo, positionBuffer, uvBuffer)
+	r.buffers.SendToDevice(positionBuffer, uvBuffer)
 	renderPrimitive()
 
 	return runeOffset
@@ -217,14 +210,6 @@ func (r *TextRenderer) addFontTexture() {
 	r.fontTextures = append(r.fontTextures, newTextureId)
 }
 
-func min(a, b int32) int32 {
-	if a > b {
-		return b
-	}
-
-	return a
-}
-
 func NewTextRenderer(fontFile string) *TextRenderer {
 	renderer := TextRenderer{
 		nextLineOffset: -1,
@@ -232,11 +217,11 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 		fontTextures:   make([]uint32, 0),
 		characterMap:   make(map[rune]characterIndex)}
 
-	renderer.program = newTextRendererProgram()
-	renderer.buffers = newTextProgramBuffers()
+	renderer.program = textRenderer.NewTextRendererProgram()
+	renderer.buffers = textRenderer.NewTextProgramBuffers()
 	renderer.font, renderer.context = loadContext(fontFile)
 
-	renderer.textureSize = min(opengl.GetGlCaps().MaxTextureSize, 2048)
+	renderer.textureSize = utils.MinInt32(opengl.GetGlCaps().MaxTextureSize, 2048)
 	renderer.addFontTexture()
 
 	return &renderer
@@ -244,11 +229,9 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 
 // Implement Renderer
 func (r *TextRenderer) UpdateProjection(projection *mgl32.Mat4) {
-	gl.UseProgram(r.program.shaderProgram)
-	gl.UniformMatrix4fv(r.program.projectionLoc, 1, false, &projection[0])
+	r.program.UpdateProjection(projection)
 }
 
 func (r *TextRenderer) UpdateCamera(camera *mgl32.Mat4) {
-	gl.UseProgram(r.program.shaderProgram)
-	gl.UniformMatrix4fv(r.program.cameraLoc, 1, false, &camera[0])
+	r.program.UpdateCamera(camera)
 }

@@ -32,20 +32,6 @@ func (r *Sentence) Render(text string, model *mgl32.Mat4, doubleSided bool) {
 	}
 }
 
-// Batches up the text to render all characters at once.
-// Useful for large snippets of text that change.
-func (r *Sentence) Batch(text string) *SentenceBatch {
-	var batch SentenceBatch
-	return &batch
-}
-
-// Creates a custom texture that contains the entire contents of the given text.
-// Useful for text that doesn't change.
-func (r *Sentence) Optimize(text string) *OptimizedSentence {
-	var optimized OptimizedSentence
-	return &optimized
-}
-
 func NewSentence(renderer *TextRenderer, background, foreground mgl32.Vec3) *Sentence {
 	sentence := Sentence{textRenderer: renderer, Background: background, Foreground: foreground}
 	return &sentence
