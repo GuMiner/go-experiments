@@ -56,18 +56,39 @@ func (r *TextRenderer) preRender(background, foreground mgl32.Vec3, model *mgl32
 // preRender(...) must be called before this method is called.
 // Returns the x-offset of the text that was drawn.
 func (r *TextRenderer) render(character rune, offset float32) float32 {
-	// TODO: Add or get rune, position appropriately, and render, returning the character information.
 	runeData := r.addOrGetRuneData(character)
 
 	gl.ActiveTexture(gl.TEXTURE0 + runeData.FontTextureId)
 	gl.BindTexture(gl.TEXTURE_2D, r.fontTextures[runeData.FontTextureId])
 	gl.Uniform1i(r.program.fontImageLoc, int32(runeData.FontTextureId))
 
-	runeOffset := sendPrimitivesToDevice(
-		r.buffers.positionVbo, r.buffers.texPosVbo,
+	positionBuffer, uvBuffer, runeOffset := generateCharacterPrimitive(
 		offset,
 		runeData.Offset, runeData.Scale,
-		r.textureSize)
+		r.textureSize,
+		false)
+
+	sendPrimitivesToDevice(r.buffers.positionVbo, r.buffers.texPosVbo, positionBuffer, uvBuffer)
+	renderPrimitive()
+
+	return runeOffset
+}
+
+// Same as 'render' but starts at an offset and flips the characters around, for double-sided displays
+func (r *TextRenderer) renderReverse(character rune, offset float32, reverseOffset float32) float32 {
+	runeData := r.addOrGetRuneData(character)
+
+	gl.ActiveTexture(gl.TEXTURE0 + runeData.FontTextureId)
+	gl.BindTexture(gl.TEXTURE_2D, r.fontTextures[runeData.FontTextureId])
+	gl.Uniform1i(r.program.fontImageLoc, int32(runeData.FontTextureId))
+
+	positionBuffer, uvBuffer, runeOffset := generateCharacterPrimitive(
+		reverseOffset-(offset+computeCharacterWidth(runeData.Scale)),
+		runeData.Offset, runeData.Scale,
+		r.textureSize,
+		true)
+
+	sendPrimitivesToDevice(r.buffers.positionVbo, r.buffers.texPosVbo, positionBuffer, uvBuffer)
 	renderPrimitive()
 
 	return runeOffset

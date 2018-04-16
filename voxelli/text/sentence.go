@@ -12,14 +12,23 @@ type Sentence struct {
 
 // Renders the given text character by character with minimal overhead.
 // Useful for small snippets of text that change frequently
-func (r *Sentence) Render(text string, model *mgl32.Mat4) {
+func (r *Sentence) Render(text string, model *mgl32.Mat4, doubleSided bool) {
 	r.textRenderer.preRender(r.Background, r.Foreground, model)
 
-	// TODO: Use background and foreground, by sending to shader.
 	currentOffset := float32(0.0)
 	for _, runeChar := range text {
 		characterOffset := r.textRenderer.render(runeChar, currentOffset)
 		currentOffset += characterOffset
+	}
+
+	// Do the same thing in reverse now, so that the text is visible from both sides
+	if doubleSided {
+		reverseOffset := currentOffset
+		currentOffset = 0.0
+		for _, runeChar := range text {
+			characterOffset := r.textRenderer.renderReverse(runeChar, currentOffset, reverseOffset)
+			currentOffset += characterOffset
+		}
 	}
 }
 

@@ -7,6 +7,8 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
+const quadVertLength = 6
+
 var ccwQuadVert = []mgl32.Vec3{
 	mgl32.Vec3{0, 1, 0},
 	mgl32.Vec3{1, 0, 0},
@@ -15,6 +17,15 @@ var ccwQuadVert = []mgl32.Vec3{
 	mgl32.Vec3{0, 0, 0},
 	mgl32.Vec3{1, 0, 0},
 	mgl32.Vec3{0, 1, 0}}
+
+var cwQuadVert = []mgl32.Vec3{
+	mgl32.Vec3{0, 1, 0},
+	mgl32.Vec3{1, 1, 0},
+	mgl32.Vec3{1, 0, 0},
+
+	mgl32.Vec3{0, 0, 0},
+	mgl32.Vec3{0, 1, 0},
+	mgl32.Vec3{1, 0, 0}}
 
 var ccwQuadUv = []mgl32.Vec2{
 	mgl32.Vec2{0, 0},
@@ -25,45 +36,83 @@ var ccwQuadUv = []mgl32.Vec2{
 	mgl32.Vec2{1, 1},
 	mgl32.Vec2{0, 0}}
 
+var cwQuadUv = []mgl32.Vec2{
+	mgl32.Vec2{1, 0},
+	mgl32.Vec2{0, 0},
+	mgl32.Vec2{0, 1},
+
+	mgl32.Vec2{1, 1},
+	mgl32.Vec2{1, 0},
+	mgl32.Vec2{0, 1}}
+
 const pixelsToVerticesScale = 0.05 // Scales down the pixel size of a character to vertices
 
-func sendPrimitivesToDevice(
-	positionVbo, texPosVbo uint32,
-	lastRuneOffset float32,
-	textureOffset, textureScale utils.IntVec2,
-	textureSize int32) float32 {
+func computeCharacterWidth(textureScale utils.IntVec2) float32 {
+	return float32(textureScale.X()) * pixelsToVerticesScale
+}
 
-	xScale := float32(textureScale.X()) * pixelsToVerticesScale
+func generateCharacterPrimitive(
+	offset float32,
+	textureOffset, textureScale utils.IntVec2,
+	textureSize int32,
+	flip bool) ([]mgl32.Vec3, []mgl32.Vec2, float32) {
+
+	xScale := computeCharacterWidth(textureScale)
 	yScale := float32(textureScale.Y()) * pixelsToVerticesScale
 
-	positionBuffer := make([]mgl32.Vec3, len(ccwQuadVert))
+	positionBuffer := make([]mgl32.Vec3, quadVertLength)
 	for i := 0; i < len(positionBuffer); i++ {
-		positionBuffer[i] = mgl32.Vec3{ccwQuadVert[i].X()*xScale + lastRuneOffset, ccwQuadVert[i].Y() * yScale, 0}
-	}
+		var xVert, yVert float32
+		if flip {
+			xVert = cwQuadVert[i].X()
+			yVert = cwQuadVert[i].Y()
+		} else {
+			xVert = ccwQuadVert[i].X()
+			yVert = ccwQuadVert[i].Y()
+		}
 
-	// 3 -- 3 floats / vertex. 4 -- float32
-	gl.BindBuffer(gl.ARRAY_BUFFER, positionVbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(positionBuffer)*3*4, gl.Ptr(positionBuffer), gl.STATIC_DRAW)
+		positionBuffer[i] = mgl32.Vec3{xVert*xScale + offset, yVert * yScale, 0}
+	}
 
 	texturePositionBuffer := make([]mgl32.Vec2, len(ccwQuadUv))
 	for i := 0; i < len(positionBuffer); i++ {
 		x := textureOffset.X()
-		if ccwQuadUv[i].X() > 0.5 {
+
+		var uvX, uvY float32
+		if flip {
+			uvX = cwQuadUv[i].X()
+			uvY = cwQuadUv[i].Y()
+		} else {
+			uvX = ccwQuadUv[i].X()
+			uvY = ccwQuadUv[i].Y()
+		}
+
+		if uvX > 0.5 {
 			x += textureScale.X()
 		}
 
 		y := textureOffset.Y()
-		if ccwQuadUv[i].Y() > 0.5 {
+		if uvY > 0.5 {
 			y += textureScale.Y()
 		}
 
 		texturePositionBuffer[i] = mgl32.Vec2{float32(x) / float32(textureSize), float32(y) / float32(textureSize)}
 	}
 
+	return positionBuffer, texturePositionBuffer, xScale
+}
+
+func sendPrimitivesToDevice(
+	positionVbo, texPosVbo uint32,
+	positionBuffer []mgl32.Vec3,
+	texturePositionBuffer []mgl32.Vec2) {
+
+	// 3 -- 3 floats / vertex. 4 -- float32
+	gl.BindBuffer(gl.ARRAY_BUFFER, positionVbo)
+	gl.BufferData(gl.ARRAY_BUFFER, len(positionBuffer)*3*4, gl.Ptr(positionBuffer), gl.STATIC_DRAW)
+
 	gl.BindBuffer(gl.ARRAY_BUFFER, texPosVbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(texturePositionBuffer)*2*4, gl.Ptr(texturePositionBuffer), gl.STATIC_DRAW)
-
-	return xScale
 }
 
 func renderPrimitive() {

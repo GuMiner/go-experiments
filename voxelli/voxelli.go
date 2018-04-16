@@ -104,7 +104,7 @@ func main() {
 		UpdateAndRenderSimulation(frameTime, elapsed, voxelArrayObjectRenderer)
 
 		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(3, 3, 1))
-		sentence.Render("Hello world!.,J12359?/~╠>B☢>124$", &textModelMatrix)
+		sentence.Render("Hello world!.,J12359?/~╠>B☢>124$", &textModelMatrix, true)
 
 		window.SwapBuffers()
 		glfw.PollEvents()
