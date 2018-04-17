@@ -49,6 +49,9 @@ func main() {
 	defer input.SaveKeyAssignments()
 
 	// Create renderers
+	shadowBuffer := NewShadowBuffer()
+	defer shadowBuffer.Delete()
+
 	diagnostics.InitCube()
 	defer diagnostics.DeleteCube()
 
@@ -71,9 +74,6 @@ func main() {
 	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
 	defer camera.CachePosition()
 
-	cameraMatrix := camera.GetLookAtMatrix()
-	renderer.UpdateCameras(renderers, &cameraMatrix)
-
 	InitSimulation(voxelArrayObjectRenderer)
 	defer DeleteSimulation()
 
@@ -92,22 +92,13 @@ func main() {
 		diagnostics.CheckDebugToggle()
 		vehicle.CheckColorOverlayToggle()
 
-		// Update our camera if we have motion
-		if camera.Update(frameTime, &cameraMatrix) {
-			renderer.UpdateCameras(renderers, &cameraMatrix)
-		}
-
-		// Don't distort on resize
-		if !viewport.PerspectiveMatrixUpdated() {
-			projection := mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
-			renderer.UpdateProjections(renderers, &projection)
-		}
+		camera.Update(frameTime)
 
 		UpdateSimulation(frameTime, elapsed)
+		glfw.PollEvents()
 	}
 
 	render := func() {
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		RenderSimulation(voxelArrayObjectRenderer)
 
 		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(3, 3, 1))
@@ -116,12 +107,46 @@ func main() {
 		fpsModelMatrix := mgl32.Translate3D(0, 0, 20).Mul4(mgl32.Scale3D(3, 3, 1))
 		fpsSentence.Render(fmt.Sprintf("FPS: %.2f", 1.0/frameTime), &fpsModelMatrix, true)
 
-		window.SwapBuffers()
-		glfw.PollEvents()
 	}
 
 	for !window.ShouldClose() {
 		update()
+
+		// Render to shadow buffer
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		gl.Viewport(0, 0, shadowBuffer.Width, shadowBuffer.Height)
+
+		clearValue := uint8(0)
+		gl.ClearTexImage(shadowBuffer.shadowTexture, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_BYTE, gl.Ptr(&clearValue))
+
+		projection := mgl32.Frustum(-1, 1, -1, 1, 1, 100)
+		renderer.UpdateProjections(renderers, &projection)
+
+		cameraMatrix := mgl32.LookAtV(mgl32.Vec3{100, 0, 40}, mgl32.Vec3{100, 100, 0}, mgl32.Vec3{0, 1, 0})
+		renderer.UpdateCameras(renderers, &cameraMatrix)
+
+		shadowBuffer.RenderToBuffer(render)
+
+		shadowBiasMatrix := mgl32.Mat4FromCols(
+			mgl32.Vec4{0.5, 0, 0, 0},
+			mgl32.Vec4{0, 0.5, 0, 0},
+			mgl32.Vec4{0, 0, 0.5, 0},
+			mgl32.Vec4{0.5, 0.5, 0.5, 1.0})
+
+		partialShadowMatrix := shadowBiasMatrix.Mul4(projection.Mul4(cameraMatrix))
+		voxelArrayObjectRenderer.UpdateShadows(&partialShadowMatrix, shadowBuffer.GetTextureId())
+
+		// Render the full display.
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		viewport.Reset()
+
+		projection = mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
+		renderer.UpdateProjections(renderers, &projection)
+
+		cameraMatrix = camera.GetLookAtMatrix()
+		renderer.UpdateCameras(renderers, &cameraMatrix)
+
 		render()
+		window.SwapBuffers()
 	}
 }

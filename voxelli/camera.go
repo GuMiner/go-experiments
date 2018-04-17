@@ -54,12 +54,11 @@ func (c *Camera) handleLinearMotion(positive input.KeyAssignment, negative input
 	return Updated
 }
 
-func (c *Camera) Update(frameTime float32, cameraMatrix *mgl32.Mat4) bool {
+func (c *Camera) Update(frameTime float32) {
 	moveSpeed := frameTime * motionSpeed
 	rotateSpeed := frameTime * rotationSpeed
 
-	Updated := false
-	Updated = c.handleLinearMotion(input.MoveForwards, input.MoveBackwards, c.Forwards, moveSpeed) || Updated
+	Updated := c.handleLinearMotion(input.MoveForwards, input.MoveBackwards, c.Forwards, moveSpeed)
 	Updated = c.handleLinearMotion(input.MoveLeft, input.MoveRight, c.Right, moveSpeed) || Updated
 	Updated = c.handleLinearMotion(input.MoveUp, input.MoveDown, c.Up, moveSpeed) || Updated
 
@@ -130,10 +129,7 @@ func (c *Camera) Update(frameTime float32, cameraMatrix *mgl32.Mat4) bool {
 
 	if Updated {
 		c.normalize()
-		*cameraMatrix = c.GetLookAtMatrix()
 	}
-
-	return Updated
 }
 
 func (c *Camera) GetLookAtMatrix() mgl32.Mat4 {

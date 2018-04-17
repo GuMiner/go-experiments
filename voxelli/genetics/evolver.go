@@ -23,7 +23,7 @@ const maxGenerationLifetime = 20.0 // seconds
 const speedCheckTime = 3.0         // Time after which we can check to make sure all agents are not stopped, in seconds.
 
 const mutationAmount = 1.5
-const selectionPercent = 0.01
+const selectionPercent = 0.02
 const mutationProbability = 0.20
 const crossoverProbability = 0.20
 

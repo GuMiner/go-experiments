@@ -61,7 +61,7 @@ func InitSimulation(voxelArrayObjectRenderer *renderer.VoxelArrayObjectRenderer)
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
 	// Simulation
-	agentEvolver = genetics.NewPopulation(400, func(id int) *genetics.Agent {
+	agentEvolver = genetics.NewPopulation(200, func(id int) *genetics.Agent {
 		return genetics.NewAgent(id, carModel, float32(math.Pi*0.5), mgl32.Vec2{8, 38})
 	})
 }
