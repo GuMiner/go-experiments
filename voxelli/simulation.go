@@ -15,7 +15,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-func debugDrawCarInfo(car *vehicle.Vehicle, elapsed float32, boundaries []float32) {
+func debugDrawCarInfo(car *vehicle.Vehicle, boundaries []float32) {
 	eyePositions, eyeDirections := car.GetEyes()
 
 	// Debug draw where we are looking, assuming two eyes only
@@ -66,24 +66,25 @@ func InitSimulation(voxelArrayObjectRenderer *renderer.VoxelArrayObjectRenderer)
 	})
 }
 
-func UpdateAndRenderSimulation(frameTime, elapsedTime float32, voxelArrayObjectRenderer *renderer.VoxelArrayObjectRenderer) {
-	roadwayDisplayer.Render(simpleRoadway)
-
+func UpdateSimulation(frameTime, elapsedTime float32) {
 	// Update and render the agents
 	agentEvolver.Update(frameTime, func(agent *genetics.Agent) {
 		agent.Update(frameTime, simpleRoadway)
+	})
+}
 
+func RenderSimulation(voxelArrayObjectRenderer *renderer.VoxelArrayObjectRenderer) {
+	roadwayDisplayer.Render(simpleRoadway)
+
+	agentEvolver.Render(func(agent *genetics.Agent, maxScore float32) {
 		if diagnostics.IsDebug() {
 			eyePositions, eyeDirections := agent.GetCar().GetEyes()
 			boundaryLengths, _ := simpleRoadway.GetBoundaries(eyePositions, eyeDirections)
-			debugDrawCarInfo(agent.GetCar(), elapsedTime, boundaryLengths)
+			debugDrawCarInfo(agent.GetCar(), boundaryLengths)
 		}
-	})
 
-	agentEvolver.Render(func(agent *genetics.Agent, maxScore float32) {
 		agent.Render(voxelArrayObjectRenderer, maxScore)
 	})
-
 }
 
 func DeleteSimulation() {

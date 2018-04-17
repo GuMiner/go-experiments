@@ -3,6 +3,7 @@ package main
 // See https://github.com/ArztSamuel/Applying_EANNs for the inspiration for this.
 
 import (
+	"fmt"
 	"go-experiments/voxelli/color"
 	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/input"
@@ -59,7 +60,8 @@ func main() {
 	textRenderer := text.NewTextRenderer("./data/font/DejaVuSans.ttf")
 	defer textRenderer.Delete()
 
-	sentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{1, 1, 0})
+	testSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{1, 1, 0})
+	fpsSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
 
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
@@ -76,15 +78,15 @@ func main() {
 	defer DeleteSimulation()
 
 	startTime := time.Now()
+	frameTime := float32(0.1)
 	lastElapsed := float32(0.0)
 	elapsed := lastElapsed
-	for !window.ShouldClose() {
+
+	// Update
+	update := func() {
 		lastElapsed = elapsed
 		elapsed = float32(time.Since(startTime)) / float32(time.Second)
-		frameTime := elapsed - lastElapsed
-
-		// Start rendering and updating
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		frameTime = elapsed - lastElapsed
 
 		opengl.CheckWireframeToggle()
 		diagnostics.CheckDebugToggle()
@@ -101,12 +103,25 @@ func main() {
 			renderer.UpdateProjections(renderers, &projection)
 		}
 
-		UpdateAndRenderSimulation(frameTime, elapsed, voxelArrayObjectRenderer)
+		UpdateSimulation(frameTime, elapsed)
+	}
+
+	render := func() {
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		RenderSimulation(voxelArrayObjectRenderer)
 
 		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(3, 3, 1))
-		sentence.Render("Hello world!.,J12359?/~╠>B☢>124$", &textModelMatrix, true)
+		testSentence.Render("Hello world!.,J12359?/~╠>B☢>124$", &textModelMatrix, true)
+
+		fpsModelMatrix := mgl32.Translate3D(0, 0, 20).Mul4(mgl32.Scale3D(3, 3, 1))
+		fpsSentence.Render(fmt.Sprintf("FPS: %.2f", 1.0/frameTime), &fpsModelMatrix, true)
 
 		window.SwapBuffers()
 		glfw.PollEvents()
+	}
+
+	for !window.ShouldClose() {
+		update()
+		render()
 	}
 }
