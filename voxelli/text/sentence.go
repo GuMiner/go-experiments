@@ -5,7 +5,7 @@ import (
 )
 
 type Sentence struct {
-	textRenderer *TextRenderer
+	TextRenderer *TextRenderer
 	Background   mgl32.Vec3
 	Foreground   mgl32.Vec3
 }
@@ -13,11 +13,11 @@ type Sentence struct {
 // Renders the given text character by character with minimal overhead.
 // Useful for small snippets of text that change frequently
 func (r *Sentence) Render(text string, model *mgl32.Mat4, doubleSided bool) {
-	r.textRenderer.preRender(r.Background, r.Foreground, model)
+	r.TextRenderer.preRender(r.Background, r.Foreground, model)
 
 	currentOffset := float32(0.0)
 	for _, runeChar := range text {
-		characterOffset := r.textRenderer.render(runeChar, currentOffset)
+		characterOffset := r.TextRenderer.render(runeChar, currentOffset)
 		currentOffset += characterOffset
 	}
 
@@ -26,13 +26,13 @@ func (r *Sentence) Render(text string, model *mgl32.Mat4, doubleSided bool) {
 		reverseOffset := currentOffset
 		currentOffset = 0.0
 		for _, runeChar := range text {
-			characterOffset := r.textRenderer.renderReverse(runeChar, currentOffset, reverseOffset)
+			characterOffset := r.TextRenderer.renderReverse(runeChar, currentOffset, reverseOffset)
 			currentOffset += characterOffset
 		}
 	}
 }
 
 func NewSentence(renderer *TextRenderer, background, foreground mgl32.Vec3) *Sentence {
-	sentence := Sentence{textRenderer: renderer, Background: background, Foreground: foreground}
+	sentence := Sentence{TextRenderer: renderer, Background: background, Foreground: foreground}
 	return &sentence
 }

@@ -29,10 +29,11 @@ type characterIndex struct {
 }
 
 type TextRenderer struct {
+	Program *textRenderer.TextRendererProgram
+
 	context *freetype.Context
 	font    *truetype.Font
 
-	program *textRenderer.TextRendererProgram
 	buffers *textRenderer.TextProgramBuffers
 
 	textureSize    int32
@@ -45,9 +46,9 @@ type TextRenderer struct {
 }
 
 func (r *TextRenderer) preRender(background, foreground mgl32.Vec3, model *mgl32.Mat4) {
-	r.program.UseProgram(r.buffers)
-	r.program.SetColors(background, foreground)
-	r.program.SetModel(model)
+	r.Program.UseProgram(r.buffers)
+	r.Program.SetColors(background, foreground)
+	r.Program.SetModel(model)
 }
 
 // Renders the given rune using the provided model matrix and text-based offset.
@@ -56,7 +57,7 @@ func (r *TextRenderer) preRender(background, foreground mgl32.Vec3, model *mgl32
 func (r *TextRenderer) render(character rune, offset float32) float32 {
 	runeData := r.addOrGetRuneData(character)
 
-	r.program.SetTexture(runeData.FontTextureId, r.fontTextures[runeData.FontTextureId])
+	r.Program.SetTexture(runeData.FontTextureId, r.fontTextures[runeData.FontTextureId])
 	positionBuffer, uvBuffer, runeOffset := generateCharacterPrimitive(
 		offset,
 		runeData.Offset, runeData.Scale,
@@ -73,7 +74,7 @@ func (r *TextRenderer) render(character rune, offset float32) float32 {
 func (r *TextRenderer) renderReverse(character rune, offset float32, reverseOffset float32) float32 {
 	runeData := r.addOrGetRuneData(character)
 
-	r.program.SetTexture(runeData.FontTextureId, r.fontTextures[runeData.FontTextureId])
+	r.Program.SetTexture(runeData.FontTextureId, r.fontTextures[runeData.FontTextureId])
 
 	positionBuffer, uvBuffer, runeOffset := generateCharacterPrimitive(
 		reverseOffset-(offset+computeCharacterWidth(runeData.Scale)),
@@ -89,7 +90,7 @@ func (r *TextRenderer) renderReverse(character rune, offset float32, reverseOffs
 
 func (r *TextRenderer) Delete() {
 	r.buffers.Delete()
-	r.program.Delete()
+	r.Program.Delete()
 }
 
 func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
@@ -217,7 +218,7 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 		fontTextures:   make([]uint32, 0),
 		characterMap:   make(map[rune]characterIndex)}
 
-	renderer.program = textRenderer.NewTextRendererProgram()
+	renderer.Program = textRenderer.NewTextRendererProgram()
 	renderer.buffers = textRenderer.NewTextProgramBuffers()
 	renderer.font, renderer.context = loadContext(fontFile)
 
@@ -229,9 +230,9 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 
 // Implement Renderer
 func (r *TextRenderer) UpdateProjection(projection *mgl32.Mat4) {
-	r.program.UpdateProjection(projection)
+	r.Program.UpdateProjection(projection)
 }
 
 func (r *TextRenderer) UpdateCamera(camera *mgl32.Mat4) {
-	r.program.UpdateCamera(camera)
+	r.Program.UpdateCamera(camera)
 }
