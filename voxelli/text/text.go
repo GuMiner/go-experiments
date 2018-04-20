@@ -173,6 +173,7 @@ func (renderer *TextRenderer) addRune(character rune) {
 		panic(fmt.Sprintf("Unable to draw rune '%v' to destination %v : %v", character, point, err))
 	}
 
+	gl.BindTexture(gl.TEXTURE_2D, renderer.fontTextures[len(renderer.fontTextures)-1])
 	gl.TexSubImage2D(gl.TEXTURE_2D, 0,
 		int32(renderer.currentOffset.X()), int32(renderer.currentOffset.Y()),
 		int32(fullWidth), int32(fullHeight),

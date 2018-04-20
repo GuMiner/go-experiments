@@ -106,38 +106,46 @@ func main() {
 
 		fpsModelMatrix := mgl32.Translate3D(0, 0, 20).Mul4(mgl32.Scale3D(3, 3, 1))
 		fpsSentence.Render(fmt.Sprintf("FPS: %.2f", 1.0/frameTime), &fpsModelMatrix, true)
-
 	}
 
 	for !window.ShouldClose() {
 		update()
 
 		// Render to shadow buffer
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		gl.Clear(gl.DEPTH_BUFFER_BIT)
 		gl.Viewport(0, 0, shadowBuffer.Width, shadowBuffer.Height)
 
-		clearValue := uint8(0)
-		gl.ClearTexImage(shadowBuffer.shadowTexture, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_BYTE, gl.Ptr(&clearValue))
-
-		projection := mgl32.Frustum(-1, 1, -1, 1, 1, 100)
+		// Hardcoded for the following properties:
+		// 1. Good shadow angle
+		// 2. Good usage of the depth buffer range
+		projection := mgl32.Ortho(-120, 120, -120, 120, 760, 1000)
 		renderer.UpdateProjections(renderers, &projection)
 
-		cameraMatrix := mgl32.LookAtV(mgl32.Vec3{100, 0, 40}, mgl32.Vec3{100, 100, 0}, mgl32.Vec3{0, 1, 0})
+		position := mgl32.Vec3{-5.7113113, -642.92566, 476.05392}
+		cameraMatrix := mgl32.LookAtV(
+			position,
+			position.Add(mgl32.Vec3{0.117314756, 0.8421086, -0.52639383}),
+			mgl32.Vec3{0.9779542, -0.005750837, 0.20874014})
 		renderer.UpdateCameras(renderers, &cameraMatrix)
 
-		shadowBuffer.RenderToBuffer(render)
+		shadowBuffer.RenderToBuffer(func() {
+			renderer.EnableDepthModeOnly()
+			RenderSimulation(voxelArrayObjectRenderer)
+			renderer.DisableDepthModeOnly()
+		})
 
+		// Prepare for normal rendering...
 		shadowBiasMatrix := mgl32.Mat4FromCols(
 			mgl32.Vec4{0.5, 0, 0, 0},
 			mgl32.Vec4{0, 0.5, 0, 0},
 			mgl32.Vec4{0, 0, 0.5, 0},
 			mgl32.Vec4{0.5, 0.5, 0.5, 1.0})
 
-		partialShadowMatrix := shadowBiasMatrix.Mul4(projection.Mul4(cameraMatrix))
+		partialShadowMatrix := projection.Mul4(cameraMatrix.Mul4(shadowBiasMatrix))
 		voxelArrayObjectRenderer.UpdateShadows(&partialShadowMatrix, shadowBuffer.GetTextureId())
 
 		// Render the full display.
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		gl.Clear(gl.COLOR_BUFFER_BIT)
 		viewport.Reset()
 
 		projection = mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
