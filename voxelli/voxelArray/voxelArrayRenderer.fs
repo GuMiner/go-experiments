@@ -50,12 +50,17 @@ void main(void)
 
     vec3 diffuse = max(abs(dot(N, L)), 0.0) * diffuseAlbedo;
 
-    float bias = 0.2;
+    const float bias = 0.005;
+    const int multisamplingFactor = 16;
+    const float minShadowValue = 0.20;
+    const float differencePerStep = (1.0 - minShadowValue) / multisamplingFactor;
+    const float randomDiskSize = 750.0;
+    
     float shadowValue = 1.0;
-    if (texture(shadowTexture, fs_shadowCoordinate.xyz / fs_shadowCoordinate.w) < 
-        ((fs_shadowCoordinate.z - bias) / fs_shadowCoordinate.w))
-    {
-        shadowValue = 0.4;
+    for (int i = 0; i < multisamplingFactor; i++){
+		shadowValue -= differencePerStep * (1.0 - 
+            texture(shadowTexture, vec3(fs_shadowCoordinate.xy + poissonDisk[i]/randomDiskSize, 
+                (fs_shadowCoordinate.z - bias)/fs_shadowCoordinate.w)));
     }
     
     color =  shadowValue *
