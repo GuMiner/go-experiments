@@ -1,6 +1,8 @@
 package text
 
 import (
+	"go-experiments/voxelli/utils"
+
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -12,6 +14,17 @@ type Sentence struct {
 
 // Renders the given text character by character with minimal overhead.
 // Useful for small snippets of text that change frequently
+func (r *Sentence) GetRenderSize(text string) mgl32.Vec2 {
+	aggregateSize := mgl32.Vec2{0, 0}
+	for _, runeChar := range text {
+		size := r.TextRenderer.getCharacterSize(runeChar)
+		aggregateSize[0] += size[0]
+		aggregateSize[1] = utils.MaxFloat32(aggregateSize[1], size[1])
+	}
+
+	return aggregateSize
+}
+
 func (r *Sentence) Render(text string, model *mgl32.Mat4, doubleSided bool) {
 	r.TextRenderer.preRender(r.Background, r.Foreground, model)
 

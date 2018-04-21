@@ -47,8 +47,8 @@ var cwQuadUv = []mgl32.Vec2{
 
 const pixelsToVerticesScale = 0.05 // Scales down the pixel size of a character to vertices
 
-func computeCharacterWidth(textureScale utils.IntVec2) float32 {
-	return float32(textureScale.X()) * pixelsToVerticesScale
+func computeCharacterScale(textureScale utils.IntVec2) (float32, float32) {
+	return float32(textureScale.X()) * pixelsToVerticesScale, float32(textureScale.Y()) * pixelsToVerticesScale
 }
 
 func generateCharacterPrimitive(
@@ -57,8 +57,7 @@ func generateCharacterPrimitive(
 	textureSize int32,
 	flip bool) ([]mgl32.Vec3, []mgl32.Vec2, float32) {
 
-	xScale := computeCharacterWidth(textureScale)
-	yScale := float32(textureScale.Y()) * pixelsToVerticesScale
+	xScale, yScale := computeCharacterScale(textureScale)
 
 	positionBuffer := make([]mgl32.Vec3, quadVertLength)
 	for i := 0; i < len(positionBuffer); i++ {

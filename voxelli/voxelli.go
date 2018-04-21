@@ -3,7 +3,6 @@ package main
 // See https://github.com/ArztSamuel/Applying_EANNs for the inspiration for this.
 
 import (
-	"fmt"
 	"go-experiments/voxelli/color"
 	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/input"
@@ -66,6 +65,9 @@ func main() {
 	testSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{1, 1, 0})
 	fpsSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
 
+	// TODO: We can't use fixed offsets because that doesn't actually work with perspective resizes
+	fpsCounter := NewFpsCounter(fpsSentence, 1.0, mgl32.Vec3{-0.42, 0.33, 0.01})
+
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
 	renderers = append(renderers, textRenderer)
@@ -88,6 +90,7 @@ func main() {
 		elapsed = float32(time.Since(startTime)) / float32(time.Second)
 		frameTime = elapsed - lastElapsed
 
+		fpsCounter.Update(frameTime)
 		opengl.CheckWireframeToggle()
 		diagnostics.CheckDebugToggle()
 		vehicle.CheckColorOverlayToggle()
@@ -105,8 +108,7 @@ func main() {
 		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(3, 3, 1))
 		testSentence.Render("Hello world!.,J12359?/~╠>B☢>124$", &textModelMatrix, true)
 
-		fpsModelMatrix := mgl32.Translate3D(0, 0, 20).Mul4(mgl32.Scale3D(3, 3, 1))
-		fpsSentence.Render(fmt.Sprintf("FPS: %.2f", 1.0/frameTime), &fpsModelMatrix, true)
+		fpsCounter.Render(camera)
 	}
 
 	for !window.ShouldClose() {

@@ -70,14 +70,21 @@ func (r *TextRenderer) render(character rune, offset float32) float32 {
 	return runeOffset
 }
 
+func (r *TextRenderer) getCharacterSize(character rune) mgl32.Vec2 {
+	runeData := r.addOrGetRuneData(character)
+	xScale, yScale := computeCharacterScale(runeData.Scale)
+	return mgl32.Vec2{xScale, yScale}
+}
+
 // Same as 'render' but starts at an offset and flips the characters around, for double-sided displays
 func (r *TextRenderer) renderReverse(character rune, offset float32, reverseOffset float32) float32 {
 	runeData := r.addOrGetRuneData(character)
 
 	r.Program.SetTexture(runeData.FontTextureId, r.fontTextures[runeData.FontTextureId])
 
+	characterXScale, _ := computeCharacterScale(runeData.Scale)
 	positionBuffer, uvBuffer, runeOffset := generateCharacterPrimitive(
-		reverseOffset-(offset+computeCharacterWidth(runeData.Scale)),
+		reverseOffset-(offset+characterXScale),
 		runeData.Offset, runeData.Scale,
 		r.textureSize,
 		true)
