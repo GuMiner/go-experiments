@@ -1,6 +1,8 @@
 package viewport
 
 import (
+	"go-experiments/voxelli/config"
+
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
@@ -8,7 +10,13 @@ import (
 
 const aspectRatio float32 = 1.0
 
-var windowSize mgl32.Vec2 = mgl32.Vec2{800, 600}
+var windowSize mgl32.Vec2
+
+func Init() {
+	windowSize = mgl32.Vec2{
+		float32(config.Config.Window.Width),
+		float32(config.Config.Window.Height)}
+}
 
 func HandleResize(window *glfw.Window, width int, height int) {
 	windowSize = mgl32.Vec2{float32(width), float32(height)}

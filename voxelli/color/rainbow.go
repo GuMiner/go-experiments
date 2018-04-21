@@ -8,7 +8,7 @@ import (
 var colorGradient []mgl32.Vec3
 
 // Initializes the color gradient for future lookups
-func InitializeColorGradient(maxIterations int32, saturation float32, luminosity float32) {
+func InitializeColorGradient(maxIterations int, saturation float32, luminosity float32) {
 	colorGradient = make([]mgl32.Vec3, maxIterations)
 
 	for idx := range colorGradient {

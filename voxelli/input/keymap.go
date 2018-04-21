@@ -29,6 +29,9 @@ const (
 	ToggleDebug
 	ToggleWireframe
 	ToggleColorOverlay
+	ToggleAgentScoreOverlay
+	ToggleFpsText
+	ToggleHelpText
 )
 
 const keyMapCacheName = "keymap"
@@ -51,9 +54,12 @@ func createDefaultKeyMap() {
 	keyMap[MoveUp] = glfw.KeyS
 	keyMap[MoveDown] = glfw.KeyX
 
-	keyMap[ToggleDebug] = glfw.KeyT
-	keyMap[ToggleWireframe] = glfw.KeyR
+	keyMap[ToggleDebug] = glfw.KeyG
+	keyMap[ToggleWireframe] = glfw.KeyL
 	keyMap[ToggleColorOverlay] = glfw.KeyC
+	keyMap[ToggleAgentScoreOverlay] = glfw.KeyT
+	keyMap[ToggleFpsText] = glfw.KeyF
+	keyMap[ToggleHelpText] = glfw.KeyH
 }
 
 func LoadKeyAssignments() {

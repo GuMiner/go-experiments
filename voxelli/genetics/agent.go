@@ -3,6 +3,7 @@ package genetics
 import (
 	"fmt"
 	"go-experiments/voxelli/cache"
+	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/neural"
 	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/roadway"
@@ -11,10 +12,6 @@ import (
 
 	"github.com/go-gl/mathgl/mgl32"
 )
-
-// If a car is this close to a wall and hits it, this lets it scoot along the wall slowly.
-const wiggleDistance = 3.0
-const WiggleSpeed = 0.01
 
 type Agent struct {
 	startingOrientation float32
@@ -76,8 +73,10 @@ func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
 		if hitWall {
 			// Bounce along the direction with the shortest normal, to let cars that just miss turns (and which are moving straight) keep going.
 			boundaryLength, boundaryNormal := getSmallestBoundary(boundaryLengths, boundaryNormals)
-			if boundaryLength < wiggleDistance {
-				a.car.Position = a.car.Position.Add(boundaryNormal.Normalize().Mul(WiggleSpeed))
+
+			if boundaryLength < config.Config.Simulation.Agent.WiggleDistance {
+				a.car.Position = a.car.Position.Add(boundaryNormal.Normalize().Mul(
+					config.Config.Simulation.Agent.WiggleSpeed))
 			} else {
 				// We can't wiggle, so we are dead.
 				a.isAlive = false
@@ -103,8 +102,9 @@ func (a *Agent) CrossBreed(first, second *Agent, crossoverProbability float32) {
 
 func NewAgent(id int, carModel *voxelArray.VoxelArrayObject, startingOrientation float32, startingPosition mgl32.Vec2) *Agent {
 	agent := Agent{
-		car:                 vehicle.NewVehicle(id, carModel),
-		net:                 neural.NewNeuralNet([]int{4, 6, 5, 4}, 2),
+		car: vehicle.NewVehicle(id, carModel),
+		net: neural.NewNeuralNet(
+			config.Config.Simulation.Agent.NeuralNet, 2),
 		startingOrientation: startingOrientation,
 		startingPosition:    startingPosition}
 	agent.Reset()

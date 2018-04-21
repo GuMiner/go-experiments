@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"go-experiments/voxelli/cache"
+	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/input"
 
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -25,8 +26,6 @@ type Camera struct {
 	lastMousePos mgl32.Vec2
 }
 
-const motionSpeed = 20.0
-const rotationSpeed = 1.0
 const cacheName = "camera"
 
 func (c *Camera) normalize() {
@@ -55,8 +54,8 @@ func (c *Camera) handleLinearMotion(positive input.KeyAssignment, negative input
 }
 
 func (c *Camera) Update(frameTime float32) {
-	moveSpeed := frameTime * motionSpeed
-	rotateSpeed := frameTime * rotationSpeed
+	moveSpeed := frameTime * config.Config.Camera.MotionSpeed
+	rotateSpeed := frameTime * config.Config.Camera.RotationSpeed
 
 	Updated := c.handleLinearMotion(input.MoveForwards, input.MoveBackwards, c.Forwards, moveSpeed)
 	Updated = c.handleLinearMotion(input.MoveLeft, input.MoveRight, c.Right, moveSpeed) || Updated
@@ -108,14 +107,14 @@ func (c *Camera) Update(frameTime float32) {
 
 		difference := input.MousePos.Sub(c.lastMousePos)
 		if math.Abs(float64(difference.X())) > 1 {
-			mouseRotationSpeed := rotationSpeed * difference.X() / 1200.0
+			mouseRotationSpeed := config.Config.Camera.RotationSpeed * difference.X() / 1200.0
 
 			c.Forwards = mgl32.HomogRotate3D(mouseRotationSpeed, c.Up).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
 			Updated = true
 		}
 
 		if math.Abs(float64(difference.Y())) > 1 {
-			mouseRotationSpeed := -rotationSpeed * difference.Y() / 1200.0
+			mouseRotationSpeed := -config.Config.Camera.RotationSpeed * difference.Y() / 1200.0
 
 			c.Forwards = mgl32.HomogRotate3D(mouseRotationSpeed, c.Right).Mul4x1(c.Forwards.Vec4(1.0)).Vec3()
 			c.Up = mgl32.HomogRotate3D(mouseRotationSpeed, c.Right).Mul4x1(c.Up.Vec4(1.0)).Vec3()

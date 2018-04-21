@@ -2,6 +2,7 @@ package text
 
 import (
 	"fmt"
+	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/opengl"
 	"go-experiments/voxelli/text/renderer"
 	"go-experiments/voxelli/utils"
@@ -17,9 +18,6 @@ import (
 	"github.com/golang/freetype"
 	"golang.org/x/image/font"
 )
-
-const runeFontSize = 72 // Large enough to not look pixellated, small enough to be reasonable.
-const borderSize = 2    // Pixels
 
 // Defines the index of a character in the texture maps
 type characterIndex struct {
@@ -110,8 +108,8 @@ func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
 		panic(fmt.Sprintf("Failed to parse a TrueType font from the font file: %v", err))
 	}
 
-	context.SetDPI(72.0)
-	context.SetFontSize(float64(runeFontSize))
+	context.SetDPI(float64(config.Config.Text.RuneFontSize))
+	context.SetFontSize(float64(config.Config.Text.RuneFontSize))
 	context.SetHinting(font.HintingFull)
 	context.SetFont(parsedFont)
 
@@ -151,7 +149,7 @@ func (renderer *TextRenderer) updateRuneOffset(width, height int) {
 // Adds a rune to the list of characters
 func (renderer *TextRenderer) addRune(character rune) {
 	runeIndex := renderer.font.Index(character)
-	fixedRuneFontSize := fixed.I(runeFontSize)
+	fixedRuneFontSize := fixed.I(config.Config.Text.RuneFontSize)
 
 	hMetric := renderer.font.HMetric(fixedRuneFontSize, runeIndex)
 	vMetric := renderer.font.VMetric(fixedRuneFontSize, runeIndex)
@@ -160,8 +158,8 @@ func (renderer *TextRenderer) addRune(character rune) {
 	maxWidth := hMetric.AdvanceWidth.Ceil() - hMetric.LeftSideBearing.Ceil()
 	maxHeight := vMetric.AdvanceHeight.Ceil()
 
-	fullWidth := maxWidth + borderSize*2
-	fullHeight := maxHeight + borderSize*2
+	fullWidth := maxWidth + config.Config.Text.BorderSize*2
+	fullHeight := maxHeight + config.Config.Text.BorderSize*2
 	renderer.advanceIfNecessary(fullWidth, fullHeight)
 
 	dstImage := image.NewRGBA(image.Rect(0, 0, fullWidth, fullHeight))
@@ -171,8 +169,8 @@ func (renderer *TextRenderer) addRune(character rune) {
 	renderer.context.SetSrc(image.Black)
 	renderer.context.SetDst(dstImage)
 
-	xOffset := -hMetric.LeftSideBearing.Ceil() + borderSize
-	yHeight := vMetric.TopSideBearing.Ceil() + borderSize
+	xOffset := -hMetric.LeftSideBearing.Ceil() + config.Config.Text.BorderSize
+	yHeight := vMetric.TopSideBearing.Ceil() + config.Config.Text.BorderSize
 
 	// Draw, copy, and save the new character.
 	point, err := renderer.context.DrawString(string(character), freetype.Pt(xOffset, yHeight))

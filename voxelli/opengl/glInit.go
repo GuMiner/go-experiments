@@ -3,6 +3,7 @@ package opengl
 // Simplifies OpenGL initialization
 import (
 	"fmt"
+	"go-experiments/voxelli/config"
 	"log"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
@@ -43,8 +44,8 @@ func InitGlfw() {
 	}
 
 	glfw.WindowHint(glfw.Resizable, glfw.True)
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 5)
+	glfw.WindowHint(glfw.ContextVersionMajor, config.Config.Window.OpenGlMajor)
+	glfw.WindowHint(glfw.ContextVersionMinor, config.Config.Window.OpenGlMinor)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 }
@@ -55,7 +56,11 @@ func ConfigureOpenGl() {
 		log.Fatalln(err)
 	}
 
-	gl.ClearColor(0.2, 0.5, 1.0, 1.0)
+	gl.ClearColor(
+		config.Config.Window.BackgroundColor.X,
+		config.Config.Window.BackgroundColor.Y,
+		config.Config.Window.BackgroundColor.Z,
+		1.0)
 
 	glfw.SwapInterval(1)
 

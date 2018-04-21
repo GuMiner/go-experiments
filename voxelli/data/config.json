@@ -13,7 +13,9 @@
             "selectionPercent": 0.02,
             "mutationProbability": 0.20,
             "crossoverProbability": 0.20,
-            "modes": ["train", "demoTrain"],
+            "comment": "Possible modes are 'train' and 'demoTrain'.",
+            "comment1": "'train' resets all agents after the generation lifetime.",
+            "comment2": "'demoTrain' kills each agent when it gets stuck and computes it, keeping other agents alive",
             "mode": "demoTrain"
         },
         "vehicle": {
@@ -27,7 +29,7 @@
     "text": {
         "runeFontSize": 72,
         "borderSize": 2,
-        "pixelsToVerticesScale": 0.5,
+        "pixelsToVerticesScale": 0.05,
         "fontFile": "./data/font/DejaVuSans.ttf"
     },
     "window": {
@@ -44,7 +46,7 @@
     },
     "colorGradient": {
         "steps": 400,
-        "saturation": 0.5,
+        "saturation": 1.0,
         "luminosity": 0.5
     },
     "shadows": {
@@ -73,13 +75,13 @@
         }
     },
     "perspective": {
-        "fovy": 45.0,
+        "fovY": 45.0,
         "near": 0.1,
         "far": 1000
     },
     "camera": {
-        "motionSpeed": 1.0,
-        "rotationSpeed": 20.0,
+        "motionSpeed": 20.0,
+        "rotationSpeed": 1.0,
         "default": {
             "position": {
                 "x": 140,

@@ -2,6 +2,7 @@ package genetics
 
 import (
 	"fmt"
+	"go-experiments/voxelli/config"
 	"math"
 	"sort"
 )
@@ -18,14 +19,6 @@ type Population struct {
 	generationCount           int
 	currentGenerationLifetime float32
 }
-
-const maxGenerationLifetime = 20.0 // seconds
-const speedCheckTime = 3.0         // Time after which we can check to make sure all agents are not stopped, in seconds.
-
-const mutationAmount = 1.5
-const selectionPercent = 0.02
-const mutationProbability = 0.20
-const crossoverProbability = 0.20
 
 func NewPopulation(agentCount int, agentCreator func(int) *Agent) *Population {
 	population := Population{
@@ -47,7 +40,7 @@ func NewPopulation(agentCount int, agentCreator func(int) *Agent) *Population {
 }
 
 func recombine(agents Agents) {
-	bestAgentCount := int(float32(len(agents)) * selectionPercent)
+	bestAgentCount := int(float32(len(agents)) * config.Config.Simulation.Evolver.SelectionPercent)
 
 	agentIdx := bestAgentCount
 	for true {
@@ -57,7 +50,7 @@ func recombine(agents Agents) {
 					return
 				}
 
-				agents[agentIdx].CrossBreed(agents[i], agents[j], crossoverProbability)
+				agents[agentIdx].CrossBreed(agents[i], agents[j], config.Config.Simulation.Evolver.CrossoverProbability)
 				agentIdx++
 			}
 		}
@@ -67,7 +60,9 @@ func recombine(agents Agents) {
 func mutate(agents Agents) {
 	for i, agent := range agents {
 		if i > len(agents)/4 {
-			agent.net.ProbablyRandomize(mutationProbability, mutationAmount)
+			agent.net.ProbablyRandomize(
+				config.Config.Simulation.Evolver.MutationProbability,
+				config.Config.Simulation.Evolver.MutationAmount)
 		}
 	}
 }
@@ -84,7 +79,8 @@ func allAgentsDead(agents Agents) bool {
 
 func allAgentsStopped(agents Agents) bool {
 	for _, agent := range agents {
-		if math.Abs(float64(agent.car.Velocity)) > WiggleSpeed*100 {
+		if math.Abs(float64(agent.car.Velocity)) >
+			float64(config.Config.Simulation.Agent.WiggleSpeed*100) {
 			return false
 		}
 	}
@@ -123,7 +119,11 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 	}
 
 	p.currentGenerationLifetime += frameTime
-	if p.currentGenerationLifetime > maxGenerationLifetime || allAgentsDead(p.agents) || (p.currentGenerationLifetime > speedCheckTime && allAgentsStopped(p.agents)) {
+
+	// speedCheckTime: Time after which we can check to make sure all agents are not stopped, in seconds.
+	if p.currentGenerationLifetime > config.Config.Simulation.Evolver.MaxGenerationLifetime ||
+		allAgentsDead(p.agents) ||
+		(p.currentGenerationLifetime > config.Config.Simulation.Evolver.SpeedCheckTime && allAgentsStopped(p.agents)) {
 
 		// Create a new generation by sorting, creating (in-place) new agents, and mutating them
 		sort.Sort(sort.Reverse(p.agents))

@@ -4,6 +4,7 @@ package main
 
 import (
 	"go-experiments/voxelli/color"
+	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/input"
 	"go-experiments/voxelli/opengl"
@@ -31,10 +32,16 @@ func setInputCallbacks(window *glfw.Window) {
 }
 
 func main() {
+	config.Load("./data/config.json")
+
 	opengl.InitGlfw()
 	defer glfw.Terminate()
 
-	window, err := glfw.CreateWindow(int(viewport.GetWidth()), int(viewport.GetHeight()), "Voxelli", nil, nil)
+	viewport.Init()
+	window, err := glfw.CreateWindow(
+		int(viewport.GetWidth()),
+		int(viewport.GetHeight()),
+		config.Config.Window.Title, nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -54,12 +61,15 @@ func main() {
 	diagnostics.InitCube()
 	defer diagnostics.DeleteCube()
 
-	color.InitializeColorGradient(400, 1.0, 0.5)
+	color.InitializeColorGradient(
+		config.Config.ColorGradient.Steps,
+		config.Config.ColorGradient.Saturation,
+		config.Config.ColorGradient.Luminosity)
 
 	voxelArrayObjectRenderer := renderer.NewVoxelArrayObjectRenderer()
 	defer voxelArrayObjectRenderer.Delete()
 
-	textRenderer := text.NewTextRenderer("./data/font/DejaVuSans.ttf")
+	textRenderer := text.NewTextRenderer(config.Config.Text.FontFile)
 	defer textRenderer.Delete()
 
 	fpsSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
@@ -72,7 +82,10 @@ func main() {
 	renderers = append(renderers, textRenderer)
 	renderers = append(renderers, diagnostics.GetCube())
 
-	camera := NewCamera(mgl32.Vec3{140, 300, 300}, mgl32.Vec3{-1, 0, 0}, mgl32.Vec3{0, 0, 1})
+	camera := NewCamera(
+		config.Config.Camera.GetDefaultPos(),
+		config.Config.Camera.GetDefaultForwards(),
+		config.Config.Camera.GetDefaultUp())
 	defer camera.CachePosition()
 
 	InitSimulation(voxelArrayObjectRenderer)
@@ -116,14 +129,29 @@ func main() {
 		// Hardcoded for the following properties:
 		// 1. Good shadow angle
 		// 2. Good usage of the depth buffer range
-		projection := mgl32.Ortho(-120, 120, -120, 120, 760, 1000)
+		projection := mgl32.Ortho(
+			config.Config.Shadows.Projection.Left,
+			config.Config.Shadows.Projection.Right,
+			config.Config.Shadows.Projection.Bottom,
+			config.Config.Shadows.Projection.Top,
+			config.Config.Shadows.Projection.Near,
+			config.Config.Shadows.Projection.Far)
 		renderer.UpdateProjections(renderers, &projection)
 
-		position := mgl32.Vec3{-5.7113113, -642.92566, 476.05392}
+		position := mgl32.Vec3{
+			config.Config.Shadows.Position.X,
+			config.Config.Shadows.Position.Y,
+			config.Config.Shadows.Position.Z}
 		cameraMatrix := mgl32.LookAtV(
 			position,
-			position.Add(mgl32.Vec3{0.117314756, 0.8421086, -0.52639383}),
-			mgl32.Vec3{0.9779542, -0.005750837, 0.20874014})
+			position.Add(mgl32.Vec3{
+				config.Config.Shadows.Forwards.X,
+				config.Config.Shadows.Forwards.Y,
+				config.Config.Shadows.Forwards.Z}),
+			mgl32.Vec3{
+				config.Config.Shadows.Up.X,
+				config.Config.Shadows.Up.Y,
+				config.Config.Shadows.Up.Z})
 		renderer.UpdateCameras(renderers, &cameraMatrix)
 
 		shadowBuffer.RenderToBuffer(func() {
@@ -150,7 +178,11 @@ func main() {
 		// Render the full display.
 		viewport.Reset()
 
-		projection = mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
+		projection = mgl32.Perspective(
+			mgl32.DegToRad(config.Config.Perspective.FovY),
+			viewport.GetWidth()/viewport.GetHeight(),
+			config.Config.Perspective.Near,
+			config.Config.Perspective.Far)
 		renderer.UpdateProjections(renderers, &projection)
 
 		cameraMatrix = camera.GetLookAtMatrix()

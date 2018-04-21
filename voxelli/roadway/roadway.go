@@ -2,6 +2,7 @@ package roadway
 
 import (
 	"fmt"
+	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/geometry"
 	"go-experiments/voxelli/utils"
 	"math"
@@ -141,7 +142,7 @@ func (r *Roadway) GetBoundaries(positions []mgl32.Vec2, directions []mgl32.Vec2)
 
 // Defines the 2D bounds of road elements
 func GetGridSize() int {
-	return 40 // All models are 40x40
+	return config.Config.Simulation.RoadwaySize
 }
 
 func ParseInt(item string) int {
