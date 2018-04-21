@@ -27,5 +27,5 @@ void main(void)
     fs_lightVector = normalize(vec3(-1, -1, -2));
 
     fs_shadowCoordinate = partialShadowMatrix * viewSpace;
-    gl_Position = projection * camera * viewSpace;
+    gl_Position = projection * camera * viewSpace; // fs_shadowCoordinate; 
 }

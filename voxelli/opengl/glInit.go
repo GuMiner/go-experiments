@@ -69,6 +69,7 @@ func ConfigureOpenGl() {
 
 	gl.Enable(gl.CULL_FACE)
 	gl.FrontFace(gl.CCW)
+	gl.CullFace(gl.BACK)
 
 	gl.Enable(gl.DEPTH_TEST)
 	gl.DepthFunc(gl.LEQUAL)

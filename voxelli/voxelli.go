@@ -99,6 +99,7 @@ func main() {
 	}
 
 	render := func() {
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		RenderSimulation(voxelArrayObjectRenderer)
 
 		textModelMatrix := mgl32.Translate3D(20, 20, 20).Mul4(mgl32.Scale3D(3, 3, 1))
@@ -112,7 +113,6 @@ func main() {
 		update()
 
 		// Render to shadow buffer
-		gl.Clear(gl.DEPTH_BUFFER_BIT)
 		gl.Viewport(0, 0, shadowBuffer.Width, shadowBuffer.Height)
 
 		// Hardcoded for the following properties:
@@ -129,23 +129,27 @@ func main() {
 		renderer.UpdateCameras(renderers, &cameraMatrix)
 
 		shadowBuffer.RenderToBuffer(func() {
+			gl.Clear(gl.DEPTH_BUFFER_BIT)
+			gl.CullFace(gl.FRONT)
+
 			renderer.EnableDepthModeOnly()
 			RenderSimulation(voxelArrayObjectRenderer)
 			renderer.DisableDepthModeOnly()
+
+			gl.CullFace(gl.BACK)
 		})
 
 		// Prepare for normal rendering...
-		shadowBiasMatrix := mgl32.Mat4FromCols(
-			mgl32.Vec4{0.5, 0, 0, 0},
-			mgl32.Vec4{0, 0.5, 0, 0},
-			mgl32.Vec4{0, 0, 0.5, 0},
-			mgl32.Vec4{0.5, 0.5, 0.5, 1.0})
+		shadowBiasMatrix := mgl32.Mat4FromRows(
+			mgl32.Vec4{0.5, 0, 0, 0.5},
+			mgl32.Vec4{0, 0.5, 0, 0.5},
+			mgl32.Vec4{0, 0, 0.5, 0.5},
+			mgl32.Vec4{0, 0, 0, 1.0})
 
-		partialShadowMatrix := projection.Mul4(cameraMatrix.Mul4(shadowBiasMatrix))
+		partialShadowMatrix := shadowBiasMatrix.Mul4(projection.Mul4(cameraMatrix))
 		voxelArrayObjectRenderer.UpdateShadows(&partialShadowMatrix, shadowBuffer.GetTextureId())
 
 		// Render the full display.
-		gl.Clear(gl.COLOR_BUFFER_BIT)
 		viewport.Reset()
 
 		projection = mgl32.Perspective(mgl32.DegToRad(45.0), viewport.GetWidth()/viewport.GetHeight(), 0.1, 1000.0)
