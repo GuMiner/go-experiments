@@ -18,12 +18,17 @@ type Population struct {
 
 	generationCount           int
 	currentGenerationLifetime float32
+
+	lastFrameDivisor int
+	agentsRetrained  int
 }
 
 func NewPopulation(agentCount int, agentCreator func(int) *Agent) *Population {
 	population := Population{
-		generationCount: 0,
-		agents:          make([]*Agent, agentCount)}
+		generationCount:  0,
+		agents:           make([]*Agent, agentCount),
+		lastFrameDivisor: 0,
+		agentsRetrained:  0}
 
 	for i := 0; i < agentCount; i++ {
 		population.agents[i] = agentCreator(i)
@@ -108,14 +113,26 @@ func (p *Population) prepareNewGeneration() {
 	}
 
 	fmt.Printf("==Generation: %v ==\n", p.generationCount)
-	lastFrameDivisor = 0
+	p.lastFrameDivisor = 0
 }
-
-var lastFrameDivisor int = 0
 
 func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 	for _, agent := range p.agents {
 		agentUpdater(agent)
+	}
+
+	isReportInterval := func() bool {
+		return int(p.currentGenerationLifetime/float32(config.Config.Simulation.Evolver.ReportInterval)) != p.lastFrameDivisor
+	}
+
+	resetReportInterval := func() {
+		p.lastFrameDivisor = int(p.currentGenerationLifetime / float32(config.Config.Simulation.Evolver.ReportInterval))
+	}
+
+	saveBestAgent := func(agent *Agent) {
+		// Save the best agent
+		fmt.Printf("Best Agent High Score: %.2f\n", agent.GetFinalScore())
+		agent.SaveNet()
 	}
 
 	if config.Config.Simulation.Evolver.Mode == "train" {
@@ -129,19 +146,52 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 			// Create a new generation by sorting, creating (in-place) new agents, and mutating them
 			sort.Sort(sort.Reverse(p.agents))
 
-			// Save the best agent
-			fmt.Printf("High Score: %.2f\n", p.agents[0].GetFinalScore())
-			p.agents[0].SaveNet()
+			saveBestAgent(p.agents[0])
 
 			recombine(p.agents)
 			mutate(p.agents)
 
 			p.prepareNewGeneration()
 		} else {
-			if int(p.currentGenerationLifetime/5) != lastFrameDivisor {
+			if isReportInterval() {
 				fmt.Printf("  %v seconds (%v agents left)\n", int(p.currentGenerationLifetime), agentAliveCount(p.agents))
-				lastFrameDivisor = int(p.currentGenerationLifetime / 5)
+				resetReportInterval()
 			}
+		}
+	} else if config.Config.Simulation.Evolver.Mode == "demoTrain" {
+		p.currentGenerationLifetime += frameTime
+
+		// Resort all agents to get the highest storing agents.
+		sort.Sort(sort.Reverse(p.agents))
+
+		for i, agent := range p.agents {
+
+			// The agent has lived long enough it shouldn't be stopped. Respawn it
+			if agent.GetLifetime() > config.Config.Simulation.Evolver.SpeedCheckTime &&
+				math.Abs(float64(agent.car.Velocity)) < float64(config.Config.Simulation.Agent.WiggleSpeed*100) {
+
+				agent.Reset()
+
+				// Never regenerate the best agent
+				if i != 0 {
+					// Always pick the two best agents for regeneration
+					agent.CrossBreed(p.agents[0], p.agents[1], config.Config.Simulation.Evolver.CrossoverProbability)
+
+					agent.net.ProbablyRandomize(
+						config.Config.Simulation.Evolver.MutationProbability,
+						config.Config.Simulation.Evolver.MutationAmount)
+				} else {
+					// The best agent died, so save it for future speed in regeneration
+					saveBestAgent(agent)
+				}
+
+				p.agentsRetrained++
+			}
+		}
+
+		if isReportInterval() {
+			fmt.Printf("  %v seconds (%v agents retrained)\n", int(p.currentGenerationLifetime), p.agentsRetrained)
+			resetReportInterval()
 		}
 	}
 }

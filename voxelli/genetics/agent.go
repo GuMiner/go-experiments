@@ -17,9 +17,10 @@ type Agent struct {
 	startingOrientation float32
 	startingPosition    mgl32.Vec2
 
-	car     *vehicle.Vehicle
-	net     *neural.NeuralNet
-	isAlive bool
+	car      *vehicle.Vehicle
+	net      *neural.NeuralNet
+	isAlive  bool
+	lifetime float32
 }
 
 // TODO: Refactor so we don't need this for debug drawing car info.
@@ -29,6 +30,10 @@ func (a *Agent) GetCar() *vehicle.Vehicle {
 
 func (a *Agent) GetFinalScore() float32 {
 	return a.car.Score
+}
+
+func (a *Agent) GetLifetime() float32 {
+	return a.lifetime
 }
 
 func getSmallestBoundary(boundaryLengths []float32, boundaryNormals []mgl32.Vec2) (float32, mgl32.Vec2) {
@@ -61,12 +66,15 @@ func (a *Agent) SaveNet() {
 
 func (a *Agent) Reset() {
 	a.isAlive = true
+	a.lifetime = 0.0
 	a.car.Reset(a.startingOrientation, a.startingPosition)
 }
 
 // Updates the agent, returning true if the agent is alive, false otherwise
 func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
 	if a.isAlive {
+		a.lifetime += frameTime
+
 		hitWall := a.car.Update(frameTime, roadway)
 		eyePositions, eyeDirections := a.car.GetEyes()
 		boundaryLengths, boundaryNormals := roadway.GetBoundaries(eyePositions, eyeDirections)

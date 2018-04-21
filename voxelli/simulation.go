@@ -3,6 +3,7 @@ package main
 // Defines the data and data flow for the main simulation engine
 import (
 	"fmt"
+	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/genetics"
 	"go-experiments/voxelli/renderer"
@@ -61,9 +62,11 @@ func InitSimulation(voxelArrayObjectRenderer *renderer.VoxelArrayObjectRenderer)
 	fmt.Printf("Optimized Vehicle vertices: %v\n\n", carModel.Vertices)
 
 	// Simulation
-	agentEvolver = genetics.NewPopulation(200, func(id int) *genetics.Agent {
-		return genetics.NewAgent(id, carModel, float32(math.Pi*0.5), mgl32.Vec2{8, 38})
-	})
+	agentEvolver = genetics.NewPopulation(
+		config.Config.Simulation.PopulationSize,
+		func(id int) *genetics.Agent {
+			return genetics.NewAgent(id, carModel, float32(math.Pi*0.5), mgl32.Vec2{8, 38})
+		})
 }
 
 func UpdateSimulation(frameTime, elapsedTime float32) {

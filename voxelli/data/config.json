@@ -16,7 +16,7 @@
             "comment": "Possible modes are 'train' and 'demoTrain'.",
             "comment1": "'train' resets all agents after the generation lifetime.",
             "comment2": "'demoTrain' kills each agent when it gets stuck and computes it, keeping other agents alive",
-            "mode": "train"
+            "mode": "demoTrain"
         },
         "vehicle": {
             "minVelocity": -5.0,
@@ -24,6 +24,7 @@
             "accelerationScale": 25,
             "steeringScale": 10
         },
+        "populationSize": 200,
         "roadwaySize": 40
     },
     "text": {

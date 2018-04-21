@@ -48,10 +48,11 @@ type Vehicle struct {
 }
 
 type Simulation struct {
-	Agent       Agent
-	Evolver     Evolver
-	Vehicle     Vehicle
-	RoadwaySize int
+	Agent          Agent
+	Evolver        Evolver
+	Vehicle        Vehicle
+	PopulationSize int
+	RoadwaySize    int
 }
 
 type Text struct {
