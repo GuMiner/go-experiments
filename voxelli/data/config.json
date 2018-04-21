@@ -1,0 +1,101 @@
+{
+    "simulation": {
+        "agent": {
+            "neuralNet":[4, 6, 5, 4],
+            "wiggleDistance": 3.0,
+            "wiggleSpeed": 0.01
+        },
+        "evolver": {
+            "maxGenerationLifetime": 20.0,
+            "reportInterval": 5,
+            "speedCheckTime": 3.0,
+            "mutationAmount": 1.5,
+            "selectionPercent": 0.02,
+            "mutationProbability": 0.20,
+            "crossoverProbability": 0.20,
+            "modes": ["train", "demoTrain"],
+            "mode": "demoTrain"
+        },
+        "vehicle": {
+            "minVelocity": -5.0,
+            "maxVelocity": 50.0,
+            "accelerationScale": 25,
+            "steeringScale": 10
+        },
+        "roadwaySize": 40
+    },
+    "text": {
+        "runeFontSize": 72,
+        "borderSize": 2,
+        "pixelsToVerticesScale": 0.5,
+        "fontFile": "./data/font/DejaVuSans.ttf"
+    },
+    "window": {
+        "width": 800,
+        "height": 600,
+        "title": "Voxelli",
+        "backgroundColor": {
+            "x": 0.2,
+            "y": 0.5,
+            "z": 1
+        },
+        "openGlMajor": 4,
+        "openGlMinor": 5
+    },
+    "colorGradient": {
+        "steps": 400,
+        "saturation": 0.5,
+        "luminosity": 0.5
+    },
+    "shadows": {
+        "projection": {
+            "left": -120,
+            "right": 120,
+            "bottom": -120,
+            "top": 120,
+            "near": 760,
+            "far": 1000
+        },
+        "position": {
+            "x": -5.7113113,
+            "y": -642.92566,
+            "z": 476.05392
+        },
+        "forwards": {
+            "x": 0.117314756,
+            "y": 0.8421086,
+            "z": -0.52639383
+        },
+        "up": {
+            "x": 0.9779542,
+            "y": -0.005750837,
+            "z": 0.20874014
+        }
+    },
+    "perspective": {
+        "fovy": 45.0,
+        "near": 0.1,
+        "far": 1000
+    },
+    "camera": {
+        "motionSpeed": 1.0,
+        "rotationSpeed": 20.0,
+        "default": {
+            "position": {
+                "x": 140,
+                "y": 300,
+                "z": 300
+            },
+            "forwards": {
+                "x": -1,
+                "y": 0,
+                "z": 0
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            }
+        }
+    }
+}
