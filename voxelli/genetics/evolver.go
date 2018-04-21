@@ -118,28 +118,30 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 		agentUpdater(agent)
 	}
 
-	p.currentGenerationLifetime += frameTime
+	if config.Config.Simulation.Evolver.Mode == "train" {
+		p.currentGenerationLifetime += frameTime
 
-	// speedCheckTime: Time after which we can check to make sure all agents are not stopped, in seconds.
-	if p.currentGenerationLifetime > config.Config.Simulation.Evolver.MaxGenerationLifetime ||
-		allAgentsDead(p.agents) ||
-		(p.currentGenerationLifetime > config.Config.Simulation.Evolver.SpeedCheckTime && allAgentsStopped(p.agents)) {
+		// speedCheckTime: Time after which we can check to make sure all agents are not stopped, in seconds.
+		if p.currentGenerationLifetime > config.Config.Simulation.Evolver.MaxGenerationLifetime ||
+			allAgentsDead(p.agents) ||
+			(p.currentGenerationLifetime > config.Config.Simulation.Evolver.SpeedCheckTime && allAgentsStopped(p.agents)) {
 
-		// Create a new generation by sorting, creating (in-place) new agents, and mutating them
-		sort.Sort(sort.Reverse(p.agents))
+			// Create a new generation by sorting, creating (in-place) new agents, and mutating them
+			sort.Sort(sort.Reverse(p.agents))
 
-		// Save the best agent
-		fmt.Printf("High Score: %.2f\n", p.agents[0].GetFinalScore())
-		p.agents[0].SaveNet()
+			// Save the best agent
+			fmt.Printf("High Score: %.2f\n", p.agents[0].GetFinalScore())
+			p.agents[0].SaveNet()
 
-		recombine(p.agents)
-		mutate(p.agents)
+			recombine(p.agents)
+			mutate(p.agents)
 
-		p.prepareNewGeneration()
-	} else {
-		if int(p.currentGenerationLifetime/5) != lastFrameDivisor {
-			fmt.Printf("  %v seconds (%v agents left)\n", int(p.currentGenerationLifetime), agentAliveCount(p.agents))
-			lastFrameDivisor = int(p.currentGenerationLifetime / 5)
+			p.prepareNewGeneration()
+		} else {
+			if int(p.currentGenerationLifetime/5) != lastFrameDivisor {
+				fmt.Printf("  %v seconds (%v agents left)\n", int(p.currentGenerationLifetime), agentAliveCount(p.agents))
+				lastFrameDivisor = int(p.currentGenerationLifetime / 5)
+			}
 		}
 	}
 }

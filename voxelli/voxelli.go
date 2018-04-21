@@ -31,6 +31,21 @@ func setInputCallbacks(window *glfw.Window) {
 	window.SetKeyCallback(input.HandleKeyInput)
 }
 
+var isFpsEnabled bool = true
+var isHelpTextEnabled bool = false
+
+// Checks if the wireframe button has been toggled or not, toggling the GL setting
+// This function should be called within the OpenGL update loop
+func checkTextToggles() {
+	if input.IsTyped(input.ToggleFpsText) {
+		isFpsEnabled = !isFpsEnabled
+	}
+
+	if input.IsTyped(input.ToggleHelpText) {
+		isHelpTextEnabled = !isHelpTextEnabled
+	}
+}
+
 func main() {
 	config.Load("./data/config.json")
 
@@ -73,9 +88,11 @@ func main() {
 	defer textRenderer.Delete()
 
 	fpsSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+	helpTextSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{1, 1, 0})
 
 	// TODO: We can't use fixed offsets because that doesn't actually work with perspective resizes
 	fpsCounter := NewFpsCounter(fpsSentence, 1.0, mgl32.Vec3{-0.42, 0.33, 0.01})
+	helpText := NewHelpText(helpTextSentence, mgl32.Vec3{0.18, 0.33, 0.01})
 
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
@@ -106,6 +123,7 @@ func main() {
 		opengl.CheckWireframeToggle()
 		diagnostics.CheckDebugToggle()
 		vehicle.CheckColorOverlayToggle()
+		checkTextToggles()
 
 		camera.Update(frameTime)
 
@@ -117,7 +135,13 @@ func main() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		RenderSimulation(voxelArrayObjectRenderer)
 
-		fpsCounter.Render(camera)
+		if isFpsEnabled {
+			fpsCounter.Render(camera)
+		}
+
+		if isHelpTextEnabled {
+			helpText.Render(camera)
+		}
 	}
 
 	for !window.ShouldClose() {

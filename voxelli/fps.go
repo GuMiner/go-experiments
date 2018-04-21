@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"go-experiments/voxelli/text"
+	"go-experiments/voxelli/utils"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -43,21 +44,6 @@ func (f *FpsCounter) Update(frameTime float32) {
 	}
 }
 
-func InverseRotationMatrix(eye, center, up mgl32.Vec3) mgl32.Mat4 {
-	f := center.Sub(eye).Normalize()
-	s := f.Cross(up.Normalize()).Normalize()
-	u := s.Cross(f)
-
-	M := mgl32.Mat4{
-		s[0], u[0], -f[0], 0,
-		s[1], u[1], -f[1], 0,
-		s[2], u[2], -f[2], 0,
-		0, 0, 0, 1,
-	}
-
-	return M.Transpose() // Inverse of a rotation matrix
-}
-
 func (f *FpsCounter) Render(camera *Camera) {
 	fpsString := fmt.Sprintf("FPS: %.2f", f.currentFps)
 
@@ -76,7 +62,7 @@ func (f *FpsCounter) Render(camera *Camera) {
 	center := mgl32.Translate3D(-renderSize.X()/2, -renderSize.Y()/2, 0)
 
 	// Reverse the camera rotation
-	orientRotation := InverseRotationMatrix(camera.Position, camera.Target, camera.Up)
+	orientRotation := utils.InverseLookAtRotationMatrix(camera.Position, camera.Target, camera.Up)
 
 	fpsModelMatrix := frontOfCamera.Mul4(
 		orientRotation.Mul4(
