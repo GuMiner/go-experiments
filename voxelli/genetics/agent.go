@@ -17,10 +17,13 @@ type Agent struct {
 	startingOrientation float32
 	startingPosition    mgl32.Vec2
 
-	car      *vehicle.Vehicle
-	net      *neural.NeuralNet
-	isAlive  bool
-	lifetime float32
+	car                 *vehicle.Vehicle
+	net                 *neural.NeuralNet
+	isAlive             bool
+	lifetime            float32
+	wallHitTime         float32
+	hasHitWall          bool
+	triesToGetOutOfWall int
 }
 
 // TODO: Refactor so we don't need this for debug drawing car info.
@@ -67,6 +70,9 @@ func (a *Agent) SaveNet() {
 func (a *Agent) Reset() {
 	a.isAlive = true
 	a.lifetime = 0.0
+	a.hasHitWall = false
+	a.wallHitTime = 0
+	a.triesToGetOutOfWall = 0
 	a.car.Reset(a.startingOrientation, a.startingPosition)
 }
 
@@ -79,6 +85,12 @@ func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
 		eyePositions, eyeDirections := a.car.GetEyes()
 		boundaryLengths, boundaryNormals := roadway.GetBoundaries(eyePositions, eyeDirections)
 		if hitWall {
+			if !a.hasHitWall {
+				a.wallHitTime = a.lifetime
+				a.hasHitWall = true
+				a.triesToGetOutOfWall += 3
+			}
+
 			// Bounce along the direction with the shortest normal, to let cars that just miss turns (and which are moving straight) keep going.
 			boundaryLength, boundaryNormal := getSmallestBoundary(boundaryLengths, boundaryNormals)
 
@@ -88,6 +100,13 @@ func (a *Agent) Update(frameTime float32, roadway *roadway.Roadway) {
 			} else {
 				// We can't wiggle, so we are dead.
 				a.isAlive = false
+			}
+		} else {
+			if a.triesToGetOutOfWall > 0 {
+				a.triesToGetOutOfWall--
+			} else if a.triesToGetOutOfWall == 0 {
+				a.wallHitTime = a.lifetime
+				a.hasHitWall = false
 			}
 		}
 

@@ -8,7 +8,7 @@
         "evolver": {
             "maxGenerationLifetime": 20.0,
             "reportInterval": 5,
-            "speedCheckTime": 3.0,
+            "speedCheckTime": 5.0,
             "mutationAmount": 1.5,
             "selectionPercent": 0.02,
             "mutationProbability": 0.20,
@@ -34,7 +34,7 @@
         "fontFile": "./data/font/DejaVuSans.ttf"
     },
     "window": {
-        "width": 800,
+        "width": 1100,
         "height": 600,
         "title": "Voxelli",
         "backgroundColor": {
@@ -85,19 +85,19 @@
         "rotationSpeed": 1.0,
         "default": {
             "position": {
-                "x": 140,
-                "y": 300,
-                "z": 300
+                "x": -92.278595,
+                "y": 86.452965 ,
+                "z": 132.08347
             },
             "forwards": {
-                "x": -1,
-                "y": 0,
-                "z": 0
+                "x": 0.76370764,
+                "y": 0.055830434,
+                "z": -0.64314353
             },
             "up": {
-                "x": 0,
-                "y": 1,
-                "z": 0
+                "x": 0.64385504,
+                "y": 0.0067264526,
+                "z": 0.76511806
             }
         }
     }

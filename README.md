@@ -5,9 +5,9 @@ This repository contains a series of experimental projects to learn more about t
 ![Fractal.PNG](./Fractal.PNG "Rendering Fractals with Go")
 
 ## Voxel Cars
-![VoxelliDriving.gif](./VoxelliDriving.gif "Voxel cars that learned to drive themselves")
-
 Inspired from [this GitHub project](https://github.com/ArztSamuel/Applying_EANNs), these 
 voxel cars use a genetic algorithm to teach a small fully-connected neural network how to navigate a course.
 
-![Updates.PNG](./Updates.PNG "Voxel cars that learned to drive themselves")
+![VoxelliTooSmartDriving.gif](./VoxelliTooSmartDriving.gif "Voxel cars that learned to drive themselves in circles")
+
+![VoxelliSmarterDriving.gif](./VoxelliSmarterDriving.gif "Voxel cars that learned to drive themselves in circles")

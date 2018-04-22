@@ -29,7 +29,6 @@ const (
 	ToggleDebug
 	ToggleWireframe
 	ToggleColorOverlay
-	ToggleAgentScoreOverlay
 	ToggleFpsText
 	ToggleHelpText
 )
@@ -57,7 +56,6 @@ func createDefaultKeyMap() {
 	keyMap[ToggleDebug] = glfw.KeyG
 	keyMap[ToggleWireframe] = glfw.KeyL
 	keyMap[ToggleColorOverlay] = glfw.KeyC
-	keyMap[ToggleAgentScoreOverlay] = glfw.KeyT
 	keyMap[ToggleFpsText] = glfw.KeyF
 	keyMap[ToggleHelpText] = glfw.KeyH
 }

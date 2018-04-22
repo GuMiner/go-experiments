@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-experiments/voxelli/config"
 	"math"
+	"math/rand"
 	"sort"
 )
 
@@ -166,16 +167,21 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 
 		for i, agent := range p.agents {
 
-			// The agent has lived long enough it shouldn't be stopped. Respawn it
+			// The agent has lived long enough it shouldn't be stopped, or it is the lowest scoring agent. Respawn it
+			// -agent.wallHitTime
 			if agent.GetLifetime() > config.Config.Simulation.Evolver.SpeedCheckTime &&
-				math.Abs(float64(agent.car.Velocity)) < float64(config.Config.Simulation.Agent.WiggleSpeed*100) {
+				(math.Abs(float64(agent.car.Velocity)) < float64(config.Config.Simulation.Agent.WiggleSpeed*100) ||
+					i == len(p.agents)-1) {
 
 				agent.Reset()
 
 				// Never regenerate the best agent
 				if i != 0 {
-					// Always pick the two best agents for regeneration
-					agent.CrossBreed(p.agents[0], p.agents[1], config.Config.Simulation.Evolver.CrossoverProbability)
+					// Always pick among the four best agents for regeneration
+					agentToUse := rand.Uint32() % 4
+					nextAgentToUse := agentToUse + 1 + rand.Uint32()%2
+
+					agent.CrossBreed(p.agents[agentToUse], p.agents[nextAgentToUse], config.Config.Simulation.Evolver.CrossoverProbability)
 
 					agent.net.ProbablyRandomize(
 						config.Config.Simulation.Evolver.MutationProbability,
@@ -190,7 +196,8 @@ func (p *Population) Update(frameTime float32, agentUpdater func(*Agent)) {
 		}
 
 		if isReportInterval() {
-			fmt.Printf("  %v seconds (%v agents retrained)\n", int(p.currentGenerationLifetime), p.agentsRetrained)
+			fmt.Printf("  %v seconds (%v agents retrained) High Score: (%v)\n",
+				int(p.currentGenerationLifetime), p.agentsRetrained, p.agents[0].GetFinalScore())
 			resetReportInterval()
 		}
 	}
