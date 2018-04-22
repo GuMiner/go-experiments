@@ -1,9 +1,12 @@
-package main
+package shadow
 
 import (
 	"fmt"
+	"go-experiments/common/config"
 	"go-experiments/common/math"
 	"go-experiments/common/opengl"
+
+	"github.com/go-gl/mathgl/mgl32"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
 )
@@ -12,8 +15,8 @@ type ShadowBuffer struct {
 	shadowBuffer  uint32
 	shadowTexture uint32
 
-	Width  int32
-	Height int32
+	width  int32
+	height int32
 }
 
 func NewShadowBuffer() *ShadowBuffer {
@@ -23,12 +26,12 @@ func NewShadowBuffer() *ShadowBuffer {
 	var buffer ShadowBuffer
 
 	maxTextureSize := commonMath.MinInt32(2048, commonOpenGl.GetGlCaps().MaxTextureSize)
-	buffer.Width = maxTextureSize
-	buffer.Height = maxTextureSize
+	buffer.width = maxTextureSize
+	buffer.height = maxTextureSize
 
 	gl.GenTextures(1, &buffer.shadowTexture)
 	gl.BindTexture(gl.TEXTURE_2D, buffer.shadowTexture)
-	gl.TexStorage2D(gl.TEXTURE_2D, 1, gl.DEPTH_COMPONENT32, buffer.Width, buffer.Height)
+	gl.TexStorage2D(gl.TEXTURE_2D, 1, gl.DEPTH_COMPONENT32, buffer.width, buffer.height)
 
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -44,7 +47,7 @@ func NewShadowBuffer() *ShadowBuffer {
 
 	framebufferStatus := gl.CheckFramebufferStatus(gl.FRAMEBUFFER)
 	if framebufferStatus != gl.FRAMEBUFFER_COMPLETE {
-		panic(fmt.Sprintf("The framebuffer status is not complete, found: %v\n", framebufferStatus))
+		panic(fmt.Sprintf("The shadow framebuffer status is not complete, found: %v\n", framebufferStatus))
 	}
 
 	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
@@ -60,6 +63,37 @@ func (r *ShadowBuffer) Delete() {
 	gl.DeleteFramebuffers(1, &r.shadowBuffer)
 }
 
+func (r *ShadowBuffer) PrepareCamera() (mgl32.Mat4, mgl32.Mat4) {
+	gl.Viewport(0, 0, r.width, r.height)
+
+	projection := mgl32.Ortho(
+		commonConfig.Config.Shadows.Projection.Left,
+		commonConfig.Config.Shadows.Projection.Right,
+		commonConfig.Config.Shadows.Projection.Bottom,
+		commonConfig.Config.Shadows.Projection.Top,
+		commonConfig.Config.Shadows.Projection.Near,
+		commonConfig.Config.Shadows.Projection.Far)
+
+	position := mgl32.Vec3{
+		commonConfig.Config.Shadows.Position.X,
+		commonConfig.Config.Shadows.Position.Y,
+		commonConfig.Config.Shadows.Position.Z}
+
+	cameraMatrix := mgl32.LookAtV(
+		position,
+		position.Add(
+			mgl32.Vec3{
+				commonConfig.Config.Shadows.Forwards.X,
+				commonConfig.Config.Shadows.Forwards.Y,
+				commonConfig.Config.Shadows.Forwards.Z}),
+		mgl32.Vec3{
+			commonConfig.Config.Shadows.Up.X,
+			commonConfig.Config.Shadows.Up.Y,
+			commonConfig.Config.Shadows.Up.Z})
+
+	return projection, cameraMatrix
+}
+
 func (r *ShadowBuffer) RenderToBuffer(renderFunction func()) {
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 	gl.BindFramebuffer(gl.FRAMEBUFFER, r.shadowBuffer)
@@ -67,6 +101,4 @@ func (r *ShadowBuffer) RenderToBuffer(renderFunction func()) {
 	renderFunction()
 
 	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
-	gl.Flush()
-	gl.Finish()
 }

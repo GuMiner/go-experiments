@@ -1,7 +1,7 @@
 package text
 
 import (
-	"go-experiments/voxelli/config"
+	"go-experiments/common/config"
 	"go-experiments/voxelli/utils"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
@@ -47,8 +47,8 @@ var cwQuadUv = []mgl32.Vec2{
 	mgl32.Vec2{0, 1}}
 
 func computeCharacterScale(textureScale utils.IntVec2) (float32, float32) {
-	return float32(textureScale.X()) * config.Config.Text.PixelsToVerticesScale,
-		float32(textureScale.Y()) * config.Config.Text.PixelsToVerticesScale
+	return float32(textureScale.X()) * commonConfig.Config.Text.PixelsToVerticesScale,
+		float32(textureScale.Y()) * commonConfig.Config.Text.PixelsToVerticesScale
 }
 
 func generateCharacterPrimitive(

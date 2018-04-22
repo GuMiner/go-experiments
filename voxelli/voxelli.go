@@ -3,9 +3,11 @@ package main
 // See https://github.com/ArztSamuel/Applying_EANNs for the inspiration for this.
 
 import (
+	"go-experiments/common/color"
+	"go-experiments/common/config"
 	"go-experiments/common/opengl"
+	"go-experiments/common/shadow"
 
-	"go-experiments/voxelli/color"
 	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/input"
@@ -13,7 +15,6 @@ import (
 	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/text"
 	"go-experiments/voxelli/vehicle"
-	"go-experiments/voxelli/viewport"
 	"runtime"
 	"time"
 
@@ -27,7 +28,7 @@ func init() {
 }
 
 func setInputCallbacks(window *glfw.Window) {
-	window.SetFramebufferSizeCallback(viewport.HandleResize)
+	window.SetFramebufferSizeCallback(commonOpenGl.ResizeViewport)
 	window.SetCursorPosCallback(input.HandleMouseMove)
 	window.SetMouseButtonCallback(input.HandleMouseButton)
 	window.SetKeyCallback(input.HandleKeyInput)
@@ -49,16 +50,16 @@ func checkTextToggles() {
 }
 
 func main() {
-	config.Load("./data/config.json")
+	config.Load("./data/config.json", "./data/commonConfig.json")
 
 	commonOpenGl.InitGlfw()
 	defer glfw.Terminate()
 
-	viewport.Init()
+	commonOpenGl.InitViewport()
 	window, err := glfw.CreateWindow(
-		int(viewport.GetWidth()),
-		int(viewport.GetHeight()),
-		config.Config.Window.Title, nil, nil)
+		int(commonOpenGl.GetViewportWidth()),
+		int(commonOpenGl.GetViewportHeight()),
+		commonConfig.Config.Window.Title, nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -72,21 +73,21 @@ func main() {
 	defer input.SaveKeyAssignments()
 
 	// Create renderers
-	shadowBuffer := NewShadowBuffer()
+	shadowBuffer := shadow.NewShadowBuffer()
 	defer shadowBuffer.Delete()
 
 	diagnostics.InitCube()
 	defer diagnostics.DeleteCube()
 
-	color.InitializeColorGradient(
-		config.Config.ColorGradient.Steps,
-		config.Config.ColorGradient.Saturation,
-		config.Config.ColorGradient.Luminosity)
+	commonColor.InitializeColorGradient(
+		commonConfig.Config.ColorGradient.Steps,
+		commonConfig.Config.ColorGradient.Saturation,
+		commonConfig.Config.ColorGradient.Luminosity)
 
 	voxelArrayObjectRenderer := renderer.NewVoxelArrayObjectRenderer()
 	defer voxelArrayObjectRenderer.Delete()
 
-	textRenderer := text.NewTextRenderer(config.Config.Text.FontFile)
+	textRenderer := text.NewTextRenderer(commonConfig.Config.Text.FontFile)
 	defer textRenderer.Delete()
 
 	fpsSentence := text.NewSentence(textRenderer, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
@@ -150,34 +151,9 @@ func main() {
 		update()
 
 		// Render to shadow buffer
-		gl.Viewport(0, 0, shadowBuffer.Width, shadowBuffer.Height)
+		projection, cameraMatrix := shadowBuffer.PrepareCamera()
 
-		// Hardcoded for the following properties:
-		// 1. Good shadow angle
-		// 2. Good usage of the depth buffer range
-		projection := mgl32.Ortho(
-			config.Config.Shadows.Projection.Left,
-			config.Config.Shadows.Projection.Right,
-			config.Config.Shadows.Projection.Bottom,
-			config.Config.Shadows.Projection.Top,
-			config.Config.Shadows.Projection.Near,
-			config.Config.Shadows.Projection.Far)
 		renderer.UpdateProjections(renderers, &projection)
-
-		position := mgl32.Vec3{
-			config.Config.Shadows.Position.X,
-			config.Config.Shadows.Position.Y,
-			config.Config.Shadows.Position.Z}
-		cameraMatrix := mgl32.LookAtV(
-			position,
-			position.Add(mgl32.Vec3{
-				config.Config.Shadows.Forwards.X,
-				config.Config.Shadows.Forwards.Y,
-				config.Config.Shadows.Forwards.Z}),
-			mgl32.Vec3{
-				config.Config.Shadows.Up.X,
-				config.Config.Shadows.Up.Y,
-				config.Config.Shadows.Up.Z})
 		renderer.UpdateCameras(renderers, &cameraMatrix)
 
 		shadowBuffer.RenderToBuffer(func() {
@@ -202,13 +178,13 @@ func main() {
 		voxelArrayObjectRenderer.UpdateShadows(&partialShadowMatrix, shadowBuffer.GetTextureId())
 
 		// Render the full display.
-		viewport.Reset()
+		commonOpenGl.ResetViewport()
 
 		projection = mgl32.Perspective(
-			mgl32.DegToRad(config.Config.Perspective.FovY),
-			viewport.GetWidth()/viewport.GetHeight(),
-			config.Config.Perspective.Near,
-			config.Config.Perspective.Far)
+			mgl32.DegToRad(commonConfig.Config.Perspective.FovY),
+			commonOpenGl.GetViewportWidth()/commonOpenGl.GetViewportHeight(),
+			commonConfig.Config.Perspective.Near,
+			commonConfig.Config.Perspective.Far)
 		renderer.UpdateProjections(renderers, &projection)
 
 		cameraMatrix = camera.GetLookAtMatrix()

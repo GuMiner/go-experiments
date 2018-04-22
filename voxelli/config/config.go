@@ -41,26 +41,6 @@ type Simulation struct {
 	RoadwaySize    int
 }
 
-type Text struct {
-	RuneFontSize          int
-	BorderSize            int
-	PixelsToVerticesScale float32
-	FontFile              string
-}
-
-type ColorGradient struct {
-	Steps      int
-	Saturation float32
-	Luminosity float32
-}
-
-type Shadows struct {
-	Projection commonConfig.Projection
-	Position   commonConfig.SerializableVec3
-	Forwards   commonConfig.SerializableVec3
-	Up         commonConfig.SerializableVec3
-}
-
 type DefaultCamera struct {
 	Position commonConfig.SerializableVec3
 	Forwards commonConfig.SerializableVec3
@@ -74,13 +54,8 @@ type Camera struct {
 }
 
 type Configuration struct {
-	Simulation    Simulation
-	Window        commonConfig.Window
-	Text          Text
-	ColorGradient ColorGradient
-	Shadows       Shadows
-	Perspective   commonConfig.Perspective
-	Camera        Camera
+	Simulation Simulation
+	Camera     Camera
 }
 
 var Config Configuration
@@ -106,7 +81,8 @@ func (c *Camera) GetDefaultUp() mgl32.Vec3 {
 		c.Default.Up.Z}
 }
 
-func Load(configFileName string) {
+func Load(configFileName string, commonConfigFileName string) {
+	commonConfig.Load(commonConfigFileName)
 	bytes := commonIo.ReadFileAsBytes(configFileName)
 
 	if err := json.Unmarshal(bytes, &Config); err != nil {

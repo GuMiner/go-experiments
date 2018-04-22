@@ -1,7 +1,7 @@
 package vehicle
 
 import (
-	"go-experiments/voxelli/color"
+	"go-experiments/common/color"
 	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/roadway"
 	"go-experiments/voxelli/voxelArray"
@@ -144,7 +144,7 @@ func (v *Vehicle) Render(renderer *renderer.VoxelArrayObjectRenderer, maxScore f
 
 	overlayColor := mgl32.Vec3{1, 1, 1}
 	if isColorOverlayEnabled {
-		overlayColor = color.LookupColor(v.Score / maxScore)
+		overlayColor = commonColor.LookupColor(v.Score / maxScore)
 	}
 
 	renderer.Render(v.Shape, &model, overlayColor)

@@ -1,4 +1,4 @@
-package color
+package commonColor
 
 import (
 	color "github.com/gerow/go-color"
