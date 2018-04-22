@@ -1,7 +1,7 @@
 package textRenderer
 
 import (
-	"go-experiments/voxelli/opengl"
+	"go-experiments/common/opengl"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
@@ -20,7 +20,7 @@ type TextRendererProgram struct {
 
 func NewTextRendererProgram() *TextRendererProgram {
 	var program TextRendererProgram
-	program.shaderProgram = opengl.CreateProgram("./text/renderer/textRenderer")
+	program.shaderProgram = commonOpenGl.CreateProgram("./text/renderer/textRenderer")
 
 	program.projectionLoc = gl.GetUniformLocation(program.shaderProgram, gl.Str("projection\x00"))
 	program.cameraLoc = gl.GetUniformLocation(program.shaderProgram, gl.Str("camera\x00"))

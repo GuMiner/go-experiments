@@ -1,7 +1,7 @@
 package renderer
 
 import (
-	"go-experiments/voxelli/opengl"
+	"go-experiments/common/opengl"
 	"go-experiments/voxelli/voxelArray"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
@@ -72,7 +72,7 @@ func NewVoxelArrayObjectRenderer() *VoxelArrayObjectRenderer {
 	var renderer VoxelArrayObjectRenderer
 
 	renderer.shaderProgram = shaderProgramBase{}
-	renderer.shaderProgram.program = opengl.CreateProgram("./voxelArray/voxelArrayRenderer")
+	renderer.shaderProgram.program = commonOpenGl.CreateProgram("./voxelArray/voxelArrayRenderer")
 
 	renderer.shaderProgram.projectionLoc = gl.GetUniformLocation(renderer.shaderProgram.program, gl.Str("projection\x00"))
 	renderer.shaderProgram.cameraLoc = gl.GetUniformLocation(renderer.shaderProgram.program, gl.Str("camera\x00"))
@@ -83,7 +83,7 @@ func NewVoxelArrayObjectRenderer() *VoxelArrayObjectRenderer {
 	renderer.shadowTextureLoc = gl.GetUniformLocation(renderer.shaderProgram.program, gl.Str("shadowTexture\x00"))
 
 	renderer.depthShaderProgram = shaderProgramBase{}
-	renderer.depthShaderProgram.program = opengl.CreateProgram("./voxelArray/voxelArrayDepthRenderer")
+	renderer.depthShaderProgram.program = commonOpenGl.CreateProgram("./voxelArray/voxelArrayDepthRenderer")
 	renderer.depthShaderProgram.projectionLoc = gl.GetUniformLocation(renderer.depthShaderProgram.program, gl.Str("projection\x00"))
 	renderer.depthShaderProgram.cameraLoc = gl.GetUniformLocation(renderer.depthShaderProgram.program, gl.Str("camera\x00"))
 	renderer.depthShaderProgram.modelLoc = gl.GetUniformLocation(renderer.depthShaderProgram.program, gl.Str("model\x00"))

@@ -3,6 +3,8 @@ package main
 // See https://github.com/ArztSamuel/Applying_EANNs for the inspiration for this.
 
 import (
+	"go-experiments/common/opengl"
+
 	"go-experiments/voxelli/color"
 	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/diagnostics"
@@ -49,7 +51,7 @@ func checkTextToggles() {
 func main() {
 	config.Load("./data/config.json")
 
-	opengl.InitGlfw()
+	commonOpenGl.InitGlfw()
 	defer glfw.Terminate()
 
 	viewport.Init()
@@ -64,7 +66,7 @@ func main() {
 	window.MakeContextCurrent()
 
 	setInputCallbacks(window)
-	opengl.ConfigureOpenGl()
+	commonOpenGl.ConfigureOpenGl()
 
 	input.LoadKeyAssignments()
 	defer input.SaveKeyAssignments()

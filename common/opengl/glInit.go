@@ -1,4 +1,4 @@
-package opengl
+package commonOpenGl
 
 // Simplifies OpenGL initialization
 import (

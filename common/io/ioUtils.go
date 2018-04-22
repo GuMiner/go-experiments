@@ -1,4 +1,4 @@
-package utils
+package commonIo
 
 // Simplifies general IO operations
 import "io/ioutil"

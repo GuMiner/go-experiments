@@ -1,9 +1,9 @@
-package opengl
+package commonOpenGl
 
 // Simplifies creating a GLSL GPU shading program
 import (
 	"fmt"
-	"go-experiments/voxelli/utils"
+	"go-experiments/common/io"
 	"strings"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
@@ -13,7 +13,7 @@ import (
 func compileShader(shaderPath string, shaderType uint32) (shader uint32, errorIfAny error) {
 	shader = gl.CreateShader(shaderType)
 
-	source := utils.ReadFile(shaderPath)
+	source := commonIo.ReadFile(shaderPath)
 	csources, free := gl.Strs(source + "\x00")
 
 	gl.ShaderSource(shader, 1, csources, nil)

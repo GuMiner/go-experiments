@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"go-experiments/common/math"
 	"go-experiments/voxelli/text"
-	"go-experiments/voxelli/utils"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -55,7 +55,7 @@ func (f *HelpText) Render(camera *Camera) {
 	tiltRotation := mgl32.HomogRotate3D(0, right)
 
 	// Reverse the camera rotation
-	orientRotation := utils.InverseLookAtRotationMatrix(camera.Position, camera.Target, camera.Up)
+	orientRotation := commonMath.InverseLookAtRotationMatrix(camera.Position, camera.Target, camera.Up)
 
 	for i, helpTextLine := range helpTextLines {
 

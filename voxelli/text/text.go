@@ -2,8 +2,10 @@ package text
 
 import (
 	"fmt"
+	"go-experiments/common/io"
+	"go-experiments/common/math"
+	"go-experiments/common/opengl"
 	"go-experiments/voxelli/config"
-	"go-experiments/voxelli/opengl"
 	"go-experiments/voxelli/text/renderer"
 	"go-experiments/voxelli/utils"
 	"image"
@@ -99,7 +101,7 @@ func (r *TextRenderer) Delete() {
 }
 
 func loadContext(fontFileName string) (*truetype.Font, *freetype.Context) {
-	fontFile := utils.ReadFileAsBytes(fontFileName)
+	fontFile := commonIo.ReadFileAsBytes(fontFileName)
 
 	// Loads all the ASCII printable characters
 	context := freetype.NewContext()
@@ -202,7 +204,7 @@ func (r *TextRenderer) addOrGetRuneData(runeChar rune) characterIndex {
 
 // Adds in a new font texture
 func (r *TextRenderer) addFontTexture() {
-	maxTextures := opengl.GetGlCaps().MaxTextures
+	maxTextures := commonOpenGl.GetGlCaps().MaxTextures
 	if int32(len(r.fontTextures)) >= maxTextures {
 		howToFix := "Either reduce the number of unique characters being rendered or upgrade your graphics hardware."
 		panic(fmt.Sprintf("Cannot add a new font texture as we've exceeded the maximum number of textures (%v).\n%v\n", maxTextures, howToFix))
@@ -228,7 +230,8 @@ func NewTextRenderer(fontFile string) *TextRenderer {
 	renderer.buffers = textRenderer.NewTextProgramBuffers()
 	renderer.font, renderer.context = loadContext(fontFile)
 
-	renderer.textureSize = utils.MinInt32(opengl.GetGlCaps().MaxTextureSize, 2048)
+	renderer.textureSize = commonMath.MinInt32(
+		commonOpenGl.GetGlCaps().MaxTextureSize, 2048)
 	renderer.addFontTexture()
 
 	return &renderer

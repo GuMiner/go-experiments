@@ -2,6 +2,7 @@ package roadway
 
 import (
 	"fmt"
+	"go-experiments/common/io"
 	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/geometry"
 	"go-experiments/voxelli/utils"
@@ -172,7 +173,7 @@ func NewRoadway(fileName string) *Roadway {
 		return c == ' ' || c == '\t'
 	}
 
-	file := utils.ReadFile(fileName)
+	file := commonIo.ReadFile(fileName)
 
 	lines := strings.FieldsFunc(file, newlineSplitFunction)
 	if len(lines) < 3 {

@@ -3,8 +3,8 @@ package main
 
 import (
 	"fmt"
+	"go-experiments/common/math"
 	"go-experiments/voxelli/text"
-	"go-experiments/voxelli/utils"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -62,7 +62,7 @@ func (f *FpsCounter) Render(camera *Camera) {
 	center := mgl32.Translate3D(-renderSize.X()/2, -renderSize.Y()/2, 0)
 
 	// Reverse the camera rotation
-	orientRotation := utils.InverseLookAtRotationMatrix(camera.Position, camera.Target, camera.Up)
+	orientRotation := commonMath.InverseLookAtRotationMatrix(camera.Position, camera.Target, camera.Up)
 
 	fpsModelMatrix := frontOfCamera.Mul4(
 		orientRotation.Mul4(

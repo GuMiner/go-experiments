@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"go-experiments/voxelli/opengl"
-	"go-experiments/voxelli/utils"
+	"go-experiments/common/math"
+	"go-experiments/common/opengl"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
 )
@@ -22,7 +22,7 @@ func NewShadowBuffer() *ShadowBuffer {
 
 	var buffer ShadowBuffer
 
-	maxTextureSize := utils.MinInt32(2048, opengl.GetGlCaps().MaxTextureSize)
+	maxTextureSize := commonMath.MinInt32(2048, commonOpenGl.GetGlCaps().MaxTextureSize)
 	buffer.Width = maxTextureSize
 	buffer.Height = maxTextureSize
 

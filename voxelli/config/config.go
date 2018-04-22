@@ -3,25 +3,11 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"go-experiments/voxelli/utils"
+	"go-experiments/common/config"
+	"go-experiments/common/io"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
-
-type SerializableVec3 struct {
-	X float32
-	Y float32
-	Z float32
-}
-
-type Projection struct {
-	Left   float32
-	Right  float32
-	Bottom float32
-	Top    float32
-	Near   float32
-	Far    float32
-}
 
 type Agent struct {
 	NeuralNet      []int
@@ -62,15 +48,6 @@ type Text struct {
 	FontFile              string
 }
 
-type Window struct {
-	Width           int
-	Height          int
-	Title           string
-	BackgroundColor SerializableVec3
-	OpenGlMajor     int
-	OpenGlMinor     int
-}
-
 type ColorGradient struct {
 	Steps      int
 	Saturation float32
@@ -78,22 +55,16 @@ type ColorGradient struct {
 }
 
 type Shadows struct {
-	Projection Projection
-	Position   SerializableVec3
-	Forwards   SerializableVec3
-	Up         SerializableVec3
-}
-
-type Perspective struct {
-	FovY float32
-	Near float32
-	Far  float32
+	Projection commonConfig.Projection
+	Position   commonConfig.SerializableVec3
+	Forwards   commonConfig.SerializableVec3
+	Up         commonConfig.SerializableVec3
 }
 
 type DefaultCamera struct {
-	Position SerializableVec3
-	Forwards SerializableVec3
-	Up       SerializableVec3
+	Position commonConfig.SerializableVec3
+	Forwards commonConfig.SerializableVec3
+	Up       commonConfig.SerializableVec3
 }
 
 type Camera struct {
@@ -104,11 +75,11 @@ type Camera struct {
 
 type Configuration struct {
 	Simulation    Simulation
-	Window        Window
+	Window        commonConfig.Window
 	Text          Text
 	ColorGradient ColorGradient
 	Shadows       Shadows
-	Perspective   Perspective
+	Perspective   commonConfig.Perspective
 	Camera        Camera
 }
 
@@ -136,7 +107,7 @@ func (c *Camera) GetDefaultUp() mgl32.Vec3 {
 }
 
 func Load(configFileName string) {
-	bytes := utils.ReadFileAsBytes(configFileName)
+	bytes := commonIo.ReadFileAsBytes(configFileName)
 
 	if err := json.Unmarshal(bytes, &Config); err != nil {
 		panic(err)

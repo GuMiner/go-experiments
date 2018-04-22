@@ -1,7 +1,7 @@
 package text
 
 import (
-	"go-experiments/voxelli/utils"
+	"go-experiments/common/math"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -19,7 +19,7 @@ func (r *Sentence) GetRenderSize(text string) mgl32.Vec2 {
 	for _, runeChar := range text {
 		size := r.TextRenderer.getCharacterSize(runeChar)
 		aggregateSize[0] += size[0]
-		aggregateSize[1] = utils.MaxFloat32(aggregateSize[1], size[1])
+		aggregateSize[1] = commonMath.MaxFloat32(aggregateSize[1], size[1])
 	}
 
 	return aggregateSize

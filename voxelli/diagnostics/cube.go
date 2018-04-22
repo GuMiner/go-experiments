@@ -2,7 +2,7 @@ package diagnostics
 
 // Defines a small cube
 import (
-	"go-experiments/voxelli/opengl"
+	"go-experiments/common/opengl"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
@@ -80,7 +80,7 @@ func vertexCount() int32 {
 
 func InitCube() {
 	cube = new(Cube)
-	cube.shaderProgram = opengl.CreateProgram("./diagnostics/debugRenderer")
+	cube.shaderProgram = commonOpenGl.CreateProgram("./diagnostics/debugRenderer")
 
 	// Get locations of everything used in this program.
 	cube.projectionLoc = gl.GetUniformLocation(cube.shaderProgram, gl.Str("projection\x00"))

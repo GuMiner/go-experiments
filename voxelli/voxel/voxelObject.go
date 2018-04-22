@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 
+	"go-experiments/common/io"
 	"go-experiments/voxelli/utils"
 )
 
@@ -151,7 +152,7 @@ func checkHeader(data []uint8) {
 }
 
 func NewVoxelObject(fileName string) *VoxelObject {
-	data := utils.ReadFileAsBytes(fileName)
+	data := commonIo.ReadFileAsBytes(fileName)
 
 	// Validate this is a VOX file and we start out with our proper MAIN chunk
 	checkHeader(data[0:])
