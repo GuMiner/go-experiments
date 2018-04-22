@@ -10,10 +10,15 @@ import (
 )
 
 // Also pulled mostly from https://github.com/go-gl/example/blob/master/gl41core-cube/cube.go
-func compileShader(shaderPath string, shaderType uint32) (shader uint32, errorIfAny error) {
+
+func compileShader(shaderPath string, shaderType uint32) (shader uint32) {
+	source := commonIo.ReadFile(shaderPath)
+	return compileShaderFromSource(source, shaderType)
+}
+
+func compileShaderFromSource(source string, shaderType uint32) (shader uint32) {
 	shader = gl.CreateShader(shaderType)
 
-	source := commonIo.ReadFile(shaderPath)
 	csources, free := gl.Strs(source + "\x00")
 
 	gl.ShaderSource(shader, 1, csources, nil)
@@ -29,25 +34,27 @@ func compileShader(shaderPath string, shaderType uint32) (shader uint32, errorIf
 		log := strings.Repeat("\x00", int(logLength+1))
 		gl.GetShaderInfoLog(shader, logLength, nil, gl.Str(log))
 
-		return 0, fmt.Errorf("failed to compile %v: %v", source, log)
+		panic(fmt.Sprintf("Failed to compile %v: %v", source, log))
 	}
 
-	return shader, nil
+	return shader
 }
 
 // Creates an OpenGL program from a vertex shader and fragment shader, returning the program ID.
 // Pulled mostly directly from https://github.com/go-gl/example/blob/master/gl41core-cube/cube.go
 func CreateProgram(baseProgramName string) (program uint32) {
-	vertexShader, err := compileShader(baseProgramName+".vs", gl.VERTEX_SHADER)
-	if err != nil {
-		panic(err)
-	}
+	vertexShader := compileShader(baseProgramName+".vs", gl.VERTEX_SHADER)
+	fragmentShader := compileShader(baseProgramName+".fs", gl.FRAGMENT_SHADER)
+	return createProgramFromShaders(vertexShader, fragmentShader)
+}
 
-	fragmentShader, err := compileShader(baseProgramName+".fs", gl.FRAGMENT_SHADER)
-	if err != nil {
-		panic(err)
-	}
+func CreateProgramFromSource(vertexShaderSource string, fragmentShaderSource string) (program uint32) {
+	vertexShader := compileShaderFromSource(vertexShaderSource, gl.VERTEX_SHADER)
+	fragmentShader := compileShaderFromSource(fragmentShaderSource, gl.FRAGMENT_SHADER)
+	return createProgramFromShaders(vertexShader, fragmentShader)
+}
 
+func createProgramFromShaders(vertexShader uint32, fragmentShader uint32) (program uint32) {
 	program = gl.CreateProgram()
 
 	gl.AttachShader(program, vertexShader)
@@ -63,7 +70,7 @@ func CreateProgram(baseProgramName string) (program uint32) {
 		log := strings.Repeat("\x00", int(logLength+1))
 		gl.GetProgramInfoLog(program, logLength, nil, gl.Str(log))
 
-		panic(fmt.Errorf("failed to link program: %v", log))
+		panic(fmt.Errorf("Failed to link program: %v", log))
 	}
 
 	gl.DeleteShader(vertexShader)

@@ -3,6 +3,8 @@ package main
 // Defines the data and data flow for the main simulation engine
 import (
 	"fmt"
+	"go-experiments/common/diagnostics"
+
 	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/diagnostics"
 	"go-experiments/voxelli/genetics"
@@ -21,13 +23,13 @@ func debugDrawCarInfo(car *vehicle.Vehicle, boundaries []float32) {
 
 	// Debug draw where we are looking, assuming two eyes only
 	model := mgl32.Translate3D(eyePositions[0].X()+2*eyeDirections[0].X(), eyePositions[0].Y()+2*eyeDirections[0].Y(), 8)
-	diagnostics.Render(mgl32.Vec4{0.0, 1.0, 0.0, 1.0}, &model)
+	commonDiagnostics.Render(mgl32.Vec4{0.0, 1.0, 0.0, 1.0}, &model)
 
 	model = mgl32.Translate3D(eyePositions[1].X()+2*eyeDirections[1].X(), eyePositions[1].Y()+2*eyeDirections[1].Y(), 8)
-	diagnostics.Render(mgl32.Vec4{0.0, 1.0, 1.0, 1.0}, &model) // Cyan
+	commonDiagnostics.Render(mgl32.Vec4{0.0, 1.0, 1.0, 1.0}, &model) // Cyan
 
 	model = mgl32.Translate3D(eyePositions[2].X()+2*eyeDirections[2].X(), eyePositions[2].Y()+2*eyeDirections[2].Y(), 8)
-	diagnostics.Render(mgl32.Vec4{1.0, 1.0, 1.0, 1.0}, &model) // Cyan
+	commonDiagnostics.Render(mgl32.Vec4{1.0, 1.0, 1.0, 1.0}, &model) // Cyan
 
 	// Debug draw where the boundaries are.
 	eyePositions[0] = eyePositions[0].Add(eyeDirections[0].Mul(boundaries[0]))
@@ -35,13 +37,13 @@ func debugDrawCarInfo(car *vehicle.Vehicle, boundaries []float32) {
 	eyePositions[2] = eyePositions[2].Add(eyeDirections[2].Mul(boundaries[2]))
 
 	model = mgl32.Translate3D(eyePositions[0].X(), eyePositions[0].Y(), 8)
-	diagnostics.Render(mgl32.Vec4{1.0, 0.0, 0.0, 1.0}, &model)
+	commonDiagnostics.Render(mgl32.Vec4{1.0, 0.0, 0.0, 1.0}, &model)
 
 	model = mgl32.Translate3D(eyePositions[1].X(), eyePositions[1].Y(), 8)
-	diagnostics.Render(mgl32.Vec4{1.0, 1.0, 0.0, 1.0}, &model) // Yellow
+	commonDiagnostics.Render(mgl32.Vec4{1.0, 1.0, 0.0, 1.0}, &model) // Yellow
 
 	model = mgl32.Translate3D(eyePositions[2].X(), eyePositions[2].Y(), 8)
-	diagnostics.Render(mgl32.Vec4{1.0, 1.0, 1.0, 1.0}, &model) // Yellow
+	commonDiagnostics.Render(mgl32.Vec4{1.0, 1.0, 1.0, 1.0}, &model) // Yellow
 }
 
 var simpleRoadway *roadway.Roadway

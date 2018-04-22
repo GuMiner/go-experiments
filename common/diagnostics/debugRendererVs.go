@@ -1,3 +1,6 @@
+package commonDiagnostics
+
+var debugVertexShader string = `
 #version 400 core
 
 uniform mat4 projection;
@@ -15,4 +18,4 @@ void main(void)
 {
     fs_color = colorOverride.xyz;
     gl_Position = projection * camera * model * vec4(position, 1.0f);
-}
+}`

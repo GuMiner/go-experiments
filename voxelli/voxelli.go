@@ -5,6 +5,7 @@ package main
 import (
 	"go-experiments/common/color"
 	"go-experiments/common/config"
+	"go-experiments/common/diagnostics"
 	"go-experiments/common/opengl"
 	"go-experiments/common/shadow"
 
@@ -76,8 +77,8 @@ func main() {
 	shadowBuffer := shadow.NewShadowBuffer()
 	defer shadowBuffer.Delete()
 
-	diagnostics.InitCube()
-	defer diagnostics.DeleteCube()
+	commonDiagnostics.InitCube()
+	defer commonDiagnostics.DeleteCube()
 
 	commonColor.InitializeColorGradient(
 		commonConfig.Config.ColorGradient.Steps,
@@ -100,7 +101,7 @@ func main() {
 	var renderers []renderer.Renderer
 	renderers = append(renderers, voxelArrayObjectRenderer)
 	renderers = append(renderers, textRenderer)
-	renderers = append(renderers, diagnostics.GetCube())
+	renderers = append(renderers, commonDiagnostics.GetCube())
 
 	camera := NewCamera(
 		config.Config.Camera.GetDefaultPos(),

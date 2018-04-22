@@ -1,4 +1,4 @@
-package diagnostics
+package commonDiagnostics
 
 // Defines a small cube
 import (
@@ -80,7 +80,8 @@ func vertexCount() int32 {
 
 func InitCube() {
 	cube = new(Cube)
-	cube.shaderProgram = commonOpenGl.CreateProgram("./diagnostics/debugRenderer")
+	cube.shaderProgram = commonOpenGl.CreateProgramFromSource(
+		debugVertexShader, debugFragmentShader)
 
 	// Get locations of everything used in this program.
 	cube.projectionLoc = gl.GetUniformLocation(cube.shaderProgram, gl.Str("projection\x00"))
