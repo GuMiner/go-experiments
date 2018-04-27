@@ -6,8 +6,9 @@ import (
 	"go-experiments/common/diagnostics"
 	"go-experiments/common/opengl"
 	"go-experiments/common/shadow"
-	"go-experiments/voxelli/input"
-	"go-experiments/voxelli/renderer"
+
+	"go-experiments/sim/engine/terrain"
+	"go-experiments/sim/visuals/ui"
 
 	"github.com/go-gl/mathgl/mgl32"
 
@@ -24,9 +25,9 @@ func init() {
 
 func setInputCallbacks(window *glfw.Window) {
 	window.SetFramebufferSizeCallback(commonOpenGl.ResizeViewport)
-	window.SetCursorPosCallback(input.HandleMouseMove)
-	window.SetMouseButtonCallback(input.HandleMouseButton)
-	window.SetKeyCallback(input.HandleKeyInput)
+	//window.SetCursorPosCallback(input.HandleMouseMove)
+	//window.SetMouseButtonCallback(input.HandleMouseButton)
+	//window.SetKeyCallback(input.HandleKeyInput)
 }
 
 func main() {
@@ -64,6 +65,42 @@ func main() {
 		commonConfig.Config.ColorGradient.Saturation,
 		commonConfig.Config.ColorGradient.Luminosity)
 
+	overlayProgram := ui.NewOverlayShaderProgram()
+	defer overlayProgram.Delete()
+
+	overlay := ui.NewOverlay()
+
+	// Setup simulation
+	terrain.Init(1234) // TODO: Put this in config as the game seed
+
+	imageWidth := 800
+	imageHeight := 600
+	noisyTerrain := terrain.Generate(imageWidth, imageHeight)
+
+	byteTerrain := make([]uint8, imageWidth*imageHeight*4)
+	for i := 0; i < imageWidth; i++ {
+		for j := 0; j < imageHeight; j++ {
+			intensity := uint8(noisyTerrain[i+j*imageWidth] * 255.0)
+			byteTerrain[(i+j*imageWidth)*4] = intensity
+			byteTerrain[(i+j*imageWidth)*4+1] = intensity
+			byteTerrain[(i+j*imageWidth)*4+2] = intensity
+			byteTerrain[(i+j*imageWidth)*4+3] = intensity
+		}
+	}
+
+	var noisyTerrainId uint32
+	gl.GenTextures(1, &noisyTerrainId)
+	defer gl.DeleteTextures(1, &noisyTerrainId)
+
+	gl.ActiveTexture(gl.TEXTURE0)
+	gl.BindTexture(gl.TEXTURE_2D, noisyTerrainId)
+	gl.TexStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, int32(imageWidth), int32(imageHeight))
+	gl.TexSubImage2D(gl.TEXTURE_2D, 0,
+		0, 0, int32(imageWidth), int32(imageHeight),
+		gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(byteTerrain))
+
+	overlay.UpdateTexture(noisyTerrainId)
+
 	startTime := time.Now()
 	frameTime := float32(0.1)
 	lastElapsed := float32(0.0)
@@ -91,6 +128,9 @@ func main() {
 		commonDiagnostics.Render(
 			mgl32.Vec4{0, 1, 0, 1},
 			&model)
+
+		overlayProgram.PreRender()
+		overlayProgram.Render(overlay)
 	}
 
 	for !window.ShouldClose() {
@@ -105,9 +145,9 @@ func main() {
 			gl.Clear(gl.DEPTH_BUFFER_BIT)
 			gl.CullFace(gl.FRONT)
 
-			renderer.EnableDepthModeOnly()
+			//renderer.EnableDepthModeOnly()
 			// TODO: Render depth only
-			renderer.DisableDepthModeOnly()
+			//renderer.DisableDepthModeOnly()
 
 			gl.CullFace(gl.BACK)
 		})
