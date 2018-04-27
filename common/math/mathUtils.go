@@ -2,7 +2,6 @@ package commonMath
 
 import "github.com/go-gl/mathgl/mgl32"
 
-// Returns the maximum of a and b
 func MaxFloat32(a, b float32) float32 {
 	if a > b {
 		return a

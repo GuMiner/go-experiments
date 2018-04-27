@@ -124,10 +124,10 @@ func main() {
 	render := func() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		model := mgl32.Translate3D(0, 0, 0)
-		commonDiagnostics.Render(
-			mgl32.Vec4{0, 1, 0, 1},
-			&model)
+		//model := mgl32.Translate3D(0, 0, 0)
+		//commonDiagnostics.Render(
+		//	mgl32.Vec4{0, 1, 0, 1},
+		//	&model)
 
 		overlayProgram.PreRender()
 		overlayProgram.Render(overlay)
