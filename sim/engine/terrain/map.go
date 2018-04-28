@@ -1,6 +1,9 @@
 package terrain
 
-import "go-experiments/sim/config"
+import (
+	"fmt"
+	"go-experiments/sim/config"
+)
 
 type TerrainTexel struct {
 	TerrainType TerrainType
@@ -14,6 +17,9 @@ type TerrainTexel struct {
 
 type TerrainSubMap struct {
 	Texels [][]TerrainTexel
+
+	generated                bool
+	generationCompleteSignal chan bool
 }
 
 type TerrainMap struct {
@@ -31,34 +37,59 @@ func NewTerrainSubMap(x, y int) *TerrainSubMap {
 	regionSize := config.Config.Terrain.RegionSize
 
 	terrainSubMap := TerrainSubMap{
-		Texels: make([][]TerrainTexel, regionSize*regionSize)}
+		Texels:                   make([][]TerrainTexel, regionSize*regionSize),
+		generated:                false,
+		generationCompleteSignal: make(chan bool)}
 
 	for i := 0; i < regionSize; i++ {
 		terrainSubMap.Texels[i] = make([]TerrainTexel, regionSize)
 	}
 
+	return &terrainSubMap
+}
+
+func (t *TerrainSubMap) GenerateSubMap(x, y int) {
+	regionSize := config.Config.Terrain.RegionSize
 	heights := Generate(regionSize, regionSize, x*regionSize, y*regionSize)
 	for i := 0; i < regionSize; i++ {
 		for j := 0; j < regionSize; j++ {
 			height := heights[i+j*regionSize]
 			terrainType, percent := GetTerrainType(height)
-			terrainSubMap.Texels[i][j] = TerrainTexel{
+			t.Texels[i][j] = TerrainTexel{
 				TerrainType:   terrainType,
 				Height:        height,
 				HeightPercent: percent}
 		}
 	}
 
-	return &terrainSubMap
+	t.generated = true
+
+	fmt.Printf("Generated sub map terrain for [%v, %v]\n", x, y)
+	t.generationCompleteSignal <- true
+	close(t.generationCompleteSignal)
+
+	fmt.Printf("  Terrain sub map [%v, %v] consumed.\n", x, y)
 }
 
-func (t *TerrainMap) GetOrAddRegion(x, y int) *TerrainSubMap {
+// Adds a region to the map, without waiting for its generation to complete.
+func (t *TerrainMap) AddRegionIfMissing(x, y int) {
 	if _, ok := t.SubMaps[x]; !ok {
 		t.SubMaps[x] = make(map[int]*TerrainSubMap)
 	}
 
 	if _, ok := t.SubMaps[x][y]; !ok {
 		t.SubMaps[x][y] = NewTerrainSubMap(x, y)
+		go t.SubMaps[x][y].GenerateSubMap(x, y)
+	}
+}
+
+func (t *TerrainMap) GetOrAddRegion(x, y int) *TerrainSubMap {
+	t.AddRegionIfMissing(x, y)
+
+	// If added but not generated, a generation thread is running
+	// Wait for it before continuing.
+	if !t.SubMaps[x][y].generated {
+		_ = <-t.SubMaps[x][y].generationCompleteSignal
 	}
 
 	return t.SubMaps[x][y]

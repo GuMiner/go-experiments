@@ -47,18 +47,41 @@ func (c *Camera) Update(frameTime float32) {
 	}
 }
 
-func (c *Camera) ComputeVisibleRegions() []utils.IntVec2 {
+func (c *Camera) getMinMaxVisibleRange() (minTile mgl32.Vec2, maxTile mgl32.Vec2) {
 	windowSize := commonOpenGl.GetWindowSize()
 	regionSize := config.Config.Terrain.RegionSize
 
 	// TODO: Handle zoom factor
-	minTile := c.MapToBoard(mgl32.Vec2{0, 0}).Mul(1.0 / float32(regionSize))
-	maxTile := c.MapToBoard(windowSize).Mul(1.0 / float32(regionSize))
+	minTile = c.MapToBoard(mgl32.Vec2{0, 0}).Mul(1.0 / float32(regionSize))
+	maxTile = c.MapToBoard(windowSize).Mul(1.0 / float32(regionSize))
+	return minTile, maxTile
+}
+
+func (c *Camera) ComputeVisibleRegions() []utils.IntVec2 {
+	minTile, maxTile := c.getMinMaxVisibleRange()
 
 	visibleTiles := make([]utils.IntVec2, 0)
 	for i := int(minTile.X() - 1.0); i <= int(maxTile.X()+1.0); i++ {
 		for j := int(minTile.Y() - 1.0); j <= int(maxTile.Y()+1.0); j++ {
 			visibleTiles = append(visibleTiles, utils.IntVec2{i, j})
+		}
+	}
+
+	return visibleTiles
+}
+
+func (c *Camera) ComputePrecacheRegions() []utils.IntVec2 {
+	minTile, maxTile := c.getMinMaxVisibleRange()
+
+	visibleTiles := make([]utils.IntVec2, 0)
+	for i := int(minTile.X() - 2.0); i <= int(maxTile.X()+2.0); i++ {
+		for j := int(minTile.Y() - 2.0); j <= int(maxTile.Y()+2.0); j++ {
+			if i == int(minTile.X()-2.0) ||
+				i == int(minTile.X()+2.0) ||
+				j == int(minTile.Y()-2.0) ||
+				j == int(maxTile.Y()+2.0) {
+				visibleTiles = append(visibleTiles, utils.IntVec2{i, j})
+			}
 		}
 	}
 

@@ -85,6 +85,11 @@ func main() {
 		camera.Update(frameTime)
 
 		// Load new terrain regions based on what is visible.
+		precacheRegions := camera.ComputePrecacheRegions()
+		for _, region := range precacheRegions {
+			terrainMap.AddRegionIfMissing(region.X(), region.Y())
+		}
+
 		visibleRegions := camera.ComputeVisibleRegions()
 		for _, region := range visibleRegions {
 			subMap := terrainMap.GetOrAddRegion(region.X(), region.Y())
