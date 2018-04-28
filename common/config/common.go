@@ -4,12 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"go-experiments/common/io"
+
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 type SerializableVec3 struct {
 	X float32
 	Y float32
 	Z float32
+}
+
+func (v SerializableVec3) ToVec3() mgl32.Vec3 {
+	return mgl32.Vec3{v.X, v.Y, v.Z}
 }
 
 type CommonConfig struct {

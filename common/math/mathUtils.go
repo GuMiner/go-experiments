@@ -10,6 +10,14 @@ func MaxFloat32(a, b float32) float32 {
 	return b
 }
 
+func MinFloat32(a, b float32) float32 {
+	if a < b {
+		return a
+	}
+
+	return b
+}
+
 func MinInt32(a, b int32) int32 {
 	if a > b {
 		return b

@@ -35,6 +35,7 @@ type Terrain struct {
 	SnowLevel  float32
 
 	Generation GenerationParameters
+	RegionSize int
 }
 
 type TerrainUi struct {

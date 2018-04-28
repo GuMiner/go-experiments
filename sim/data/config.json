@@ -1,11 +1,11 @@
 {
     "terrain": {
-        "waterLevel": 0,
-        "sandLevel":  0.1,
-        "grassLevel": 0.3,
-        "hillLevel":  0.5,
+        "waterLevel": 0.05,
+        "sandLevel":  0.06,
+        "grassLevel": 0.35,
+        "hillLevel":  0.7,
         "rockLevel":  0.8,
-        "snowLevel":  0.9,
+        "snowLevel":  1,
         "generation": {
             "seed":  8642,
             "maxNoiseScale": 100,
@@ -14,8 +14,9 @@
             "maxNoiseContribution": 1, 
             "medNoiseContribution": 0.5, 
             "minNoiseContribution": 0.25, 
-            "powerFactor": 2.8          
-        }
+            "powerFactor": 2.5          
+        },
+        "regionSize":200
     },
     "ui": {
         "terrainUi": {

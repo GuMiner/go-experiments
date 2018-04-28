@@ -10,6 +10,7 @@ import (
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/terrain"
 	"go-experiments/sim/visuals/ui"
+	"go-experiments/sim/visuals/ui/flat"
 
 	"github.com/go-gl/mathgl/mgl32"
 
@@ -76,17 +77,18 @@ func main() {
 
 	imageWidth := 800
 	imageHeight := 600
-	noisyTerrain := terrain.Generate(imageWidth, imageHeight)
+	noisyTerrain := terrain.Generate(imageWidth, imageHeight, 0, 0)
 
 	byteTerrain := make([]uint8, imageWidth*imageHeight*4)
 	for i := 0; i < imageWidth; i++ {
 		for j := 0; j < imageHeight; j++ {
-			intensity := uint8(noisyTerrain[i+j*imageWidth] * 255.0)
+			height := noisyTerrain[i+j*imageWidth]
 
-			byteTerrain[(i+j*imageWidth)*4] = intensity
-			byteTerrain[(i+j*imageWidth)*4+1] = intensity
-			byteTerrain[(i+j*imageWidth)*4+2] = intensity
-			byteTerrain[(i+j*imageWidth)*4+3] = intensity
+			color, percent := flat.GetTerrainColor(float32(height))
+			byteTerrain[(i+j*imageWidth)*4] = uint8(color.X() * percent)
+			byteTerrain[(i+j*imageWidth)*4+1] = uint8(color.Y() * percent)
+			byteTerrain[(i+j*imageWidth)*4+2] = uint8(color.Z() * percent)
+			byteTerrain[(i+j*imageWidth)*4+3] = 1.0
 		}
 	}
 
