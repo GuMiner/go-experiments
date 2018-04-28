@@ -7,6 +7,23 @@ import (
 	"go-experiments/common/io"
 )
 
+type PowerPlant struct {
+	SmallOutput int
+	SmallSize   int
+
+	LargeOutput int
+	LargeSize   int
+}
+
+type Power struct {
+	Coal       PowerPlant
+	Nuclear    PowerPlant
+	NaturalGas PowerPlant
+	Wind       PowerPlant
+	Solar      PowerPlant
+	Geothermal PowerPlant
+}
+
 type GenerationParameters struct {
 	Seed int
 
@@ -60,6 +77,7 @@ type Ui struct {
 
 type Configuration struct {
 	Terrain Terrain
+	Power   Power
 	Ui      Ui
 }
 

@@ -18,6 +18,44 @@
         },
         "regionSize":200
     },
+    "power": {
+        "coal": {
+            "smallOutput": 22,
+            "smallSize": 22,
+            "largeOutput": 22,
+            "largeSize": 22
+        },
+        "nuclear": {
+            "smallOutput": 22,
+            "smallSize": 22,
+            "largeOutput": 22,
+            "largeSize": 22
+        },
+        "naturalGas": {
+            "smallOutput": 22,
+            "smallSize": 22,
+            "largeOutput": 22,
+            "largeSize": 22
+        },
+        "wind": {
+            "smallOutput": 22,
+            "smallSize": 22,
+            "largeOutput": 22,
+            "largeSize": 22
+        },
+        "solar": {
+            "smallOutput": 22,
+            "smallSize": 22,
+            "largeOutput": 22,
+            "largeSize": 22
+        },
+        "geothermal": {
+            "smallOutput": 22,
+            "smallSize": 22,
+            "largeOutput": 22,
+            "largeSize": 22
+        }
+    },
     "ui": {
         "terrainUi": {
             "waterColor": { "x": 0, "y": 145, "z": 255 },
