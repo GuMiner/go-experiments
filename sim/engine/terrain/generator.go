@@ -13,9 +13,9 @@ type TerrainGenerator struct {
 
 var terrainGenerator TerrainGenerator
 
-func Init(seed int64) {
+func Init(seed int) {
 	terrainGenerator = TerrainGenerator{
-		noise: opensimplex.NewWithSeed(seed)}
+		noise: opensimplex.NewWithSeed(int64(seed))}
 }
 
 func Generate(width, height int) []float64 {
@@ -29,9 +29,9 @@ func Generate(width, height int) []float64 {
 			scale := 100.0
 
 			grid[i+j*width] =
-				(GetNoise(i, j, scale) +
-					GetNoise(i, j, scale/2)/2 +
-					GetNoise(i, j, scale/4)/4) / 1.75
+				(getNoise(i, j, scale) +
+					getNoise(i, j, scale/2)/2 +
+					getNoise(i, j, scale/4)/4) / 1.75
 
 			grid[i+j*width] = 1.0 - (math.Pow(grid[i+j*width], 2.8) * 1.5)
 			min = math.Min(grid[i+j*width], min)
@@ -43,7 +43,7 @@ func Generate(width, height int) []float64 {
 	return grid
 }
 
-func GetNoise(x, y int, scale float64) float64 {
+func getNoise(x, y int, scale float64) float64 {
 	return (terrainGenerator.noise.Eval2(
 		float64(x)/scale, float64(y)/scale) + 1) / 2
 }

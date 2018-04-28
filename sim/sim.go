@@ -7,6 +7,7 @@ import (
 	"go-experiments/common/opengl"
 	"go-experiments/common/shadow"
 
+	"go-experiments/sim/config"
 	"go-experiments/sim/engine/terrain"
 	"go-experiments/sim/visuals/ui"
 
@@ -31,7 +32,7 @@ func setInputCallbacks(window *glfw.Window) {
 }
 
 func main() {
-	commonConfig.Load("./data/commonConfig.json")
+	config.Load("./data/config.json", "./data/commonConfig.json")
 
 	commonOpenGl.InitGlfw()
 	defer glfw.Terminate()
@@ -71,7 +72,7 @@ func main() {
 	overlay := ui.NewOverlay()
 
 	// Setup simulation
-	terrain.Init(1234) // TODO: Put this in config as the game seed
+	terrain.Init(config.Config.Terrain.Generation.Seed)
 
 	imageWidth := 800
 	imageHeight := 600
@@ -81,6 +82,7 @@ func main() {
 	for i := 0; i < imageWidth; i++ {
 		for j := 0; j < imageHeight; j++ {
 			intensity := uint8(noisyTerrain[i+j*imageWidth] * 255.0)
+
 			byteTerrain[(i+j*imageWidth)*4] = intensity
 			byteTerrain[(i+j*imageWidth)*4+1] = intensity
 			byteTerrain[(i+j*imageWidth)*4+2] = intensity

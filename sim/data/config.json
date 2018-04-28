@@ -1,0 +1,30 @@
+{
+    "terrain": {
+        "waterLevel": 0,
+        "sandLevel":  0.1,
+        "grassLevel": 0.3,
+        "hillLevel":  0.5,
+        "rockLevel":  0.8,
+        "snowLevel":  0.9,
+        "generation": {
+            "seed":  8642,
+            "maxNoiseScale": 100,
+            "medNoiseScale": 50,        
+            "minNoiseScale": 25,        
+            "maxNoiseContribution": 1, 
+            "medNoiseContribution": 0.5, 
+            "minNoiseContribution": 0.25, 
+            "powerFactor": 2.8          
+        }
+    },
+    "ui": {
+        "terrainUi": {
+            "waterColor": { "x": 0, "y": 145, "z": 255 },
+            "sandColor":  { "x": 247, "y": 252, "z": 197 },
+            "grassColor": { "x": 180, "y": 232, "z": 169 },
+            "hillColor":  { "x": 45, "y": 110, "z": 18 },
+            "rockColor":  { "x": 143, "y": 148, "z": 141 },
+            "snowColor":  { "x": 237, "y": 242, "z": 235 }
+        }
+    }
+}

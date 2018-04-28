@@ -1,0 +1,71 @@
+package config
+
+import (
+	"encoding/json"
+	"fmt"
+	"go-experiments/common/config"
+	"go-experiments/common/io"
+)
+
+type GenerationParameters struct {
+	Seed int
+
+	// The inverse of the noise scale. Lower values == more granular.
+	MaxNoiseScale float32
+	MedNoiseScale float32
+	MinNoiseScale float32
+
+	// Amount each noise amount contributes to the final total
+	// Can add up to anything.
+	MaxNoiseContribution float32
+	MedNoiseContribution float32
+	MinNoiseContribution float32
+
+	// How much the lower end of the noise spectrum is flattened
+	PowerFactor float32
+}
+
+type Terrain struct {
+	// Levels for which the given terrain begins.
+	WaterLevel float32
+	SandLevel  float32
+	GrassLevel float32
+	HillLevel  float32
+	RockLevel  float32
+	SnowLevel  float32
+
+	Generation GenerationParameters
+}
+
+type TerrainUi struct {
+	// Colors range from [0-256), not [0 - 1)
+	WaterColor commonConfig.SerializableVec3
+	SandColor  commonConfig.SerializableVec3
+	GrassColor commonConfig.SerializableVec3
+	HillColor  commonConfig.SerializableVec3
+	RockColor  commonConfig.SerializableVec3
+	SnowColor  commonConfig.SerializableVec3
+}
+
+type Ui struct {
+	TerrainUi TerrainUi
+}
+
+type Configuration struct {
+	Terrain Terrain
+	Ui      Ui
+}
+
+var Config Configuration
+
+func Load(configFileName string, commonConfigFileName string) {
+	commonConfig.Load(commonConfigFileName)
+	bytes := commonIo.ReadFileAsBytes(configFileName)
+
+	if err := json.Unmarshal(bytes, &Config); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Read in config '%v'.\n", configFileName)
+	fmt.Printf("  Config data: %v\n\n", Config)
+}
