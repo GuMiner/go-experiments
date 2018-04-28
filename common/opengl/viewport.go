@@ -8,8 +8,6 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-const aspectRatio float32 = 1.0
-
 var windowSize mgl32.Vec2
 
 func InitViewport() {
@@ -22,12 +20,8 @@ func ResizeViewport(window *glfw.Window, width int, height int) {
 	windowSize = mgl32.Vec2{float32(width), float32(height)}
 }
 
-func GetViewportWidth() float32 {
-	return windowSize.X()
-}
-
-func GetViewportHeight() float32 {
-	return windowSize.Y()
+func GetWindowSize() mgl32.Vec2 {
+	return windowSize
 }
 
 func ResetViewport() {

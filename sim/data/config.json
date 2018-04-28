@@ -26,6 +26,10 @@
             "hillColor":  { "x": 45, "y": 110, "z": 18 },
             "rockColor":  { "x": 143, "y": 148, "z": 141 },
             "snowColor":  { "x": 237, "y": 242, "z": 235 }
+        },
+        "camera": {
+            "mouseScrollFactor": 1.0,
+            "keyMotionFactor": 100.0
         }
     }
 }

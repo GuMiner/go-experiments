@@ -58,8 +58,8 @@ func main() {
 
 	commonOpenGl.InitViewport()
 	window, err := glfw.CreateWindow(
-		int(commonOpenGl.GetViewportWidth()),
-		int(commonOpenGl.GetViewportHeight()),
+		int(commonOpenGl.GetWindowSize().X()),
+		int(commonOpenGl.GetWindowSize().Y()),
 		commonConfig.Config.Window.Title, nil, nil)
 	if err != nil {
 		panic(err)
@@ -183,7 +183,7 @@ func main() {
 
 		projection = mgl32.Perspective(
 			mgl32.DegToRad(commonConfig.Config.Perspective.FovY),
-			commonOpenGl.GetViewportWidth()/commonOpenGl.GetViewportHeight(),
+			commonOpenGl.GetWindowSize().X()/commonOpenGl.GetWindowSize().Y(),
 			commonConfig.Config.Perspective.Near,
 			commonConfig.Config.Perspective.Far)
 		renderer.UpdateProjections(renderers, &projection)

@@ -35,9 +35,9 @@ func NewOverlayShaderProgram() *OverlayShaderProgram {
 	overlay.program = commonOpenGl.CreateProgram("./visuals/ui/shaders/overlay")
 
 	overlay.zOrderLoc = gl.GetUniformLocation(overlay.program, gl.Str("zOrder\x00"))
-	overlay.offsetLoc = gl.GetUniformLocation(overlay.program, gl.Str("samplerOffsetLoc\x00"))
-	overlay.scaleLoc = gl.GetUniformLocation(overlay.program, gl.Str("samplerScaleLoc\x00"))
-	overlay.overlayImageLoc = gl.GetUniformLocation(overlay.program, gl.Str("overlayImageLoc\x00"))
+	overlay.offsetLoc = gl.GetUniformLocation(overlay.program, gl.Str("offset\x00"))
+	overlay.scaleLoc = gl.GetUniformLocation(overlay.program, gl.Str("scale\x00"))
+	overlay.overlayImageLoc = gl.GetUniformLocation(overlay.program, gl.Str("overlayImage\x00"))
 
 	// Setup triangles for us to draw
 	gl.GenVertexArrays(1, &overlay.vao)

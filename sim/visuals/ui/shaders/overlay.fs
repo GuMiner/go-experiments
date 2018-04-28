@@ -3,8 +3,6 @@
 in vec2 fs_pos;
 
 uniform sampler2D overlayImage;
-uniform vec2 offset;
-uniform vec2 scale;
 
 out vec4 color;
 
@@ -13,11 +11,11 @@ void main(void) {
     const float minBounds = 0;
     const float maxBounds = 1;
 
-    vec2 texturePos = fs_pos; // * scale + offset;
-    if (texturePos.x < minBounds || texturePos.x > maxBounds || 
-        texturePos.y < minBounds || texturePos.y > maxBounds) {
-        color = vec4(1, 0, 0, 0.3); // Fully-transparent, green for debugging
+    if (fs_pos.x < minBounds || fs_pos.x > maxBounds || 
+        fs_pos.y < minBounds || fs_pos.y > maxBounds) {
+        // color = vec4(0, 1, 0, 0.3); // Fully-transparent, green for debugging
+        discard;
     } else {
-        color = vec4(texture(overlayImage, texturePos).xyz, 1.0f);
+        color = vec4(texture(overlayImage, fs_pos).xyz, 1.0f);
     }
 }

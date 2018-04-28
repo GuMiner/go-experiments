@@ -48,8 +48,14 @@ type TerrainUi struct {
 	SnowColor  commonConfig.SerializableVec3
 }
 
+type CameraConfig struct {
+	MouseScrollFactor float32
+	KeyMotionFactor   float32
+}
+
 type Ui struct {
 	TerrainUi TerrainUi
+	Camera    CameraConfig
 }
 
 type Configuration struct {
