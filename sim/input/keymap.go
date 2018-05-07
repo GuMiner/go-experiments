@@ -13,6 +13,13 @@ const (
 	MoveRight
 	MoveUp
 	MoveDown
+
+	SnapToGrid
+	SnapToAngle
+	SnapToElements
+
+	SelectMode
+	AddMode
 )
 
 const keyMapCacheName = "keymap"
@@ -20,22 +27,18 @@ const keyMapCacheName = "keymap"
 var keyMap map[KeyAssignment]glfw.Key = make(map[KeyAssignment]glfw.Key)
 
 func CreateDefaultKeyMap() {
-	keyMap[MoveLeft] = glfw.KeyA
-	keyMap[MoveRight] = glfw.KeyD
-	keyMap[MoveUp] = glfw.KeyW
-	keyMap[MoveDown] = glfw.KeyS
-}
+	keyMap[MoveLeft] = glfw.KeyLeft
+	keyMap[MoveRight] = glfw.KeyRight
+	keyMap[MoveUp] = glfw.KeyUp
+	keyMap[MoveDown] = glfw.KeyDown
 
-// func LoadKeyAssignments() {
-// 	cacheMiss := cache.LoadFromCache(keyMapCacheName, false, &keyMap)
-// 	if cacheMiss {
-// 		createDefaultKeyMap()
-// 	}
-// }
-//
-// func SaveKeyAssignments() {
-// 	cache.SaveToCache(keyMapCacheName, keyMap)
-// }
+	keyMap[SnapToGrid] = glfw.Key8
+	keyMap[SnapToAngle] = glfw.Key9
+	keyMap[SnapToElements] = glfw.Key0
+
+	keyMap[SelectMode] = glfw.KeyS
+	keyMap[AddMode] = glfw.KeyA
+}
 
 func IsPressed(key KeyAssignment) bool {
 	return pressedKeys[keyMap[key]]

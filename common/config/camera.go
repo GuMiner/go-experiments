@@ -13,4 +13,5 @@ type Window struct {
 	BackgroundColor SerializableVec3
 	OpenGlMajor     int
 	OpenGlMinor     int
+	Samples         int
 }

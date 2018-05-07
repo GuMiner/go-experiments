@@ -87,6 +87,9 @@ func (t *TerrainOverlay) SetTerrain(texels [][]terrain.TerrainTexel) {
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, t.textureId)
 	gl.TexStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, int32(regionSize), int32(regionSize))
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
 	gl.TexSubImage2D(gl.TEXTURE_2D, 0,
 		0, 0, int32(regionSize), int32(regionSize),
 		gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(byteTerrain))

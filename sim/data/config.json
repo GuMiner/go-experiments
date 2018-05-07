@@ -66,7 +66,7 @@
             "snowColor":  { "x": 237, "y": 242, "z": 235 }
         },
         "camera": {
-            "mouseScrollFactor": 1.0,
+            "mouseScrollFactor": 0.02,
             "keyMotionFactor": 100.0
         }
     }

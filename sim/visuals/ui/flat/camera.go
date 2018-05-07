@@ -17,7 +17,7 @@ type Camera struct {
 
 func NewCamera() *Camera {
 	camera := Camera{
-		zoomFactor: 0.0,
+		zoomFactor: 1.0,
 		offset:     mgl32.Vec2{0, 0}}
 
 	return &camera
@@ -25,7 +25,7 @@ func NewCamera() *Camera {
 
 func (c *Camera) Update(frameTime float32) {
 	if input.ScrollEvent {
-		c.zoomFactor += input.MouseScrollOffset[0] * config.Config.Ui.Camera.MouseScrollFactor
+		c.zoomFactor *= (1.0 + input.MouseScrollOffset[0]*config.Config.Ui.Camera.MouseScrollFactor)
 		input.ScrollEvent = false
 	}
 
@@ -89,6 +89,7 @@ func (c *Camera) ComputePrecacheRegions() []utils.IntVec2 {
 }
 
 func (c *Camera) MapToBoard(screenPos mgl32.Vec2) mgl32.Vec2 {
+	// TODO: zoom factor.
 	return screenPos.Add(c.offset)
 }
 
@@ -102,6 +103,7 @@ func (c *Camera) GetRegionScale() mgl32.Vec2 {
 }
 
 func (c *Camera) GetRegionOffset(x, y int) mgl32.Vec2 {
+	// TODO: zoom factor
 	regionSize := config.Config.Terrain.RegionSize
 	windowSize := commonOpenGl.GetWindowSize()
 
@@ -111,6 +113,5 @@ func (c *Camera) GetRegionOffset(x, y int) mgl32.Vec2 {
 }
 
 func (c *Camera) getScaleMotionFactor() float32 {
-	// TODO:
-	return 1.0 // c.zoomFactor
+	return c.zoomFactor
 }
