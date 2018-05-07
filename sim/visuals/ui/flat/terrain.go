@@ -65,7 +65,6 @@ func (t *TerrainOverlay) UpdateCameraOffset(x, y int, camera *Camera) {
 	offset := camera.GetRegionOffset(x, y)
 	scale := camera.GetRegionScale()
 
-	// 	fmt.Printf("[%v, %v], %v,  %v\n\n", x, y, offset, scale)
 	t.overlay.UpdateLocation(offset, scale, 1.0)
 }
 

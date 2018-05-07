@@ -1,16 +1,16 @@
 package editorEngine
 
 // Defines the current mode of the in-game editor
-type EdtiorMode int
+type EditorMode int
 
 // Ordering is important! Reordering these changes their numerical values
 const (
-	Select EdtiorMode = iota
+	Select EditorMode = iota
 	Add
 )
 
 type State struct {
-	Mode EdtiorMode
+	Mode EditorMode
 
 	SnapToGrid     bool
 	SnapToElements bool
