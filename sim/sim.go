@@ -8,6 +8,7 @@ import (
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/terrain"
 	"go-experiments/sim/input"
+	"go-experiments/sim/input/editorEngine"
 	"go-experiments/sim/visuals/ui"
 	"go-experiments/sim/visuals/ui/flat"
 
@@ -57,8 +58,13 @@ func main() {
 		commonConfig.Config.ColorGradient.Saturation,
 		commonConfig.Config.ColorGradient.Luminosity)
 
+	ui.Init(window)
+	defer ui.Delete()
+
 	overlayProgram := ui.NewOverlayShaderProgram()
 	defer overlayProgram.Delete()
+
+	editorEngine.Init()
 
 	camera := flat.NewCamera()
 
@@ -82,7 +88,10 @@ func main() {
 
 		// Must be first.
 		glfw.PollEvents()
+
 		camera.Update(frameTime)
+
+		editorEngine.Update()
 
 		// Load new terrain regions based on what is visible.
 		precacheRegions := camera.ComputePrecacheRegions()
@@ -107,17 +116,10 @@ func main() {
 		// Render each visible region
 		visibleRegions := camera.ComputeVisibleRegions()
 		overlayProgram.PreRender()
-		count := 4000
 		for _, region := range visibleRegions {
 			overlay, _ := terrainOverlays.GetOrAddTerrainOverlay(region.X(), region.Y())
 			overlay.UpdateCameraOffset(region.X(), region.Y(), camera)
 			overlayProgram.Render(overlay.GetOverlay())
-
-			if count > 0 {
-				count -= 1
-			} else {
-				break
-			}
 		}
 	}
 

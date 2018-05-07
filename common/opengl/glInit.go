@@ -46,9 +46,12 @@ func InitGlfw() {
 	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.ContextVersionMajor, commonConfig.Config.Window.OpenGlMajor)
 	glfw.WindowHint(glfw.ContextVersionMinor, commonConfig.Config.Window.OpenGlMinor)
-	glfw.WindowHint(glfw.Samples, commonConfig.Config.Window.Samples)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+
+	if commonConfig.Config.Window.Samples > 0 {
+		glfw.WindowHint(glfw.Samples, commonConfig.Config.Window.Samples)
+	}
 }
 
 func ConfigureOpenGl() {
@@ -65,7 +68,11 @@ func ConfigureOpenGl() {
 
 	glfw.SwapInterval(1)
 
-	gl.Enable(gl.MULTISAMPLE)
+	if commonConfig.Config.Window.Samples > 0 {
+		gl.Enable(gl.MULTISAMPLE)
+	} else {
+		gl.Disable(gl.MULTISAMPLE)
+	}
 
 	gl.Enable(gl.BLEND)
 	gl.BlendEquation(gl.FUNC_ADD)

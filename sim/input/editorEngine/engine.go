@@ -1,6 +1,7 @@
 package editorEngine
 
 import (
+	"fmt"
 	"go-experiments/sim/input"
 )
 
@@ -19,21 +20,26 @@ func Init() {
 func Update() {
 	if input.IsTyped(input.SnapToGrid) {
 		EngineState.SnapToGrid = !EngineState.SnapToGrid
+		fmt.Printf("Snap to grid: %v\n", EngineState.SnapToGrid)
 	}
 
 	if input.IsTyped(input.SnapToAngle) {
 		EngineState.SnapToAngle = !EngineState.SnapToAngle
+		fmt.Printf("Snap to angle: %v\n", EngineState.SnapToAngle)
 	}
 
 	if input.IsTyped(input.SnapToElements) {
 		EngineState.SnapToElements = !EngineState.SnapToElements
+		fmt.Printf("Snap to elements: %v\n", EngineState.SnapToElements)
 	}
 
 	if input.IsTyped(input.SelectMode) {
 		EngineState.Mode = Select
+		fmt.Printf("Entered selection mode\n")
 	}
 
 	if input.IsTyped(input.AddMode) {
 		EngineState.Mode = Add
+		fmt.Printf("Entered addition mode\n")
 	}
 }
