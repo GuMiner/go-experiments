@@ -16,3 +16,7 @@
 # Voxelli cached data from previous runs
 voxelli/data/cache
 voxelli/debug
+
+[Bb]in/
+[Oo]bj/
+.vs/
