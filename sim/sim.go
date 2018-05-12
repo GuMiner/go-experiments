@@ -6,7 +6,7 @@ import (
 	"go-experiments/common/opengl"
 
 	"go-experiments/sim/config"
-	"go-experiments/sim/engine/terrain"
+	"go-experiments/sim/engine"
 	"go-experiments/sim/input"
 	"go-experiments/sim/input/editorEngine"
 	"go-experiments/sim/visuals/ui"
@@ -69,9 +69,8 @@ func main() {
 	camera := flat.NewCamera()
 
 	// Setup simulation
-	terrain.Init(config.Config.Terrain.Generation.Seed)
+	engine := engine.NewEngine()
 
-	terrainMap := terrain.NewTerrainMap()
 	terrainOverlays := flat.NewTerrainOverlayManager()
 	defer terrainOverlays.Delete()
 
@@ -80,7 +79,6 @@ func main() {
 	lastElapsed := float32(0.0)
 	elapsed := lastElapsed
 
-	// Update
 	update := func() {
 		lastElapsed = elapsed
 		elapsed = float32(time.Since(startTime)) / float32(time.Second)
@@ -91,17 +89,18 @@ func main() {
 
 		camera.Update(frameTime)
 
-		editorEngine.Update()
+		editorStateUpdated := editorEngine.Update()
+		if editorStateUpdated {
+			// The edit state has updated, update as needed
+			ui.UpdateEditorState(editorEngine.EngineState, window)
+		}
 
 		// Load new terrain regions based on what is visible.
-		precacheRegions := camera.ComputePrecacheRegions()
-		for _, region := range precacheRegions {
-			terrainMap.AddRegionIfMissing(region.X(), region.Y())
-		}
+		engine.PrecacheRegions(camera.ComputePrecacheRegions())
 
 		visibleRegions := camera.ComputeVisibleRegions()
 		for _, region := range visibleRegions {
-			subMap := terrainMap.GetOrAddRegion(region.X(), region.Y())
+			subMap := engine.GetRegionMap(region)
 
 			overlay, isNew := terrainOverlays.GetOrAddTerrainOverlay(region.X(), region.Y())
 			if isNew {
@@ -123,6 +122,10 @@ func main() {
 		}
 	}
 
+	RenderLoop(update, render, window)
+}
+
+func RenderLoop(update, render func(), window *glfw.Window) {
 	for !window.ShouldClose() {
 		update()
 

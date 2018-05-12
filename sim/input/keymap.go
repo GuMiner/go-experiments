@@ -20,6 +20,9 @@ const (
 
 	SelectMode
 	AddMode
+
+	PowerPlantAddMode
+	PowerLineAddMode
 )
 
 const keyMapCacheName = "keymap"
@@ -38,6 +41,9 @@ func CreateDefaultKeyMap() {
 
 	keyMap[SelectMode] = glfw.KeyS
 	keyMap[AddMode] = glfw.KeyA
+
+	keyMap[PowerPlantAddMode] = glfw.KeyP
+	keyMap[PowerLineAddMode] = glfw.KeyL
 }
 
 func IsPressed(key KeyAssignment) bool {

@@ -9,8 +9,17 @@ const (
 	Add
 )
 
+// Defines the mode of the add action
+type EditorAddMode int
+
+const (
+	PowerPlant EditorAddMode = iota
+	PowerLine
+)
+
 type State struct {
-	Mode EditorMode
+	Mode      EditorMode
+	InAddMode EditorAddMode
 
 	SnapToGrid     bool
 	SnapToElements bool
