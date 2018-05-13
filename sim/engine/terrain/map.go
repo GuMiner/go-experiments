@@ -3,6 +3,8 @@ package terrain
 import (
 	"fmt"
 	"go-experiments/sim/config"
+
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 type TerrainTexel struct {
@@ -93,4 +95,8 @@ func (t *TerrainMap) GetOrAddRegion(x, y int) *TerrainSubMap {
 	}
 
 	return t.SubMaps[x][y]
+}
+
+func (t *TerrainMap) ValidateGroundLocation(pos mgl32.Vec2, size int) bool {
+	return true
 }

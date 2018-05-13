@@ -1,6 +1,9 @@
 package power
 
-import "go-experiments/sim/config"
+import (
+	"go-experiments/sim/config"
+	"go-experiments/sim/input/editorEngine"
+)
 
 type PowerPlantType int
 type PowerPlantSize int
@@ -48,4 +51,25 @@ func GetPowerOutputAndSize(plantType PowerPlantType, plantSize PowerPlantSize) (
 	}
 
 	return output, size
+}
+
+func GetPlantType(plantAddMode editorEngine.EditorPlantAddMode) PowerPlantType {
+	var plantType PowerPlantType
+
+	switch plantAddMode {
+	case editorEngine.CoalPlant:
+		plantType = Coal
+	case editorEngine.GeothermalPlant:
+		plantType = Geothermal
+	case editorEngine.NaturalGasPlant:
+		plantType = NaturalGas
+	case editorEngine.NuclearPlant:
+		plantType = Nuclear
+	case editorEngine.WindPlant:
+		plantType = Wind
+	default: // Solar
+		plantType = Solar
+	}
+
+	return plantType
 }

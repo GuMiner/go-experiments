@@ -12,6 +12,8 @@ var typedKeys map[glfw.Key]bool = make(map[glfw.Key]bool)
 var ScrollEvent bool = false
 var mouseScrollOffset mgl32.Vec2 = mgl32.Vec2{0, 0}
 
+var MousePressEvent bool = false
+var MouseReleaseEvent bool = false
 var MousePos mgl32.Vec2 = mgl32.Vec2{0, 0}
 var PressedButtons map[glfw.MouseButton]bool = make(map[glfw.MouseButton]bool)
 
@@ -35,8 +37,10 @@ func HandleMouseButton(window *glfw.Window, button glfw.MouseButton, action glfw
 	switch action {
 	case glfw.Press:
 		PressedButtons[button] = true
+		MousePressEvent = true
 	case glfw.Release:
 		PressedButtons[button] = false
+		MouseReleaseEvent = true
 	}
 }
 

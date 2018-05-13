@@ -1,10 +1,14 @@
 package engine
 
 import (
+	"go-experiments/common/math"
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/power"
 	"go-experiments/sim/engine/terrain"
+	"go-experiments/sim/input/editorEngine"
 	"go-experiments/voxelli/utils"
+
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 type Engine struct {
@@ -22,7 +26,50 @@ func NewEngine() *Engine {
 	return &engine
 }
 
-func (e *Engine) ABC() {
+func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
+	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
+		plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
+		plantSize := power.Small // TODO: Configurable
+
+		// Ensure we only put power plants on valid ground.
+		_, size := power.GetPowerOutputAndSize(plantType, plantSize)
+		if e.terrainMap.ValidateGroundLocation(pos, size) {
+			e.powerPlants.Add(pos, plantType, plantSize)
+		}
+	}
+}
+
+// Returns true if there is a hypothetical region that should currently be displayed, false otherwise.
+func (e *Engine) HasHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.State) bool {
+	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
+		return true
+	}
+
+	return false
+}
+
+// Gets the hypothetical region that an action will happen to when the mouse is released.
+func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.State) (isValid bool, region commonMath.Region) {
+
+	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
+		plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
+		plantSize := power.Small // TODO: Configurable
+
+		// Ensure we only put power plants on valid ground.
+		_, size := power.GetPowerOutputAndSize(plantType, plantSize)
+		region := commonMath.Region{
+			RegionType: commonMath.SquareRegion,
+			Size:       float32(size)}
+
+		// TODO, we also need to validate that there is not another plant or other structure in the way.
+
+		return e.terrainMap.ValidateGroundLocation(pos, size), region
+	}
+
+	return false, commonMath.Region{}
+}
+
+func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 
 }
 

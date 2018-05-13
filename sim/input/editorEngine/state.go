@@ -3,7 +3,6 @@ package editorEngine
 // Defines the current mode of the in-game editor
 type EditorMode int
 
-// Ordering is important! Reordering these changes their numerical values
 const (
 	Select EditorMode = iota
 	Add
@@ -17,9 +16,22 @@ const (
 	PowerLine
 )
 
+// Defines the mode of the power plant add action
+type EditorPlantAddMode int
+
+const (
+	CoalPlant EditorPlantAddMode = iota
+	NuclearPlant
+	NaturalGasPlant
+	WindPlant
+	SolarPlant
+	GeothermalPlant
+)
+
 type State struct {
-	Mode      EditorMode
-	InAddMode EditorAddMode
+	Mode                EditorMode
+	InAddMode           EditorAddMode
+	InPowerPlantAddMode EditorPlantAddMode
 
 	SnapToGrid     bool
 	SnapToElements bool

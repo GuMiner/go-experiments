@@ -89,7 +89,7 @@ func main() {
 
 		camera.Update(frameTime)
 
-		editorStateUpdated := editorEngine.Update()
+		editorStateUpdated, _ := editorEngine.Update()
 		if editorStateUpdated {
 			// The edit state has updated, update as needed
 			ui.UpdateEditorState(editorEngine.EngineState, window)
@@ -106,6 +106,22 @@ func main() {
 			if isNew {
 				overlay.SetTerrain(subMap.Texels)
 			}
+		}
+
+		boardPos := camera.MapToBoard(input.MousePos)
+		if engine.HasHypotheticalRegion(boardPos, editorEngine.EngineState) {
+			// isValid, region := engine.GetHypotheticalRegion(boardPos, editorEngine.EngineState)
+			// TODO: Use hypothetical region for drawing what is valid or not.
+		}
+
+		if input.MousePressEvent {
+			engine.MousePress(boardPos, editorEngine.EngineState)
+			input.MousePressEvent = false
+		}
+
+		if input.MouseReleaseEvent {
+			engine.MouseRelease(boardPos, editorEngine.EngineState)
+			input.MouseReleaseEvent = false
 		}
 	}
 

@@ -10,11 +10,12 @@ var EngineState State
 
 func Init() {
 	EngineState = State{
-		Mode:           Select,
-		InAddMode:      PowerPlant,
-		SnapToGrid:     true,
-		SnapToElements: true,
-		SnapToAngle:    false}
+		Mode:                Select,
+		InAddMode:           PowerPlant,
+		InPowerPlantAddMode: CoalPlant,
+		SnapToGrid:          true,
+		SnapToElements:      true,
+		SnapToAngle:         false}
 }
 
 func updateEngineState() bool {
@@ -69,9 +70,43 @@ func updateEngineAddState() bool {
 	return updated
 }
 
+func updateSubSelection() bool {
+	updated := false
+
+	if EngineState.Mode == Add {
+		if input.IsTyped(input.CoalPlantKey) {
+			EngineState.InPowerPlantAddMode = CoalPlant
+			updated = true
+		}
+		if input.IsTyped(input.NuclearPlantKey) {
+			EngineState.InPowerPlantAddMode = NuclearPlant
+			updated = true
+		}
+		if input.IsTyped(input.NaturalGasPlantKey) {
+			EngineState.InPowerPlantAddMode = NaturalGasPlant
+			updated = true
+		}
+		if input.IsTyped(input.WindPlantKey) {
+			EngineState.InPowerPlantAddMode = WindPlant
+			updated = true
+		}
+		if input.IsTyped(input.SolarPlantKey) {
+			EngineState.InPowerPlantAddMode = SolarPlant
+			updated = true
+		}
+		if input.IsTyped(input.GeothermalPlantKey) {
+			EngineState.InPowerPlantAddMode = GeothermalPlant
+			updated = true
+		}
+	}
+
+	return updated
+}
+
 // Update toggles and the current edit mode.
-func Update() bool {
+func Update() (bool, bool) {
 	updatedEngine := updateEngineState()
 	updatedAdd := updateEngineAddState()
-	return updatedEngine || updatedAdd
+	updatedSubSelection := updateSubSelection()
+	return updatedEngine || updatedAdd, updatedSubSelection
 }
