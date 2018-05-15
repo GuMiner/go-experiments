@@ -58,8 +58,10 @@ func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.
 		// Ensure we only put power plants on valid ground.
 		_, size := power.GetPowerOutputAndSize(plantType, plantSize)
 		region := commonMath.Region{
-			RegionType: commonMath.SquareRegion,
-			Scale:      float32(size)}
+			RegionType:  commonMath.SquareRegion,
+			Scale:       float32(size),
+			Orientation: 0,
+			Position:    pos}
 
 		// TODO, we also need to validate that there is not another plant or other structure in the way.
 

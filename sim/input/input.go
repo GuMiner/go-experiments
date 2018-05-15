@@ -14,11 +14,13 @@ var mouseScrollOffset mgl32.Vec2 = mgl32.Vec2{0, 0}
 
 var MousePressEvent bool = false
 var MouseReleaseEvent bool = false
+var MouseMoveEvent bool = false
 var MousePos mgl32.Vec2 = mgl32.Vec2{0, 0}
 var PressedButtons map[glfw.MouseButton]bool = make(map[glfw.MouseButton]bool)
 
 func HandleMouseMove(window *glfw.Window, xPos float64, yPos float64) {
 	MousePos = mgl32.Vec2{float32(xPos), float32(yPos)}
+	MouseMoveEvent = true
 }
 
 func HandleMouseScroll(window *glfw.Window, xOffset, yOffset float64) {

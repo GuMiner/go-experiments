@@ -3,7 +3,10 @@ package main
 import (
 	"go-experiments/common/color"
 	"go-experiments/common/config"
+	"go-experiments/common/math"
 	"go-experiments/common/opengl"
+
+	"github.com/go-gl/mathgl/mgl32"
 
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine"
@@ -61,6 +64,10 @@ func main() {
 	ui.Init(window)
 	defer ui.Delete()
 
+	hasHypotheticalRegion := false
+	var hypotheticalRegionColor mgl32.Vec3
+	var hypotheticalRegion commonMath.Region
+
 	editorEngine.Init()
 
 	camera := flat.NewCamera()
@@ -83,6 +90,8 @@ func main() {
 
 		// Must be first.
 		glfw.PollEvents()
+		mouseMoved := input.MouseMoveEvent
+		input.MouseMoveEvent = false
 
 		camera.Update(frameTime)
 
@@ -105,10 +114,21 @@ func main() {
 			}
 		}
 
-		boardPos := camera.MapToBoard(input.MousePos)
-		if engine.HasHypotheticalRegion(boardPos, editorEngine.EngineState) {
-			// isValid, region := engine.GetHypotheticalRegion(boardPos, editorEngine.EngineState)
-			// TODO: Use hypothetical region for drawing what is valid or not.
+		boardPos := camera.MapPixelPosToBoard(input.MousePos)
+		if editorStateUpdated || mouseMoved {
+			if engine.HasHypotheticalRegion(boardPos, editorEngine.EngineState) {
+				hasHypotheticalRegion = true
+
+				isValid, region := engine.GetHypotheticalRegion(boardPos, editorEngine.EngineState)
+				hypotheticalRegion = region
+				if isValid {
+					hypotheticalRegionColor = mgl32.Vec3{0, 1, 0}
+				} else {
+					hypotheticalRegionColor = mgl32.Vec3{1, 0, 0}
+				}
+			} else {
+				hasHypotheticalRegion = false
+			}
 		}
 
 		if input.MousePressEvent {
@@ -132,6 +152,12 @@ func main() {
 			overlay, _ := terrainOverlays.GetOrAddTerrainOverlay(region.X(), region.Y())
 			overlay.UpdateCameraOffset(region.X(), region.Y(), camera)
 			ui.Ui.OverlayProgram.Render(overlay.GetOverlay())
+		}
+
+		if hasHypotheticalRegion {
+			mappedRegion := camera.MapEngineRegionToScreen(hypotheticalRegion)
+			ui.Ui.RegionProgram.PreRender()
+			ui.Ui.RegionProgram.Render(&mappedRegion, hypotheticalRegionColor)
 		}
 	}
 

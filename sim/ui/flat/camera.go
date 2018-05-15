@@ -1,6 +1,7 @@
 package flat
 
 import (
+	"go-experiments/common/math"
 	"go-experiments/common/opengl"
 
 	"go-experiments/sim/config"
@@ -87,6 +88,12 @@ func (c *Camera) ComputePrecacheRegions() []utils.IntVec2 {
 	return visibleTiles
 }
 
+// Maps a position in pixels to the board
+func (c *Camera) MapPixelPosToBoard(pixelPos mgl32.Vec2) mgl32.Vec2 {
+	windowSize := commonOpenGl.GetWindowSize()
+	return c.MapToBoard(mgl32.Vec2{pixelPos.X() / windowSize.X(), pixelPos.Y() / windowSize.Y()})
+}
+
 // Maps a (0, 0) to (1, 1) screen position to a board location.
 func (c *Camera) MapToBoard(screenPos mgl32.Vec2) mgl32.Vec2 {
 	windowSize := commonOpenGl.GetWindowSize()
@@ -95,6 +102,17 @@ func (c *Camera) MapToBoard(screenPos mgl32.Vec2) mgl32.Vec2 {
 	regionPos := modifiedRegionPos.Mul(1.0 / c.zoomFactor).Add(c.offset)
 
 	return regionPos
+}
+
+// Maps a region on the board to a GLSL (-1, -1) to (1, 1) region
+func (c *Camera) MapEngineRegionToScreen(region commonMath.Region) commonMath.Region {
+	// The only variables that are updated (for now) are position and scale
+	windowSize := commonOpenGl.GetWindowSize()
+
+	region.Scale *= (1.0 / c.zoomFactor)
+	region.Position = region.Position.Sub(c.offset).Mul(c.zoomFactor)
+	region.Position = mgl32.Vec2{2 * region.Position.X() / windowSize.X(), -2 * region.Position.Y() / windowSize.Y()}
+	return region
 }
 
 // Resizes a full-size region to the appropriate scale given the current screen size and zoom factor

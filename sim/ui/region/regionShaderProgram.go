@@ -28,9 +28,31 @@ type RegionShaderProgram struct {
 }
 
 func (r *RegionShaderProgram) sendRegionDataToShader() {
+	offset := int32(0)
+
+	squareRegion := generateRegion(commonMath.SquareRegion)
+	r.regionData[commonMath.SquareRegion] = RegionShadingData{
+		offset: offset,
+		length: int32(len(squareRegion))}
+
+	offset += int32(len(squareRegion))
+
+	triangleRegion := generateRegion(commonMath.TriangleRegion)
+	r.regionData[commonMath.TriangleRegion] = RegionShadingData{
+		offset: offset,
+		length: int32(len(triangleRegion))}
+
+	offset += int32(len(triangleRegion))
+
+	circleRegion := generateRegion(commonMath.CircleRegion)
+	r.regionData[commonMath.CircleRegion] = RegionShadingData{
+		offset: offset,
+		length: int32(len(circleRegion))}
+
+	regions := append(append(squareRegion, triangleRegion...), circleRegion...)
+
 	// 2 -- 2 floats / vertex. 4 -- float32
-	// gl.BufferData(gl.ARRAY_BUFFER, len(ccwQuad)*2*4, gl.Ptr(ccwQuad), gl.STATIC_DRAW)
-	// TODO: populate in region data
+	gl.BufferData(gl.ARRAY_BUFFER, len(regions)*2*4, gl.Ptr(regions), gl.STATIC_DRAW)
 }
 
 func NewRegionShaderProgram() *RegionShaderProgram {
