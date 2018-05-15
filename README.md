@@ -11,3 +11,7 @@ voxel cars use a genetic algorithm to teach a small fully-connected neural netwo
 ![VoxelliTooSmartDriving.gif](./demoImages/VoxelliTooSmartDriving.gif "Voxel cars that learned to drive themselves in circles")
 
 ![VoxelliSmarterDriving.gif](./demoImages/VoxelliSmarterDriving.gif "Voxel cars that learned to drive themselves in circles")
+
+## Sim
+A city simulator with a 2D UI, for now.
+![Sim.gif](./demoImages/Sim.gif "Simulation 2D UI")
