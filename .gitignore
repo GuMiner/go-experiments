@@ -17,6 +17,9 @@
 voxelli/data/cache
 voxelli/debug
 
+# Sim debug data
+sim/debug
+
 [Bb]in/
 [Oo]bj/
 .vs/

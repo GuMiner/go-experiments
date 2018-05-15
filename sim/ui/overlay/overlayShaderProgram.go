@@ -1,4 +1,4 @@
-package ui
+package overlay
 
 import (
 	"go-experiments/common/opengl"
@@ -32,7 +32,7 @@ func NewOverlayShaderProgram() *OverlayShaderProgram {
 	overlay := OverlayShaderProgram{}
 
 	// Setup the OpenGL program
-	overlay.program = commonOpenGl.CreateProgram("./visuals/ui/shaders/overlay")
+	overlay.program = commonOpenGl.CreateProgram("./ui/shaders/overlay")
 
 	overlay.zOrderLoc = gl.GetUniformLocation(overlay.program, gl.Str("zOrder\x00"))
 	overlay.offsetLoc = gl.GetUniformLocation(overlay.program, gl.Str("offset\x00"))

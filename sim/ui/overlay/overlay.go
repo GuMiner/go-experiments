@@ -1,4 +1,4 @@
-package ui
+package overlay
 
 // Defines a full-screen quad
 import (

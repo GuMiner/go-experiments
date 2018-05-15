@@ -3,7 +3,7 @@ package flat
 import (
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/terrain"
-	"go-experiments/sim/visuals/ui"
+	"go-experiments/sim/ui/overlay"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
@@ -11,18 +11,18 @@ import (
 
 type TerrainOverlay struct {
 	textureId uint32
-	overlay   *ui.Overlay
+	overlay   *overlay.Overlay
 }
 
 func NewTerrainOverlay(textureId uint32) *TerrainOverlay {
 	overlay := TerrainOverlay{
 		textureId: textureId,
-		overlay:   ui.NewOverlay()}
+		overlay:   overlay.NewOverlay()}
 
 	return &overlay
 }
 
-func (t *TerrainOverlay) GetOverlay() *ui.Overlay {
+func (t *TerrainOverlay) GetOverlay() *overlay.Overlay {
 	return t.overlay
 }
 

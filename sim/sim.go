@@ -9,8 +9,8 @@ import (
 	"go-experiments/sim/engine"
 	"go-experiments/sim/input"
 	"go-experiments/sim/input/editorEngine"
-	"go-experiments/sim/visuals/ui"
-	"go-experiments/sim/visuals/ui/flat"
+	"go-experiments/sim/ui"
+	"go-experiments/sim/ui/flat"
 
 	"runtime"
 	"time"
@@ -60,9 +60,6 @@ func main() {
 
 	ui.Init(window)
 	defer ui.Delete()
-
-	overlayProgram := ui.NewOverlayShaderProgram()
-	defer overlayProgram.Delete()
 
 	editorEngine.Init()
 
@@ -130,11 +127,11 @@ func main() {
 
 		// Render each visible region
 		visibleRegions := camera.ComputeVisibleRegions()
-		overlayProgram.PreRender()
+		ui.Ui.OverlayProgram.PreRender()
 		for _, region := range visibleRegions {
 			overlay, _ := terrainOverlays.GetOrAddTerrainOverlay(region.X(), region.Y())
 			overlay.UpdateCameraOffset(region.X(), region.Y(), camera)
-			overlayProgram.Render(overlay.GetOverlay())
+			ui.Ui.OverlayProgram.Render(overlay.GetOverlay())
 		}
 	}
 

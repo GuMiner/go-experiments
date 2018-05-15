@@ -59,7 +59,7 @@ func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.
 		_, size := power.GetPowerOutputAndSize(plantType, plantSize)
 		region := commonMath.Region{
 			RegionType: commonMath.SquareRegion,
-			Size:       float32(size)}
+			Scale:      float32(size)}
 
 		// TODO, we also need to validate that there is not another plant or other structure in the way.
 

@@ -7,7 +7,8 @@ uniform vec2 scale;
 uniform float zOrder;
 out vec2 fs_pos;
 
-// Pass-Thru to do all rendering in the fragment shader
+// Modify our fragment shader position to be in the right place to read from the shader.
+// Pass through the actual 2D position.
 void main(void)
 {
     // Invert and map from 0 to 1
