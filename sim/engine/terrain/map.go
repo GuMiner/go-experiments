@@ -2,6 +2,7 @@ package terrain
 
 import (
 	"fmt"
+	"go-experiments/common/math"
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/subtile"
 
@@ -98,12 +99,18 @@ func (t *TerrainMap) GetOrAddRegion(x, y int) *TerrainSubMap {
 	return t.SubMaps[x][y]
 }
 
-func (t *TerrainMap) ValidateGroundLocation(pos mgl32.Vec2, size int) bool {
-	regionX, regionY := subtile.GetRegionIndices(pos, config.Config.Terrain.RegionSize)
-	region := t.GetOrAddRegion(regionX, regionY)
+func (t *TerrainMap) ValidateGroundLocation(reg commonMath.Region) bool {
 
-	localX, localY := subtile.GetLocalIndices(pos, regionX, regionY, config.Config.Terrain.RegionSize)
-	centralTexel := region.Texels[localX][localY]
+	iterate := func(x, y int) bool {
+		pos := mgl32.Vec2{float32(x), float32(y)}
+		regionX, regionY := subtile.GetRegionIndices(pos, config.Config.Terrain.RegionSize)
+		region := t.GetOrAddRegion(regionX, regionY)
 
-	return centralTexel.TerrainType != Water
+		localX, localY := subtile.GetLocalIndices(pos, regionX, regionY, config.Config.Terrain.RegionSize)
+		centralTexel := region.Texels[localX][localY]
+
+		return centralTexel.TerrainType == Water
+	}
+
+	return !reg.IterateIntWithEarlyExit(iterate)
 }

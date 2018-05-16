@@ -20,3 +20,29 @@ type Region struct {
 	Position    mgl32.Vec2
 	Orientation float32
 }
+
+// Iterates through all integer positions in the region, calling iterate.
+// iterate() returns true to exit early.
+// This function returns true if exited early, false otherwise.
+func (r Region) IterateIntWithEarlyExit(iterate func(x, y int) bool) bool {
+
+	switch r.RegionType {
+	case SquareRegion:
+		// TODO: Account for orientation.
+		for i := int(r.Position.X() - r.Scale/2); i <= int(r.Position.X()+r.Scale/2); i++ {
+			for j := int(r.Position.Y() - r.Scale/2); j <= int(r.Position.Y()+r.Scale/2); j++ {
+				if iterate(i, j) {
+					return true
+				}
+			}
+		}
+	case CircleRegion:
+		// TODO:
+		return false
+	default: // Triangle Region
+		// TODO:
+		return false
+	}
+
+	return false
+}
