@@ -1,14 +1,15 @@
 package element
 
-import "github.com/go-gl/mathgl/mgl32"
+import (
+	"go-experiments/common/math"
+
+	"github.com/go-gl/mathgl/mgl32"
+)
 
 // Defines commonalities all interactable map elements have.
 type Element interface {
-	// Gets the type of map element
-	GetType() MapElementType
-
-	// Gets the central position of the element
-	GetPosition() mgl32.Vec2
+	// Gets a region describing the position / orientation / size / type of location this is.
+	GetRegion() commonMath.Region
 
 	// Gets positions on the map that can be used to points of the element.
 	GetSnapNodes() []mgl32.Vec2

@@ -1,7 +1,9 @@
 package element
 
 import (
+	"fmt"
 	"go-experiments/sim/config"
+	"go-experiments/sim/engine/subtile"
 
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mleveck/go-quad-tree"
@@ -17,33 +19,77 @@ type MultiQuadtree struct {
 	quadtrees map[int]map[int]*qtree.Qtree
 }
 
+type PointWithDistance struct {
+	distance float32
+	point    mgl32.Vec2
+	metadata interface{}
+}
+
+func NewPointWithDistance(point qtree.Point, referencePoint mgl32.Vec2) PointWithDistance {
+	// TODO: See below, this won't work.
+	return PointWithDistance{}
+}
+
 func NewMultiQuadtree() *MultiQuadtree {
 	return &MultiQuadtree{
 		quadtrees: make(map[int]map[int]*qtree.Qtree)}
 }
 
-// TODO: We need something so that when we search we can go back to stuff, like powerlines.
-func (m *MultiQuadtree) AddPoint(pos mgl32.Vec2) *qtree.Point {
-	quadtreeSize := config.Config.Terrain.RegionSize * 4
-	subquadTreePos := pos.Mul(1.0 / float32(quadtreeSize))
+func (m *MultiQuadtree) Add(elem Element) {
+	region := elem.GetRegion()
 
-	x := int(subquadTreePos.X())
-	y := int(subquadTreePos.Y())
-	if _, ok := m.quadtrees[x]; !ok {
-		m.quadtrees[x] = make(map[int]*qtree.Qtree)
+	regionX, regionY := subtile.GetRegionIndices(region.Position, config.Config.Terrain.RegionSize)
+
+	if _, ok := m.quadtrees[regionX]; !ok {
+		m.quadtrees[regionX] = make(map[int]*qtree.Qtree)
 	}
 
-	if _, ok := m.quadtrees[x][y]; !ok {
-		m.quadtrees[x][y] = qtree.NewQtree(
-			float64(x*quadtreeSize),
-			float64(y*quadtreeSize),
-			float64(quadtreeSize),
-			float64(quadtreeSize),
+	if _, ok := m.quadtrees[regionX][regionY]; !ok {
+		// We offset the quadtree so they all slightly overlap, to avoid edge effects.
+		m.quadtrees[regionX][regionY] = qtree.NewQtree(
+			-1,
+			-1,
+			float64(config.Config.Terrain.RegionSize+2),
+			float64(config.Config.Terrain.RegionSize+2),
 			maxPointsInBucket)
 	}
 
-	point := qtree.NewPoint(float64(pos.X()), float64(pos.Y()), nil)
-	m.quadtrees[x][y].Insert(point)
+	pos := subtile.GetLocalFloatIndices(region.Position, regionX, regionY, config.Config.Terrain.RegionSize)
+	point := qtree.NewPoint(float64(pos.X()), float64(pos.Y()), elem)
+	m.quadtrees[regionX][regionY].Insert(point)
+}
 
-	return point
+// Returns the K-nearest points.
+// If not enough points are found in the local quadtree region, searches surrounding reginons.
+// Stops when it has searched the central and all surrounding regions (9 in total) or found K points.
+func (m *MultiQuadtree) KNearest(pos mgl32.Vec2, count int) []Element {
+	regionX, regionY := subtile.GetRegionIndices(pos, config.Config.Terrain.RegionSize)
+
+	points := make([]PointWithDistance, 0)
+	for i := regionX - 1; i <= regionX+1; i++ {
+		for j := regionY - 1; j < regionY+1; j++ {
+			if quadtree, ok := m.quadtrees[regionX][regionY]; ok {
+
+				// TODO This won't work as the point by definition will only be in-bounds for one location
+				// Basically, I should probably implement my own quadtree instead of attempting to push each framework into
+				//  the approaches I need.
+				mglPoint := subtile.GetLocalFloatIndices(pos, i, j, config.Config.Terrain.RegionSize)
+
+				point := qtree.NewPoint(float64(mglPoint.X()), float64(mglPoint.Y()), nil)
+				for _, point := range quadtree.KNN(point, count) {
+					// points = append(points, NewPointWithDistance(point, mquadtree.KNN(point, count)...))
+					fmt.Printf("%v", point)
+				}
+			}
+		}
+	}
+
+	// TODO: Sort points by distance and restrict to count!
+	elements := make([]Element, len(points))
+	for i, point := range points {
+		element, _ := point.metadata.(Element)
+		elements[i] = element
+	}
+
+	return elements
 }

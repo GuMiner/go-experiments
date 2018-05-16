@@ -3,6 +3,7 @@ package engine
 import (
 	"go-experiments/common/math"
 	"go-experiments/sim/config"
+	"go-experiments/sim/engine/element"
 	"go-experiments/sim/engine/power"
 	"go-experiments/sim/engine/terrain"
 	"go-experiments/sim/input/editorEngine"
@@ -13,6 +14,7 @@ import (
 
 type Engine struct {
 	terrainMap  *terrain.TerrainMap
+	elements    *element.MultiQuadtree
 	powerPlants *power.PowerPlants
 }
 
@@ -21,6 +23,7 @@ func NewEngine() *Engine {
 
 	engine := Engine{
 		terrainMap:  terrain.NewTerrainMap(),
+		elements:    element.NewMultiQuadtree(),
 		powerPlants: power.NewPowerPlants()}
 
 	return &engine
@@ -34,7 +37,8 @@ func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 		// Ensure we only put power plants on valid ground.
 		_, size := power.GetPowerOutputAndSize(plantType, plantSize)
 		if e.terrainMap.ValidateGroundLocation(pos, size) {
-			e.powerPlants.Add(pos, plantType, plantSize)
+			element := e.powerPlants.Add(pos, plantType, plantSize)
+			e.elements.Add(element)
 		}
 	}
 }
