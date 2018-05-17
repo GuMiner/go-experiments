@@ -13,18 +13,18 @@ import (
 )
 
 type Engine struct {
-	terrainMap  *terrain.TerrainMap
-	elements    *element.MultiQuadtree
-	powerPlants *power.PowerPlants
+	terrainMap    *terrain.TerrainMap
+	elementFinder *element.ElementFinder
+	powerPlants   *power.PowerPlants
 }
 
 func NewEngine() *Engine {
 	terrain.Init(config.Config.Terrain.Generation.Seed)
 
 	engine := Engine{
-		terrainMap:  terrain.NewTerrainMap(),
-		elements:    element.NewMultiQuadtree(),
-		powerPlants: power.NewPowerPlants()}
+		terrainMap:    terrain.NewTerrainMap(),
+		elementFinder: element.NewElementFinder(),
+		powerPlants:   power.NewPowerPlants()}
 
 	return &engine
 }
@@ -44,9 +44,12 @@ func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 			Orientation: 0,
 			Position:    pos}
 
-		if e.terrainMap.ValidateGroundLocation(region) {
+		// TODO: We really want 'any intersecting objects'. This is good for starters and infrastructure, but not much else.
+		anyNearbyObjects := e.elementFinder.AnyInRange(pos, float32(size))
+
+		if !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region) {
 			element := e.powerPlants.Add(pos, plantType, plantSize)
-			e.elements.Add(element)
+			e.elementFinder.Add(element)
 		}
 	}
 }
@@ -62,7 +65,7 @@ func (e *Engine) HasHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.
 
 // Gets the hypothetical region that an action will happen to when the mouse is released.
 func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.State) (isValid bool, region commonMath.Region) {
-
+	// TODO this really shouldn't be duplicated with the above.
 	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
 		plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
 		plantSize := power.Small // TODO: Configurable
@@ -75,9 +78,8 @@ func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.
 			Orientation: 0,
 			Position:    pos}
 
-		// TODO, we also need to validate that there is not another plant or other structure in the way.
-
-		return e.terrainMap.ValidateGroundLocation(region), region
+		anyNearbyObjects := e.elementFinder.AnyInRange(pos, float32(size))
+		return !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region), region
 	}
 
 	return false, commonMath.Region{}
