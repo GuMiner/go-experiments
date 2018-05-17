@@ -4,25 +4,24 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
-// Defines the key assignments of each key
 type KeyAssignment int
 
-// Ordering is important! Reordering these changes their numerical values
 const (
-	MoveLeft KeyAssignment = iota
-	MoveRight
-	MoveUp
-	MoveDown
+	MoveLeftKey KeyAssignment = iota
+	MoveRightKey
+	MoveUpKey
+	MoveDownKey
 
-	SnapToGrid
-	SnapToAngle
-	SnapToElements
+	SnapToGridKey
+	SnapToAngleKey
+	SnapToElementsKey
 
-	SelectMode
-	AddMode
+	SelectModeKey
+	AddModeKey
+	DrawModeKey
 
-	PowerPlantAddMode
-	PowerLineAddMode
+	PowerPlantAddModeKey
+	PowerLineAddModeKey
 
 	CoalPlantKey
 	NuclearPlantKey
@@ -30,6 +29,13 @@ const (
 	WindPlantKey
 	SolarPlantKey
 	GeothermalPlantKey
+
+	TerrainFlattenKey
+	TerrainSharpenKey
+	TerrainTreesKey
+	TerrainShrubsKey
+	TerrainHillsKey
+	TerrainValleysKey
 )
 
 const keyMapCacheName = "keymap"
@@ -44,23 +50,31 @@ func createSubOptionsKeyMap() {
 	keyMap[WindPlantKey] = glfw.Key4
 	keyMap[SolarPlantKey] = glfw.Key5
 	keyMap[GeothermalPlantKey] = glfw.Key6
+
+	keyMap[TerrainFlattenKey] = glfw.Key1
+	keyMap[TerrainSharpenKey] = glfw.Key2
+	keyMap[TerrainTreesKey] = glfw.Key3
+	keyMap[TerrainShrubsKey] = glfw.Key4
+	keyMap[TerrainHillsKey] = glfw.Key5
+	keyMap[TerrainValleysKey] = glfw.Key6
 }
 
 func CreateDefaultKeyMap() {
-	keyMap[MoveLeft] = glfw.KeyLeft
-	keyMap[MoveRight] = glfw.KeyRight
-	keyMap[MoveUp] = glfw.KeyUp
-	keyMap[MoveDown] = glfw.KeyDown
+	keyMap[MoveLeftKey] = glfw.KeyLeft
+	keyMap[MoveRightKey] = glfw.KeyRight
+	keyMap[MoveUpKey] = glfw.KeyUp
+	keyMap[MoveDownKey] = glfw.KeyDown
 
-	keyMap[SnapToGrid] = glfw.Key8
-	keyMap[SnapToAngle] = glfw.Key9
-	keyMap[SnapToElements] = glfw.Key0
+	keyMap[SnapToGridKey] = glfw.Key8
+	keyMap[SnapToAngleKey] = glfw.Key9
+	keyMap[SnapToElementsKey] = glfw.Key0
 
-	keyMap[SelectMode] = glfw.KeyS
-	keyMap[AddMode] = glfw.KeyA
+	keyMap[SelectModeKey] = glfw.KeyS
+	keyMap[AddModeKey] = glfw.KeyA
+	keyMap[DrawModeKey] = glfw.KeyD
 
-	keyMap[PowerPlantAddMode] = glfw.KeyP
-	keyMap[PowerLineAddMode] = glfw.KeyL
+	keyMap[PowerPlantAddModeKey] = glfw.KeyP
+	keyMap[PowerLineAddModeKey] = glfw.KeyL
 
 	createSubOptionsKeyMap()
 }

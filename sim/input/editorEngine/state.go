@@ -1,14 +1,13 @@
 package editorEngine
 
-// Defines the current mode of the in-game editor
 type EditorMode int
 
 const (
 	Select EditorMode = iota
 	Add
+	Draw
 )
 
-// Defines the mode of the add action
 type EditorAddMode int
 
 const (
@@ -16,7 +15,6 @@ const (
 	PowerLine
 )
 
-// Defines the mode of the power plant add action
 type EditorPlantAddMode int
 
 const (
@@ -28,9 +26,21 @@ const (
 	GeothermalPlant
 )
 
+type EditorDrawMode int
+
+const (
+	TerrainFlatten EditorDrawMode = iota
+	TerrainSharpen
+	TerrainTrees
+	TerrainShrubs
+	TerrainHills
+	TerrainValleys
+)
+
 type State struct {
 	Mode                EditorMode
 	InAddMode           EditorAddMode
+	InDrawMode          EditorDrawMode
 	InPowerPlantAddMode EditorPlantAddMode
 
 	SnapToGrid     bool

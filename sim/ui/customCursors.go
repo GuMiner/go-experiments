@@ -2,6 +2,7 @@ package ui
 
 import (
 	"go-experiments/common/io"
+	"go-experiments/sim/input/editorEngine"
 
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
@@ -12,13 +13,44 @@ const (
 	Selection CustomCursorType = iota
 	PowerPlantAdd
 	PowerLineAdd
+
+	TerrainFlatten
+	TerrainSharpen
+	TerrainTrees
+	TerrainShrubs
+	TerrainHills
+	TerrainValleys
 )
 
 type CustomCursors struct {
 	cursors map[CustomCursorType]*glfw.Cursor
 }
 
+var drawModeCursors map[editorEngine.EditorDrawMode]CustomCursorType = make(map[editorEngine.EditorDrawMode]CustomCursorType)
+
 var customCursors CustomCursors
+
+func initDrawModeCursors(customCursors *CustomCursors) {
+	type DrawModeCursor struct {
+		location     string
+		cursorType   CustomCursorType
+		drawModeType editorEngine.EditorDrawMode
+	}
+
+	cursorsToLoad := []DrawModeCursor{
+		DrawModeCursor{"data/cursors/draw/TerrainFlatten.png", TerrainFlatten, editorEngine.TerrainFlatten},
+		DrawModeCursor{"data/cursors/draw/TerrainSharpen.png", TerrainSharpen, editorEngine.TerrainSharpen},
+		DrawModeCursor{"data/cursors/draw/TerrainTrees.png", TerrainTrees, editorEngine.TerrainTrees},
+		DrawModeCursor{"data/cursors/draw/TerrainShrubs.png", TerrainShrubs, editorEngine.TerrainShrubs},
+		DrawModeCursor{"data/cursors/draw/TerrainHills.png", TerrainHills, editorEngine.TerrainHills},
+		DrawModeCursor{"data/cursors/draw/TerrainValleys.png", TerrainValleys, editorEngine.TerrainValleys}}
+
+	for _, cursor := range cursorsToLoad {
+		cursorImage := commonIo.ReadImageFromFile(cursor.location)
+		customCursors.cursors[cursor.cursorType] = glfw.CreateCursor(cursorImage, 0, 0)
+		drawModeCursors[cursor.drawModeType] = cursor.cursorType
+	}
+}
 
 func initCustomCursors(window *glfw.Window) {
 	customCursors = CustomCursors{
@@ -30,6 +62,7 @@ func initCustomCursors(window *glfw.Window) {
 	powerLineImage := commonIo.ReadImageFromFile("data/cursors/PowerLine.png")
 	customCursors.cursors[PowerPlantAdd] = glfw.CreateCursor(powerPlantImage, 0, 0)
 	customCursors.cursors[PowerLineAdd] = glfw.CreateCursor(powerLineImage, 0, 0)
+	initDrawModeCursors(&customCursors)
 
 	window.SetCursor(customCursors.cursors[Selection])
 }

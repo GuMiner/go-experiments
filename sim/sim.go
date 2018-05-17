@@ -95,8 +95,8 @@ func main() {
 
 		camera.Update(frameTime)
 
-		editorStateUpdated, _ := editorEngine.Update()
-		if editorStateUpdated {
+		editorStateUpdated, editorSubStateUpdated := editorEngine.Update()
+		if editorStateUpdated || editorSubStateUpdated {
 			// The edit state has updated, update as needed
 			ui.UpdateEditorState(editorEngine.EngineState, window)
 		}

@@ -8,94 +8,78 @@ import (
 // TODO: Modes should really be saved in game state on a per-game basis.
 var EngineState State
 
+type KeyToggle struct {
+	toggle *bool
+	about  string
+}
+
+type KeyAction struct {
+	action func()
+	about  string
+}
+
+var globalKeyToggleActions map[input.KeyAssignment]KeyToggle = make(map[input.KeyAssignment]KeyToggle)
+var globalKeyActions map[input.KeyAssignment]KeyAction = make(map[input.KeyAssignment]KeyAction)
+
+var addModeKeyActions map[input.KeyAssignment]KeyAction = make(map[input.KeyAssignment]KeyAction)
+var addModeKeySubSelectionActions map[input.KeyAssignment]KeyAction = make(map[input.KeyAssignment]KeyAction)
+var drawModeKeySubSelectionActions map[input.KeyAssignment]KeyAction = make(map[input.KeyAssignment]KeyAction)
+
 func Init() {
 	EngineState = State{
 		Mode:                Select,
 		InAddMode:           PowerPlant,
+		InDrawMode:          TerrainFlatten,
 		InPowerPlantAddMode: CoalPlant,
 		SnapToGrid:          true,
 		SnapToElements:      true,
 		SnapToAngle:         false}
+
+	globalKeyToggleActions[input.SnapToGridKey] = KeyToggle{&EngineState.SnapToGrid, "snap to grid"}
+	globalKeyToggleActions[input.SnapToAngleKey] = KeyToggle{&EngineState.SnapToAngle, "snap to angle"}
+	globalKeyToggleActions[input.SnapToElementsKey] = KeyToggle{&EngineState.SnapToElements, "snap to elements"}
+
+	globalKeyActions[input.SelectModeKey] = KeyAction{func() { EngineState.Mode = Select }, "selection"}
+	globalKeyActions[input.AddModeKey] = KeyAction{func() { EngineState.Mode = Add }, "addition"}
+	globalKeyActions[input.DrawModeKey] = KeyAction{func() { EngineState.Mode = Draw }, "draw"}
+
+	addModeKeyActions[input.PowerPlantAddModeKey] = KeyAction{func() { EngineState.InAddMode = PowerPlant }, "power plant add"}
+	addModeKeyActions[input.PowerLineAddModeKey] = KeyAction{func() { EngineState.InAddMode = PowerLine }, "power line add"}
+
+	addModeKeySubSelectionActions[input.CoalPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = CoalPlant }, "coal plant construction"}
+	addModeKeySubSelectionActions[input.NuclearPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = NuclearPlant }, "nuclear plant construction"}
+	addModeKeySubSelectionActions[input.NaturalGasPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = NaturalGasPlant }, "natural gas plant construction"}
+	addModeKeySubSelectionActions[input.WindPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = WindPlant }, "wind plant construction"}
+	addModeKeySubSelectionActions[input.SolarPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = SolarPlant }, "solar plant construction"}
+	addModeKeySubSelectionActions[input.GeothermalPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = GeothermalPlant }, "geothermal plant construction"}
+
+	drawModeKeySubSelectionActions[input.TerrainFlattenKey] = KeyAction{func() { EngineState.InDrawMode = TerrainFlatten }, "terrain flatten"}
+	drawModeKeySubSelectionActions[input.TerrainSharpenKey] = KeyAction{func() { EngineState.InDrawMode = TerrainSharpen }, "terrain sharpen"}
+	drawModeKeySubSelectionActions[input.TerrainTreesKey] = KeyAction{func() { EngineState.InDrawMode = TerrainTrees }, "terrain trees"}
+	drawModeKeySubSelectionActions[input.TerrainShrubsKey] = KeyAction{func() { EngineState.InDrawMode = TerrainShrubs }, "terrain shrubs"}
+	drawModeKeySubSelectionActions[input.TerrainHillsKey] = KeyAction{func() { EngineState.InDrawMode = TerrainHills }, "terrain hills"}
+	drawModeKeySubSelectionActions[input.TerrainValleysKey] = KeyAction{func() { EngineState.InDrawMode = TerrainValleys }, "terrain valleys"}
 }
 
-func updateEngineState() bool {
+func checkToggleKeys(toggleKeys map[input.KeyAssignment]KeyToggle) bool {
 	updated := false
-	if input.IsTyped(input.SnapToGrid) {
-		EngineState.SnapToGrid = !EngineState.SnapToGrid
-		fmt.Printf("Snap to grid: %v\n", EngineState.SnapToGrid)
-		updated = true
-	}
-
-	if input.IsTyped(input.SnapToAngle) {
-		EngineState.SnapToAngle = !EngineState.SnapToAngle
-		fmt.Printf("Snap to angle: %v\n", EngineState.SnapToAngle)
-		updated = true
-	}
-
-	if input.IsTyped(input.SnapToElements) {
-		EngineState.SnapToElements = !EngineState.SnapToElements
-		fmt.Printf("Snap to elements: %v\n", EngineState.SnapToElements)
-		updated = true
-	}
-
-	if input.IsTyped(input.SelectMode) {
-		EngineState.Mode = Select
-		fmt.Printf("Entered selection mode\n")
-		updated = true
-	}
-
-	if input.IsTyped(input.AddMode) {
-		EngineState.Mode = Add
-		fmt.Printf("Entered addition mode\n")
-		updated = true
+	for key, keyToggle := range toggleKeys {
+		if input.IsTyped(key) {
+			*keyToggle.toggle = !*keyToggle.toggle
+			fmt.Printf("Toggled '%v' to %v.\n", keyToggle.about, *keyToggle.toggle)
+			updated = true
+		}
 	}
 
 	return updated
 }
 
-func updateEngineAddState() bool {
+func checkActionKeys(actionKeys map[input.KeyAssignment]KeyAction) bool {
 	updated := false
-	if input.IsTyped(input.PowerPlantAddMode) {
-		EngineState.InAddMode = PowerPlant
-		fmt.Printf("Entered power plant addition mode (applies when in Add mode)\n")
-		updated = true
-	}
-
-	if input.IsTyped(input.PowerLineAddMode) {
-		EngineState.InAddMode = PowerLine
-		fmt.Printf("Entered power line addition mode (applies when in Add mode)\n")
-		updated = true
-	}
-
-	return updated
-}
-
-func updateSubSelection() bool {
-	updated := false
-
-	if EngineState.Mode == Add {
-		if input.IsTyped(input.CoalPlantKey) {
-			EngineState.InPowerPlantAddMode = CoalPlant
-			updated = true
-		}
-		if input.IsTyped(input.NuclearPlantKey) {
-			EngineState.InPowerPlantAddMode = NuclearPlant
-			updated = true
-		}
-		if input.IsTyped(input.NaturalGasPlantKey) {
-			EngineState.InPowerPlantAddMode = NaturalGasPlant
-			updated = true
-		}
-		if input.IsTyped(input.WindPlantKey) {
-			EngineState.InPowerPlantAddMode = WindPlant
-			updated = true
-		}
-		if input.IsTyped(input.SolarPlantKey) {
-			EngineState.InPowerPlantAddMode = SolarPlant
-			updated = true
-		}
-		if input.IsTyped(input.GeothermalPlantKey) {
-			EngineState.InPowerPlantAddMode = GeothermalPlant
+	for key, keyAction := range actionKeys {
+		if input.IsTyped(key) {
+			keyAction.action()
+			fmt.Printf("Entered '%v' mode.\n", keyAction.about)
 			updated = true
 		}
 	}
@@ -104,9 +88,17 @@ func updateSubSelection() bool {
 }
 
 // Update toggles and the current edit mode.
-func Update() (bool, bool) {
-	updatedEngine := updateEngineState()
-	updatedAdd := updateEngineAddState()
-	updatedSubSelection := updateSubSelection()
-	return updatedEngine || updatedAdd, updatedSubSelection
+func Update() (updatedSelection, updatedSubSelection bool) {
+	updatedSelection = checkToggleKeys(globalKeyToggleActions) || updatedSelection
+	updatedSelection = checkActionKeys(globalKeyActions) || updatedSelection
+	updatedSubSelection = false
+
+	if EngineState.Mode == Add {
+		updatedSelection = checkActionKeys(addModeKeyActions) || updatedSelection
+		updatedSubSelection = checkActionKeys(addModeKeySubSelectionActions) || updatedSubSelection
+	} else if EngineState.Mode == Draw {
+		updatedSubSelection = checkActionKeys(drawModeKeySubSelectionActions) || updatedSubSelection
+	}
+
+	return updatedSelection, updatedSubSelection
 }

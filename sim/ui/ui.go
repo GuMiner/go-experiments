@@ -28,12 +28,14 @@ func UpdateEditorState(engineState editorEngine.State, window *glfw.Window) {
 
 	if engineState.Mode == editorEngine.Select {
 		cursor = Selection
-	} else { // Add mode for now
+	} else if engineState.Mode == editorEngine.Add {
 		if engineState.InAddMode == editorEngine.PowerLine {
 			cursor = PowerLineAdd
 		} else if engineState.InAddMode == editorEngine.PowerPlant {
 			cursor = PowerPlantAdd
 		}
+	} else { // Draw Mode
+		cursor = drawModeCursors[engineState.InDrawMode]
 	}
 
 	setCursor(cursor, window)

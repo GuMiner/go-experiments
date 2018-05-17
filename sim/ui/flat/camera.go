@@ -32,19 +32,19 @@ func (c *Camera) Update(frameTime float32) {
 	}
 
 	keyMotionAmount := frameTime * config.Config.Ui.Camera.KeyMotionFactor * (1.0 / c.zoomFactor)
-	if input.IsPressed(input.MoveLeft) {
+	if input.IsPressed(input.MoveLeftKey) {
 		c.offset[0] -= keyMotionAmount
 	}
 
-	if input.IsPressed(input.MoveRight) {
+	if input.IsPressed(input.MoveRightKey) {
 		c.offset[0] += keyMotionAmount
 	}
 
-	if input.IsPressed(input.MoveUp) {
+	if input.IsPressed(input.MoveUpKey) {
 		c.offset[1] -= keyMotionAmount
 	}
 
-	if input.IsPressed(input.MoveDown) {
+	if input.IsPressed(input.MoveDownKey) {
 		c.offset[1] += keyMotionAmount
 	}
 }
