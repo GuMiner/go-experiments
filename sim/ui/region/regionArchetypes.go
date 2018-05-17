@@ -40,7 +40,7 @@ func generateCircleRegion() []mgl32.Vec2 {
 	vertices := make([]mgl32.Vec2, circlePieces)
 	for i := 0; i < circlePieces; i++ {
 		rotation := mgl32.Rotate2D(mgl32.DegToRad(float32(i) * 360.0 / circlePieces))
-		vertices[0] = rotation.Mul2x1(mgl32.Vec2{0.5, 0})
+		vertices[i] = rotation.Mul2x1(mgl32.Vec2{0.5, 0})
 	}
 
 	smallRotation := mgl32.Rotate2D(mgl32.DegToRad(360.0 / circlePieces))

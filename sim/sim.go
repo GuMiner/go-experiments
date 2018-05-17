@@ -109,8 +109,9 @@ func main() {
 			subMap := engine.GetRegionMap(region)
 
 			overlay, isNew := terrainOverlays.GetOrAddTerrainOverlay(region.X(), region.Y())
-			if isNew {
+			if isNew || subMap.Dirty {
 				overlay.SetTerrain(subMap.Texels)
+				subMap.Dirty = false
 			}
 		}
 
@@ -140,6 +141,12 @@ func main() {
 			engine.MouseRelease(boardPos, editorEngine.EngineState)
 			input.MouseReleaseEvent = false
 		}
+
+		if mouseMoved {
+			engine.MouseMoved(boardPos)
+		}
+
+		engine.Step(frameTime, editorEngine.EngineState)
 	}
 
 	render := func() {
