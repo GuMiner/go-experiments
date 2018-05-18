@@ -11,7 +11,7 @@ type Element interface {
 	// Gets a region describing the position / orientation / size / type of location this is.
 	GetRegion() commonMath.Region
 
-	// Gets positions on the map that can be used to points of the element.
+	// Gets positions on the map that can be used to snap to points of the element.
 	GetSnapNodes() []mgl32.Vec2
 
 	// Gets lines on the map that can be used to snap to *edges* of the element

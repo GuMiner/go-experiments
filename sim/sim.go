@@ -167,7 +167,16 @@ func main() {
 			ui.Ui.RegionProgram.Render(&mappedRegion, hypotheticalRegionColor)
 		}
 
-		flat.RenderPowerPlants(engine.GetPowerPlants(), camera, ui.Ui.RegionProgram)
+		flat.RenderPowerPlants(engine.GetPowerGrid(), camera, ui.Ui.RegionProgram)
+
+		if editorEngine.EngineState.SnapToElements {
+			if editorEngine.EngineState.Mode == editorEngine.Add {
+				if editorEngine.EngineState.InAddMode == editorEngine.PowerLine {
+					boardPos := camera.MapPixelPosToBoard(input.MousePos)
+					flat.RenderSnapNodes(boardPos, engine.GetElementFinder(), camera, ui.Ui.RegionProgram)
+				}
+			}
+		}
 	}
 
 	RenderLoop(update, render, window)

@@ -10,8 +10,8 @@ type ElementFinder struct {
 }
 
 type ElementWithDistance struct {
-	distance float32
-	element  Element
+	Distance float32
+	Element  Element
 }
 
 func NewElementFinder() *ElementFinder {
@@ -41,7 +41,7 @@ func (e *ElementFinder) KNearest(pos mgl32.Vec2, count int) []ElementWithDistanc
 	elementsWithDistances := make([]ElementWithDistance, count)
 	elementsFound := 0
 
-	for n, element := range e.elements {
+	for _, element := range e.elements {
 		region := element.GetRegion()
 		distance := region.Position.Sub(pos).Len()
 
@@ -49,7 +49,7 @@ func (e *ElementFinder) KNearest(pos mgl32.Vec2, count int) []ElementWithDistanc
 		shouldAddElement := elementsFound < count
 		for i := 0; i < elementsFound; i++ {
 			// Determine if the distance is less than the number of elements found. If so, insert and push everything down.
-			if distance < elementsWithDistances[i].distance {
+			if distance < elementsWithDistances[i].Distance {
 				addedToResultSet = true
 
 				// This lets us add the new element (instead of popping the furthest away one off of the stack) if the stack is not full.
@@ -57,13 +57,13 @@ func (e *ElementFinder) KNearest(pos mgl32.Vec2, count int) []ElementWithDistanc
 					elementsFound++
 				}
 
-				for j := elementsFound; j >= n; j++ {
-					if j != n {
+				for j := count - 1; j >= i; j-- {
+					if j != i {
 						elementsWithDistances[j] = elementsWithDistances[j-1]
 					} else {
 						elementsWithDistances[j] = ElementWithDistance{
-							distance: distance,
-							element:  element}
+							Distance: distance,
+							Element:  element}
 					}
 				}
 				break
@@ -73,8 +73,8 @@ func (e *ElementFinder) KNearest(pos mgl32.Vec2, count int) []ElementWithDistanc
 		// If we have empty space, add this element by-default to the end if not already added.
 		if !addedToResultSet && shouldAddElement {
 			elementsWithDistances[elementsFound] = ElementWithDistance{
-				distance: distance,
-				element:  element}
+				Distance: distance,
+				Element:  element}
 			elementsFound++
 		}
 	}

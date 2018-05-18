@@ -14,7 +14,7 @@ import (
 type Engine struct {
 	terrainMap    *terrain.TerrainMap
 	elementFinder *element.ElementFinder
-	powerPlants   *power.PowerPlants
+	powerGrid     *power.PowerGrid
 
 	isMousePressed bool
 	lastBoardPos   mgl32.Vec2
@@ -26,7 +26,7 @@ func NewEngine() *Engine {
 	engine := Engine{
 		terrainMap:     terrain.NewTerrainMap(),
 		elementFinder:  element.NewElementFinder(),
-		powerPlants:    power.NewPowerPlants(),
+		powerGrid:      power.NewPowerGrid(),
 		isMousePressed: false}
 
 	return &engine
@@ -53,7 +53,7 @@ func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 		anyNearbyObjects := e.elementFinder.AnyInRange(pos, float32(size))
 
 		if !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region) {
-			element := e.powerPlants.Add(pos, plantType, plantSize)
+			element := e.powerGrid.Add(pos, plantType, plantSize)
 			e.elementFinder.Add(element)
 		}
 	}
@@ -147,6 +147,10 @@ func (e *Engine) GetRegionMap(region commonMath.IntVec2) *terrain.TerrainSubMap 
 	return e.terrainMap.GetOrAddRegion(region.X(), region.Y())
 }
 
-func (e *Engine) GetPowerPlants() *power.PowerPlants {
-	return e.powerPlants
+func (e *Engine) GetPowerGrid() *power.PowerGrid {
+	return e.powerGrid
+}
+
+func (e *Engine) GetElementFinder() *element.ElementFinder {
+	return e.elementFinder
 }
