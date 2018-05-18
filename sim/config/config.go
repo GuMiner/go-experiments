@@ -3,8 +3,8 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"go-experiments/common/config"
-	"go-experiments/common/io"
+	"go-experiments/common/commonconfig"
+	"go-experiments/common/commonio"
 )
 
 type PowerPlant struct {

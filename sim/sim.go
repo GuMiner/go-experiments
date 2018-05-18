@@ -1,10 +1,10 @@
 package main
 
 import (
-	"go-experiments/common/color"
-	"go-experiments/common/config"
-	"go-experiments/common/math"
-	"go-experiments/common/opengl"
+	"go-experiments/common/commoncolor"
+	"go-experiments/common/commonconfig"
+	"go-experiments/common/commonmath"
+	"go-experiments/common/commonopengl"
 
 	"github.com/go-gl/mathgl/mgl32"
 

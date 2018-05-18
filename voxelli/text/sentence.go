@@ -1,7 +1,7 @@
 package text
 
 import (
-	"go-experiments/common/math"
+	"go-experiments/common/commonmath"
 
 	"github.com/go-gl/mathgl/mgl32"
 )

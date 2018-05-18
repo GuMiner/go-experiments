@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"math"
 
-	"go-experiments/common/io"
-	"go-experiments/voxelli/utils"
+	"go-experiments/common/commonio"
+	"go-experiments/common/commonmath"
 )
 
 // Defines voxel objects
 type Voxel struct {
-	Position utils.IntVec3
+	Position commonMath.IntVec3
 	ColorIdx uint8
 }
 
@@ -21,8 +21,8 @@ type SubObject struct {
 
 type VoxelObject struct {
 	SubObjects []SubObject
-	MinBounds  utils.IntVec3
-	MaxBounds  utils.IntVec3
+	MinBounds  commonMath.IntVec3
+	MaxBounds  commonMath.IntVec3
 	Palette    *VoxelPalette
 }
 
@@ -31,15 +31,15 @@ type ChunkType interface {
 	Name() string
 }
 
-func CheckBounds(current *utils.IntVec3, comparison utils.IntVec3, comparisonFunc func(int, int) int) {
+func CheckBounds(current *commonMath.IntVec3, comparison commonMath.IntVec3, comparisonFunc func(int, int) int) {
 	current[0] = comparisonFunc(current[0], comparison[0])
 	current[1] = comparisonFunc(current[1], comparison[1])
 	current[2] = comparisonFunc(current[2], comparison[2])
 }
 
 func (voxelObject *VoxelObject) ComputeBounds() {
-	voxelObject.MinBounds = utils.IntVec3{math.MaxInt32, math.MaxInt32, math.MaxInt32}
-	voxelObject.MaxBounds = utils.IntVec3{math.MinInt32, math.MinInt32, math.MinInt32}
+	voxelObject.MinBounds = commonMath.IntVec3{math.MaxInt32, math.MaxInt32, math.MaxInt32}
+	voxelObject.MaxBounds = commonMath.IntVec3{math.MinInt32, math.MinInt32, math.MinInt32}
 
 	minFunc := func(x, y int) int {
 		if x < y {
@@ -92,7 +92,7 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 		x := int(binary.LittleEndian.Uint32(data[12:16]))
 		y := int(binary.LittleEndian.Uint32(data[16:20]))
 		z := int(binary.LittleEndian.Uint32(data[20:24]))
-		chunkType = SizeChunk{size: utils.IntVec3{x, y, z}}
+		chunkType = SizeChunk{size: commonMath.IntVec3{x, y, z}}
 	case "XYZI":
 		bytesRead += 4
 		checkLength(12, 4, data)
@@ -110,7 +110,7 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 			c := data[dataIdx+3]
 			dataIdx += 4
 
-			voxels[i] = Voxel{Position: utils.IntVec3{x, y, z}, ColorIdx: c}
+			voxels[i] = Voxel{Position: commonMath.IntVec3{x, y, z}, ColorIdx: c}
 		}
 
 		chunkType = VoxelsChunk{voxels: voxels}
@@ -119,7 +119,7 @@ func parseChunk(data []uint8) (chunkType ChunkType, bytesRead int) {
 		bytesRead += colorElements
 		checkLength(12, colorElements, data)
 
-		var colors [256]utils.Color
+		var colors [256]commonMath.Color
 		for i := 0; i < len(colors); i++ {
 			colors[i][0] = data[12+i*4]
 			colors[i][1] = data[12+i*4+1]

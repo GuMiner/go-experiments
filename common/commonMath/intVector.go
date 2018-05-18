@@ -1,4 +1,4 @@
-package utils
+package commonMath
 
 import (
 	"github.com/go-gl/mathgl/mgl32"

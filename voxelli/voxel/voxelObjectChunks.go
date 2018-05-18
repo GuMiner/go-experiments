@@ -2,7 +2,7 @@ package voxel
 
 import (
 	"fmt"
-	"go-experiments/voxelli/utils"
+	"go-experiments/common/commonmath"
 )
 
 type MainChunk struct {
@@ -21,7 +21,7 @@ func (c PackChunk) Name() string {
 }
 
 type SizeChunk struct {
-	size utils.IntVec3
+	size commonMath.IntVec3
 }
 
 func (c SizeChunk) Name() string {

@@ -3,7 +3,7 @@ package commonConfig
 import (
 	"encoding/json"
 	"fmt"
-	"go-experiments/common/io"
+	"go-experiments/common/commonio"
 
 	"github.com/go-gl/mathgl/mgl32"
 )

@@ -1,7 +1,7 @@
 package vehicle
 
 import (
-	"go-experiments/common/color"
+	"go-experiments/common/commoncolor"
 	"go-experiments/voxelli/renderer"
 	"go-experiments/voxelli/roadway"
 	"go-experiments/voxelli/voxelArray"

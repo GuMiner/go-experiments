@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"go-experiments/common/math"
+	"go-experiments/common/commonmath"
 	"go-experiments/voxelli/text"
 
 	"github.com/go-gl/mathgl/mgl32"

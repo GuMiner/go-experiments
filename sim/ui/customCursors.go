@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"go-experiments/common/io"
+	"go-experiments/common/commonio"
 	"go-experiments/sim/input/editorEngine"
 
 	"github.com/go-gl/glfw/v3.2/glfw"

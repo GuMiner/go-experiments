@@ -2,12 +2,11 @@ package text
 
 import (
 	"fmt"
-	"go-experiments/common/config"
-	"go-experiments/common/io"
-	"go-experiments/common/math"
-	"go-experiments/common/opengl"
+	"go-experiments/common/commonconfig"
+	"go-experiments/common/commonio"
+	"go-experiments/common/commonmath"
+	"go-experiments/common/commonopengl"
 	"go-experiments/voxelli/text/renderer"
-	"go-experiments/voxelli/utils"
 	"image"
 	"image/draw"
 
@@ -23,8 +22,8 @@ import (
 
 // Defines the index of a character in the texture maps
 type characterIndex struct {
-	Offset        utils.IntVec2 // Bounds of the character *in pixels.*
-	Scale         utils.IntVec2
+	Offset        commonMath.IntVec2 // Bounds of the character *in pixels.*
+	Scale         commonMath.IntVec2
 	FontTextureId uint32
 }
 
@@ -39,7 +38,7 @@ type TextRenderer struct {
 	textureSize    int32
 	fontTextures   []uint32
 	nextLineOffset int
-	currentOffset  utils.IntVec2
+	currentOffset  commonMath.IntVec2
 
 	// Given a character, returns where it is on the textures for drawing
 	characterMap map[rune]characterIndex
@@ -135,7 +134,7 @@ func (renderer *TextRenderer) advanceIfNecessary(width, height int) {
 	// We have filled this texture image, so move onto the next one.
 	if height+renderer.currentOffset.Y() >= int(renderer.textureSize) {
 		renderer.addFontTexture()
-		renderer.currentOffset = utils.IntVec2{0, 0}
+		renderer.currentOffset = commonMath.IntVec2{0, 0}
 		renderer.nextLineOffset = -1
 	}
 }
@@ -189,7 +188,7 @@ func (renderer *TextRenderer) addRune(character rune) {
 	renderer.characterMap[character] = characterIndex{
 		FontTextureId: uint32(len(renderer.fontTextures) - 1),
 		Offset:        renderer.currentOffset,
-		Scale:         utils.IntVec2{fullWidth, fullHeight}}
+		Scale:         commonMath.IntVec2{fullWidth, fullHeight}}
 
 	renderer.updateRuneOffset(fullWidth, fullHeight)
 }
@@ -222,7 +221,7 @@ func (r *TextRenderer) addFontTexture() {
 func NewTextRenderer(fontFile string) *TextRenderer {
 	renderer := TextRenderer{
 		nextLineOffset: -1,
-		currentOffset:  utils.IntVec2{0, 0},
+		currentOffset:  commonMath.IntVec2{0, 0},
 		fontTextures:   make([]uint32, 0),
 		characterMap:   make(map[rune]characterIndex)}
 

@@ -3,7 +3,7 @@ package main
 // Defines the data and data flow for the main simulation engine
 import (
 	"fmt"
-	"go-experiments/common/diagnostics"
+	"go-experiments/common/commondiagnostics"
 
 	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/diagnostics"

@@ -3,7 +3,7 @@ package commonOpenGl
 // Simplifies creating a GLSL GPU shading program
 import (
 	"fmt"
-	"go-experiments/common/io"
+	"go-experiments/common/commonio"
 	"strings"
 
 	"github.com/go-gl/gl/v4.5-core/gl"

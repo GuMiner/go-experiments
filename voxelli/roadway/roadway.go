@@ -2,10 +2,10 @@ package roadway
 
 import (
 	"fmt"
-	"go-experiments/common/io"
+	"go-experiments/common/commonio"
+	"go-experiments/common/commonmath"
 	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/geometry"
-	"go-experiments/voxelli/utils"
 	"math"
 	"strconv"
 	"strings"
@@ -31,7 +31,7 @@ type Road interface {
 	InBounds(position mgl32.Vec2) bool
 
 	// Gets the bounds of the road piece.
-	GetBounds(gridPos utils.IntVec2) []geometry.Intersectable
+	GetBounds(gridPos commonMath.IntVec2) []geometry.Intersectable
 }
 
 func newRoad(roadType RoadType, optionalData int) Road {
@@ -51,13 +51,13 @@ func getOffsetPosition(position mgl32.Vec2) mgl32.Vec2 {
 	return position.Add(mgl32.Vec2{float32(GetGridSize() / 2), float32(GetGridSize() / 2)})
 }
 
-func getGridIdx(position mgl32.Vec2) utils.IntVec2 {
-	return utils.IntVec2{
+func getGridIdx(position mgl32.Vec2) commonMath.IntVec2 {
+	return commonMath.IntVec2{
 		int(position.X() / float32(GetGridSize())),
 		int(position.Y() / float32(GetGridSize()))}
 }
 
-func getGridRelativePos(gridIdx utils.IntVec2, position mgl32.Vec2) mgl32.Vec2 {
+func getGridRelativePos(gridIdx commonMath.IntVec2, position mgl32.Vec2) mgl32.Vec2 {
 	return position.Sub(mgl32.Vec2{float32(gridIdx.X() * GetGridSize()), float32(gridIdx.Y() * GetGridSize())})
 }
 
@@ -85,7 +85,7 @@ func (r *Roadway) InBounds(position mgl32.Vec2) bool {
 	return r.roadElements[gridIdx.X()][gridIdx.Y()].InBounds(offsetPos)
 }
 
-func (r *Roadway) GetRoadElementIdx(position mgl32.Vec2) utils.IntVec2 {
+func (r *Roadway) GetRoadElementIdx(position mgl32.Vec2) commonMath.IntVec2 {
 	offsetPos := getOffsetPosition(position)
 	return getGridIdx(offsetPos)
 }
@@ -221,7 +221,7 @@ func NewRoadway(fileName string) *Roadway {
 
 			newRoad := newRoad(roadType, optionalData)
 			roadway.roadElements[xSize-(i+1)][j] = newRoad
-			roadway.roadParts = append(roadway.roadParts, newRoad.GetBounds(utils.IntVec2{xSize - (i + 1), j})...)
+			roadway.roadParts = append(roadway.roadParts, newRoad.GetBounds(commonMath.IntVec2{xSize - (i + 1), j})...)
 		}
 	}
 

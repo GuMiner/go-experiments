@@ -1,7 +1,7 @@
 package renderer
 
 import (
-	"go-experiments/common/opengl"
+	"go-experiments/common/commonopengl"
 	"go-experiments/voxelli/voxelArray"
 
 	"github.com/go-gl/gl/v4.5-core/gl"

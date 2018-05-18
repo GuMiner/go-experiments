@@ -1,12 +1,11 @@
 package flat
 
 import (
-	"go-experiments/common/math"
-	"go-experiments/common/opengl"
+	"go-experiments/common/commonmath"
+	"go-experiments/common/commonopengl"
 
 	"go-experiments/sim/config"
 	"go-experiments/sim/input"
-	"go-experiments/voxelli/utils"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -57,30 +56,30 @@ func (c *Camera) getMinMaxVisibleRange() (minTile mgl32.Vec2, maxTile mgl32.Vec2
 	return minTile, maxTile
 }
 
-func (c *Camera) ComputeVisibleRegions() []utils.IntVec2 {
+func (c *Camera) ComputeVisibleRegions() []commonMath.IntVec2 {
 	minTile, maxTile := c.getMinMaxVisibleRange()
 
-	visibleTiles := make([]utils.IntVec2, 0)
+	visibleTiles := make([]commonMath.IntVec2, 0)
 	for i := int(minTile.X() - 1.0); i <= int(maxTile.X()+1.0); i++ {
 		for j := int(minTile.Y() - 1.0); j <= int(maxTile.Y()+1.0); j++ {
-			visibleTiles = append(visibleTiles, utils.IntVec2{i, j})
+			visibleTiles = append(visibleTiles, commonMath.IntVec2{i, j})
 		}
 	}
 
 	return visibleTiles
 }
 
-func (c *Camera) ComputePrecacheRegions() []utils.IntVec2 {
+func (c *Camera) ComputePrecacheRegions() []commonMath.IntVec2 {
 	minTile, maxTile := c.getMinMaxVisibleRange()
 
-	visibleTiles := make([]utils.IntVec2, 0)
+	visibleTiles := make([]commonMath.IntVec2, 0)
 	for i := int(minTile.X() - 2.0); i <= int(maxTile.X()+2.0); i++ {
 		for j := int(minTile.Y() - 2.0); j <= int(maxTile.Y()+2.0); j++ {
 			if i == int(minTile.X()-2.0) ||
 				i == int(minTile.X()+2.0) ||
 				j == int(minTile.Y()-2.0) ||
 				j == int(maxTile.Y()+2.0) {
-				visibleTiles = append(visibleTiles, utils.IntVec2{i, j})
+				visibleTiles = append(visibleTiles, commonMath.IntVec2{i, j})
 			}
 		}
 	}

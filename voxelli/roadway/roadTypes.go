@@ -1,8 +1,9 @@
 package roadway
 
 import (
+	"go-experiments/common/commonmath"
 	"go-experiments/voxelli/geometry"
-	"go-experiments/voxelli/utils"
+
 	"math"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -16,7 +17,7 @@ func (oob OutOfBoundsRoad) InBounds(position mgl32.Vec2) bool {
 	return false
 }
 
-func (oob OutOfBoundsRoad) GetBounds(gridPos utils.IntVec2) []geometry.Intersectable {
+func (oob OutOfBoundsRoad) GetBounds(gridPos commonMath.IntVec2) []geometry.Intersectable {
 	return []geometry.Intersectable{}
 }
 
@@ -34,7 +35,7 @@ func (straightRoad StraightRoad) InBounds(position mgl32.Vec2) bool {
 	return position.X() > 1.0 && position.X() < float32(GetGridSize()-1)
 }
 
-func (straightRoad StraightRoad) GetBounds(gridPos utils.IntVec2) []geometry.Intersectable {
+func (straightRoad StraightRoad) GetBounds(gridPos commonMath.IntVec2) []geometry.Intersectable {
 	gridSize := float32(GetGridSize())
 	gridOffset := mgl32.Vec2{float32(gridPos.X()) * gridSize, float32(gridPos.Y()) * gridSize}
 
@@ -79,7 +80,7 @@ func (curvedRoad CurvedRoad) InBounds(position mgl32.Vec2) bool {
 	return length < gridExtent
 }
 
-func (curvedRoad CurvedRoad) GetBounds(gridPos utils.IntVec2) []geometry.Intersectable {
+func (curvedRoad CurvedRoad) GetBounds(gridPos commonMath.IntVec2) []geometry.Intersectable {
 	gridSize := float32(GetGridSize())
 	gridOffset := mgl32.Vec2{float32(gridPos.X()) * gridSize, float32(gridPos.Y()) * gridSize}
 

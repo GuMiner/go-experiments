@@ -2,7 +2,7 @@ package terrain
 
 import (
 	"fmt"
-	"go-experiments/common/math"
+	"go-experiments/common/commonmath"
 	"go-experiments/sim/config"
 	"math"
 

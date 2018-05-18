@@ -1,13 +1,12 @@
 package engine
 
 import (
-	"go-experiments/common/math"
+	"go-experiments/common/commonmath"
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/element"
 	"go-experiments/sim/engine/power"
 	"go-experiments/sim/engine/terrain"
 	"go-experiments/sim/input/editorEngine"
-	"go-experiments/voxelli/utils"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -123,13 +122,13 @@ func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.
 }
 
 // Update methods based on UI
-func (e *Engine) PrecacheRegions(regions []utils.IntVec2) {
+func (e *Engine) PrecacheRegions(regions []commonMath.IntVec2) {
 	for _, region := range regions {
 		e.terrainMap.AddRegionIfMissing(region.X(), region.Y())
 	}
 }
 
 // Data retrieval for drawing
-func (e *Engine) GetRegionMap(region utils.IntVec2) *terrain.TerrainSubMap {
+func (e *Engine) GetRegionMap(region commonMath.IntVec2) *terrain.TerrainSubMap {
 	return e.terrainMap.GetOrAddRegion(region.X(), region.Y())
 }

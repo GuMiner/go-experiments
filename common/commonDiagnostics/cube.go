@@ -2,7 +2,7 @@ package commonDiagnostics
 
 // Defines a small cube
 import (
-	"go-experiments/common/opengl"
+	"go-experiments/common/commonopengl"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/mathgl/mgl32"

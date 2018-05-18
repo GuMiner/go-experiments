@@ -3,11 +3,11 @@ package main
 // See https://github.com/ArztSamuel/Applying_EANNs for the inspiration for this.
 
 import (
-	"go-experiments/common/color"
-	"go-experiments/common/config"
-	"go-experiments/common/diagnostics"
-	"go-experiments/common/opengl"
-	"go-experiments/common/shadow"
+	"go-experiments/common/commoncolor"
+	"go-experiments/common/commonconfig"
+	"go-experiments/common/commondiagnostics"
+	"go-experiments/common/commonopengl"
+	"go-experiments/common/commonshadow"
 
 	"go-experiments/voxelli/config"
 	"go-experiments/voxelli/diagnostics"
@@ -74,7 +74,7 @@ func main() {
 	defer input.SaveKeyAssignments()
 
 	// Create renderers
-	shadowBuffer := shadow.NewShadowBuffer()
+	shadowBuffer := commonShadow.NewShadowBuffer()
 	defer shadowBuffer.Delete()
 
 	commonDiagnostics.InitCube()
