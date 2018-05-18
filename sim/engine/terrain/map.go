@@ -19,6 +19,11 @@ type TerrainTexel struct {
 	HeightPercent float32
 }
 
+func (t *TerrainTexel) Normalize() {
+	t.Height = commonMath.MinFloat32(1, commonMath.MaxFloat32(0, t.Height))
+	t.TerrainType, t.HeightPercent = GetTerrainType(t.Height)
+}
+
 type TerrainSubMap struct {
 	Texels [][]TerrainTexel
 
@@ -62,11 +67,8 @@ func (t *TerrainSubMap) GenerateSubMap(x, y int) {
 	for i := 0; i < regionSize; i++ {
 		for j := 0; j < regionSize; j++ {
 			height := heights[i+j*regionSize]
-			terrainType, percent := GetTerrainType(height)
-			t.Texels[i][j] = TerrainTexel{
-				TerrainType:   terrainType,
-				Height:        height,
-				HeightPercent: percent}
+			t.Texels[i][j] = TerrainTexel{Height: height}
+			t.Texels[i][j].Normalize()
 		}
 	}
 
@@ -115,29 +117,65 @@ func (t *TerrainMap) ValidateGroundLocation(reg commonMath.Region) bool {
 	return !reg.IterateIntWithEarlyExit(iterate)
 }
 
-func (t *TerrainMap) Flatten(pos mgl32.Vec2, amount float32) {
-	// TODO: This should be a circle, not a square, and we should not be hardcoding the size!
-	halfSize := 15
+func (t *TerrainMap) Flatten(region commonMath.Region, amount float32) {
+	t.performRegionBasedUpdate(region, amount, flatten)
+}
 
-	// TODO: Should also be configurable
-	amount = amount * 0.1
+func (t *TerrainMap) Sharpen(region commonMath.Region, amount float32) {
+	t.performRegionBasedUpdate(region, amount, sharpen)
+}
 
-	centerTexel, _ := t.getTexel(pos)
+func (t *TerrainMap) Hills(region commonMath.Region, amount float32) {
+	t.performRegionBasedUpdate(region, amount, hills)
+}
+
+func (t *TerrainMap) Valleys(region commonMath.Region, amount float32) {
+	t.performRegionBasedUpdate(region, amount, valleys)
+}
+
+func (t *TerrainMap) performRegionBasedUpdate(region commonMath.Region, amount float32, update func(mgl32.Vec2, mgl32.Vec2, *TerrainTexel, float32, float32, float32)) {
+	centerTexel, _ := t.getTexel(region.Position)
 	centralHeight := centerTexel.Height
 
-	// TODO: This works, but there are edge effects. There should be a getTexel overload that works on the integer level.
-	for i := int(pos.X()) - halfSize; i <= int(pos.X())+halfSize; i++ {
-		for j := int(pos.Y()) - halfSize; j <= int(pos.Y())+halfSize; j++ {
+	region.IterateIntWithEarlyExit(func(x, y int) bool {
+		modifiedPos := mgl32.Vec2{float32(x) + 0.5, float32(y) + 0.5}
+		texel, texelRegion := t.getTexel(modifiedPos)
 
-			modifiedPos := mgl32.Vec2{float32(i) + 0.5, float32(j) + 0.5}
-			texel, region := t.getTexel(modifiedPos)
+		update(region.Position, modifiedPos, texel, centralHeight, amount, region.Scale)
+		texelRegion.Dirty = true
 
-			// Average, moving parts that are farther away closer in faster. Effectively, flattening.
-			heightDifference := texel.Height - centralHeight
-			texel.Height = texel.Height - heightDifference*amount
-			region.Dirty = true
-		}
-	}
+		// Never early exit
+		return false
+	})
+}
+
+// Average, moving parts that are farther away closer in faster.
+func flatten(centerPosition, texelPosition mgl32.Vec2, texel *TerrainTexel, centerHeight, amount, regionSize float32) {
+	heightDifference := texel.Height - centerHeight
+	texel.Height = texel.Height - heightDifference*amount
+	texel.Normalize()
+}
+
+// Reverse average, moving parts that are farther away further faster.
+func sharpen(centerPosition, texelPosition mgl32.Vec2, texel *TerrainTexel, centerHeight, amount, regionSize float32) {
+	heightDifference := texel.Height - centerHeight
+	texel.Height = texel.Height + heightDifference*amount
+	texel.Normalize()
+}
+
+// Makes hills, pushing pixels near the center position upwards,
+func hills(centerPosition, texelPosition mgl32.Vec2, texel *TerrainTexel, centerHeight, amount, regionSize float32) {
+	distanceFactor := 1.0 - centerPosition.Sub(texelPosition).Len()/regionSize
+
+	texel.Height = texel.Height + amount*distanceFactor
+	texel.Normalize()
+}
+
+func valleys(centerPosition, texelPosition mgl32.Vec2, texel *TerrainTexel, centerHeight, amount, regionSize float32) {
+	distanceFactor := 1.0 - centerPosition.Sub(texelPosition).Len()/regionSize
+
+	texel.Height = texel.Height - amount*distanceFactor
+	texel.Normalize()
 }
 
 func (t *TerrainMap) getTexel(pos mgl32.Vec2) (*TerrainTexel, *TerrainSubMap) {

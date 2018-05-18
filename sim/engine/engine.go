@@ -71,10 +71,24 @@ func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 func (e *Engine) Step(stepAmount float32, engineState editorEngine.State) {
 	if engineState.Mode == editorEngine.Draw {
 		if e.isMousePressed {
+			// TODO: This shouldn't be duplicated with the hypothetical region, but you already know that.
+			region := commonMath.Region{
+				RegionType:  commonMath.CircleRegion,
+				Orientation: 0,
+				Scale:       30.0,
+				Position:    e.lastBoardPos}
+
+			stepFactor := 0.1 * stepAmount
+
 			switch engineState.InDrawMode {
 			case editorEngine.TerrainFlatten:
-				// TODO: We'll need to modify this to pass in a range...
-				e.terrainMap.Flatten(e.lastBoardPos, stepAmount)
+				e.terrainMap.Flatten(region, stepFactor)
+			case editorEngine.TerrainSharpen:
+				e.terrainMap.Sharpen(region, stepFactor)
+			case editorEngine.TerrainHills:
+				e.terrainMap.Hills(region, stepFactor)
+			case editorEngine.TerrainValleys:
+				e.terrainMap.Valleys(region, stepFactor)
 			default:
 				break
 			}

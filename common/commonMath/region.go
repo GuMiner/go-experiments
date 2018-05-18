@@ -37,7 +37,16 @@ func (r Region) IterateIntWithEarlyExit(iterate func(x, y int) bool) bool {
 			}
 		}
 	case CircleRegion:
-		// TODO:
+		// TODO: Make this more efficient
+		for i := int(r.Position.X() - r.Scale/2); i <= int(r.Position.X()+r.Scale/2); i++ {
+			for j := int(r.Position.Y() - r.Scale/2); j <= int(r.Position.Y()+r.Scale/2); j++ {
+				if ((float32(i)-r.Position.X())*(float32(i)-r.Position.X()) + (float32(j)-r.Position.Y())*(float32(j)-r.Position.Y())) < r.Scale*r.Scale/4 {
+					if iterate(i, j) {
+						return true
+					}
+				}
+			}
+		}
 		return false
 	default: // Triangle Region
 		// TODO:
