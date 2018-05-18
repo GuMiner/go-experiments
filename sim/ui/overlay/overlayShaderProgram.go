@@ -2,6 +2,7 @@ package overlay
 
 import (
 	"go-experiments/common/commonopengl"
+	"go-experiments/sim/config"
 
 	"github.com/go-gl/gl/v4.5-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
@@ -23,6 +24,7 @@ type OverlayShaderProgram struct {
 	offsetLoc       int32
 	scaleLoc        int32
 	overlayImageLoc int32
+	terrainSizeLoc  int32
 
 	vao uint32
 	vbo uint32
@@ -38,6 +40,7 @@ func NewOverlayShaderProgram() *OverlayShaderProgram {
 	overlay.offsetLoc = gl.GetUniformLocation(overlay.program, gl.Str("offset\x00"))
 	overlay.scaleLoc = gl.GetUniformLocation(overlay.program, gl.Str("scale\x00"))
 	overlay.overlayImageLoc = gl.GetUniformLocation(overlay.program, gl.Str("overlayImage\x00"))
+	overlay.terrainSizeLoc = gl.GetUniformLocation(overlay.program, gl.Str("terrainSize\x00"))
 
 	// Setup triangles for us to draw
 	gl.GenVertexArrays(1, &overlay.vao)
@@ -58,6 +61,7 @@ func NewOverlayShaderProgram() *OverlayShaderProgram {
 func (shaderProgram *OverlayShaderProgram) PreRender() {
 	gl.UseProgram(shaderProgram.program)
 	gl.BindVertexArray(shaderProgram.vao)
+	gl.Uniform1f(shaderProgram.terrainSizeLoc, float32(config.Config.Terrain.RegionSize))
 }
 
 func (shaderProgram *OverlayShaderProgram) Render(overlay *Overlay) {

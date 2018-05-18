@@ -129,7 +129,7 @@ func (t *TerrainMap) Flatten(pos mgl32.Vec2, amount float32) {
 	for i := int(pos.X()) - halfSize; i <= int(pos.X())+halfSize; i++ {
 		for j := int(pos.Y()) - halfSize; j <= int(pos.Y())+halfSize; j++ {
 
-			modifiedPos := mgl32.Vec2{float32(i), float32(j)}
+			modifiedPos := mgl32.Vec2{float32(i) + 0.5, float32(j) + 0.5}
 			texel, region := t.getTexel(modifiedPos)
 
 			// Average, moving parts that are farther away closer in faster. Effectively, flattening.
