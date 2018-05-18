@@ -166,6 +166,8 @@ func main() {
 			ui.Ui.RegionProgram.PreRender()
 			ui.Ui.RegionProgram.Render(&mappedRegion, hypotheticalRegionColor)
 		}
+
+		flat.RenderPowerPlants(engine.GetPowerPlants(), camera, ui.Ui.RegionProgram)
 	}
 
 	RenderLoop(update, render, window)

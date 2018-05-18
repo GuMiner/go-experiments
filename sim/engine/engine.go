@@ -146,3 +146,7 @@ func (e *Engine) PrecacheRegions(regions []commonMath.IntVec2) {
 func (e *Engine) GetRegionMap(region commonMath.IntVec2) *terrain.TerrainSubMap {
 	return e.terrainMap.GetOrAddRegion(region.X(), region.Y())
 }
+
+func (e *Engine) GetPowerPlants() *power.PowerPlants {
+	return e.powerPlants
+}

@@ -70,3 +70,9 @@ func (p *PowerPlants) Add(pos mgl32.Vec2, plantType PowerPlantType, plantSize Po
 	p.nextPowerPlant++
 	return &plant
 }
+
+func (p *PowerPlants) Iterate(iterate func(*PowerPlant)) {
+	for _, plant := range p.powerPlants {
+		iterate(plant)
+	}
+}
