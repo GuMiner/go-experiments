@@ -69,5 +69,9 @@
             "mouseScrollFactor": 0.02,
             "keyMotionFactor": 100.0
         }
+    },
+    "draw": {
+        "snapNodeCount": 5,
+        "minSnapNodeDistance": 15.0
     }
 }
