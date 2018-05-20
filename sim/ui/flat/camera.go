@@ -106,12 +106,22 @@ func (c *Camera) MapToBoard(screenPos mgl32.Vec2) mgl32.Vec2 {
 // Maps a region on the board to a GLSL (-1, -1) to (1, 1) region
 func (c *Camera) MapEngineRegionToScreen(region commonMath.Region) commonMath.Region {
 	// The only variables that are updated (for now) are position and scale
-	windowSize := commonOpenGl.GetWindowSize()
-
 	region.Scale *= (1.0 / c.zoomFactor)
-	region.Position = region.Position.Sub(c.offset).Mul(c.zoomFactor)
-	region.Position = mgl32.Vec2{2 * region.Position.X() / windowSize.X(), -2 * region.Position.Y() / windowSize.Y()}
+	region.Position = c.MapPositionToScreen(region.Position)
 	return region
+}
+
+func (c *Camera) MapEngineLineToScreen(line [2]mgl32.Vec2) [2]mgl32.Vec2 {
+	return [2]mgl32.Vec2{
+		c.MapPositionToScreen(line[0]),
+		c.MapPositionToScreen(line[1])}
+}
+
+func (c *Camera) MapPositionToScreen(point mgl32.Vec2) mgl32.Vec2 {
+	windowSize := commonOpenGl.GetWindowSize()
+	point = point.Sub(c.offset).Mul(c.zoomFactor)
+	point = mgl32.Vec2{2 * point.X() / windowSize.X(), -2 * point.Y() / windowSize.Y()}
+	return point
 }
 
 // Resizes a full-size region to the appropriate scale given the current screen size and zoom factor

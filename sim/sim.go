@@ -126,7 +126,7 @@ func main() {
 		}
 
 		if mouseMoved {
-			engine.MouseMoved(boardPos)
+			engine.MouseMoved(boardPos, editorEngine.EngineState)
 		}
 
 		engine.Step(frameTime, editorEngine.EngineState)
@@ -152,7 +152,8 @@ func main() {
 
 		ui.Ui.LinesProgram.PreRender()
 		for _, hypotheticalLine := range engine.Hypotheticals.Lines {
-			ui.Ui.LinesProgram.Render([][2]mgl32.Vec2{hypotheticalLine.Line}, hypotheticalLine.Color)
+			mappedLine := camera.MapEngineLineToScreen(hypotheticalLine.Line)
+			ui.Ui.LinesProgram.Render([][2]mgl32.Vec2{mappedLine}, hypotheticalLine.Color)
 		}
 
 		flat.RenderPowerPlants(engine.GetPowerGrid(), camera, ui.Ui.RegionProgram)

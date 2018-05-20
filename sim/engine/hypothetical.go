@@ -26,3 +26,8 @@ func (h *HypotheticalActions) Reset() {
 	h.Regions = []HypotheticalRegion{}
 	h.Lines = []HypotheticalLine{}
 }
+
+func (h *HypotheticalActions) SetSingleRegion(region HypotheticalRegion) {
+	h.Reset()
+	h.Regions = []HypotheticalRegion{region}
+}

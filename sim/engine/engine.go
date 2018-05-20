@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"fmt"
 	"go-experiments/common/commonmath"
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/element"
@@ -11,6 +12,22 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
+type PowerLineEditState struct {
+	wasInEditState bool
+
+	hasFirstNode bool
+	firstNode    mgl32.Vec2
+}
+
+func (p *PowerLineEditState) InPowerLineState(engineState editorEngine.State) bool {
+	return engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerLine
+}
+
+func (p *PowerLineEditState) Reset() {
+	p.wasInEditState = false
+	p.hasFirstNode = false
+}
+
 type Engine struct {
 	terrainMap    *terrain.TerrainMap
 	elementFinder *element.ElementFinder
@@ -19,6 +36,7 @@ type Engine struct {
 	isMousePressed  bool
 	actionPerformed bool
 	lastBoardPos    mgl32.Vec2
+	powerLineState  PowerLineEditState
 
 	Hypotheticals HypotheticalActions
 }
@@ -31,9 +49,11 @@ func NewEngine() *Engine {
 		elementFinder:   element.NewElementFinder(),
 		powerGrid:       power.NewPowerGrid(),
 		isMousePressed:  false,
-		actionPerformed: false}
+		actionPerformed: false,
+		powerLineState:  PowerLineEditState{}}
 
 	engine.Hypotheticals.Reset()
+	engine.powerLineState.Reset()
 	return &engine
 }
 
@@ -59,14 +79,40 @@ func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 	}
 }
 
-func (e *Engine) MouseMoved(pos mgl32.Vec2) {
+func (e *Engine) MouseMoved(pos mgl32.Vec2, engineState editorEngine.State) {
 	e.lastBoardPos = pos
+
+	inPowerLineEdit := e.powerLineState.InPowerLineState(engineState)
+	if inPowerLineEdit && !e.powerLineState.wasInEditState {
+		e.powerLineState.Reset()
+		e.powerLineState.wasInEditState = true
+	} else if !inPowerLineEdit && e.powerLineState.wasInEditState {
+		e.powerLineState.wasInEditState = false
+	}
 }
 
 func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 	e.isMousePressed = false
 	e.actionPerformed = false
 	e.lastBoardPos = pos
+
+	if e.powerLineState.InPowerLineState(engineState) {
+		// If this is the first press, we associate it with the first location of the powerline.
+		if !e.powerLineState.hasFirstNode {
+			fmt.Printf("First node pos %v\n", pos)
+			e.powerLineState.firstNode = pos
+			e.powerLineState.hasFirstNode = true
+
+			// TODO: Need to store snap nodes, other plants, etc. in the powerline state.
+		} else {
+			// Add the powerline
+			// TODO
+
+			// Setup the first node to be the last position.
+			// TOOD, also need to transfer over nodes as the last-created powerline owns the power node.
+			e.powerLineState.firstNode = pos
+		}
+	}
 }
 
 func (e *Engine) Step(stepAmount float32, engineState editorEngine.State) {
@@ -93,40 +139,60 @@ func (e *Engine) Step(stepAmount float32, engineState editorEngine.State) {
 
 // Returns true if there is a hypothetical region that should currently be displayed, false otherwise.
 func (e *Engine) ComputeHypotheticalRegion(engineState editorEngine.State) {
-	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
-		e.Hypotheticals.Regions = make([]HypotheticalRegion, 1)
+	if engineState.Mode == editorEngine.Add {
+		if engineState.InAddMode == editorEngine.PowerPlant {
+			e.Hypotheticals.Regions = make([]HypotheticalRegion, 1)
 
-		plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
-		plantSize := power.Small // TODO: Configurable
+			plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
+			plantSize := power.Small // TODO: Configurable
 
-		// Ensure we only put power plants on valid ground.
-		_, size := power.GetPowerOutputAndSize(plantType, plantSize)
-		region := commonMath.Region{
-			RegionType:  commonMath.SquareRegion,
-			Scale:       float32(size),
-			Orientation: 0,
-			Position:    e.lastBoardPos}
+			// Ensure we only put power plants on valid ground.
+			_, size := power.GetPowerOutputAndSize(plantType, plantSize)
+			region := commonMath.Region{
+				RegionType:  commonMath.SquareRegion,
+				Scale:       float32(size),
+				Orientation: 0,
+				Position:    e.lastBoardPos}
 
-		anyNearbyObjects := e.elementFinder.AnyInRange(e.lastBoardPos, region.Scale)
-		var color mgl32.Vec3
-		if !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region) {
-			color = mgl32.Vec3{0, 1, 0}
-		} else {
-			color = mgl32.Vec3{1, 0, 0}
+			anyNearbyObjects := e.elementFinder.AnyInRange(e.lastBoardPos, region.Scale)
+			var color mgl32.Vec3
+			if !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region) {
+				color = mgl32.Vec3{0, 1, 0}
+			} else {
+				color = mgl32.Vec3{1, 0, 0}
+			}
+
+			e.Hypotheticals.SetSingleRegion(HypotheticalRegion{Region: region, Color: color})
+		} else if engineState.InAddMode == editorEngine.PowerLine {
+			if !e.powerLineState.hasFirstNode {
+				// Draw a generic powerline icon.
+				e.Hypotheticals.SetSingleRegion(
+					HypotheticalRegion{
+						Color: mgl32.Vec3{1.0, 0.0, 1.0},
+						Region: commonMath.Region{
+							RegionType:  commonMath.CircleRegion,
+							Scale:       20.0, // TODO Make this configurable by reading the editor engine state.
+							Orientation: 0,
+							Position:    e.lastBoardPos}})
+			} else {
+				e.Hypotheticals.Regions = []HypotheticalRegion{}
+				e.Hypotheticals.Lines = []HypotheticalLine{
+					HypotheticalLine{
+						Color: mgl32.Vec3{1.0, 0.0, 1.0},
+						Line: [2]mgl32.Vec2{
+							e.lastBoardPos,
+							e.powerLineState.firstNode}}}
+			}
 		}
-
-		e.Hypotheticals.Regions[0] = HypotheticalRegion{
-			Region: region,
-			Color:  color}
 	} else if engineState.Mode == editorEngine.Draw {
-		e.Hypotheticals.Regions = []HypotheticalRegion{
+		e.Hypotheticals.SetSingleRegion(
 			HypotheticalRegion{
 				Color: mgl32.Vec3{0.0, 1.0, 1.0},
 				Region: commonMath.Region{
 					RegionType:  commonMath.CircleRegion,
 					Scale:       30.0, // TODO Make this configurable by reading the editor engine state.
 					Orientation: 0,
-					Position:    e.lastBoardPos}}}
+					Position:    e.lastBoardPos}})
 	} else {
 		e.Hypotheticals.Reset()
 	}
