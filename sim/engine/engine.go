@@ -16,45 +16,45 @@ type Engine struct {
 	elementFinder *element.ElementFinder
 	powerGrid     *power.PowerGrid
 
-	isMousePressed bool
-	lastBoardPos   mgl32.Vec2
+	isMousePressed  bool
+	actionPerformed bool
+	lastBoardPos    mgl32.Vec2
+
+	Hypotheticals HypotheticalActions
 }
 
 func NewEngine() *Engine {
 	terrain.Init(config.Config.Terrain.Generation.Seed)
 
 	engine := Engine{
-		terrainMap:     terrain.NewTerrainMap(),
-		elementFinder:  element.NewElementFinder(),
-		powerGrid:      power.NewPowerGrid(),
-		isMousePressed: false}
+		terrainMap:      terrain.NewTerrainMap(),
+		elementFinder:   element.NewElementFinder(),
+		powerGrid:       power.NewPowerGrid(),
+		isMousePressed:  false,
+		actionPerformed: false}
 
+	engine.Hypotheticals.Reset()
 	return &engine
 }
 
 func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 	e.isMousePressed = true
 	e.lastBoardPos = pos
-	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
-		plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
-		plantSize := power.Small // TODO: Configurable
+	if !e.actionPerformed {
+		if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
+			// TODO: We really want 'any intersecting objects'. This is good for starters and infrastructure, but not much else.
+			anyNearbyObjects := e.elementFinder.AnyInRange(pos, e.Hypotheticals.Regions[0].Region.Scale)
 
-		// Ensure we only put power plants on valid ground.
-		_, size := power.GetPowerOutputAndSize(plantType, plantSize)
+			if !anyNearbyObjects {
+				isGroundValid := e.terrainMap.ValidateGroundLocation(e.Hypotheticals.Regions[0].Region)
+				if isGroundValid {
+					plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
+					plantSize := power.Small // TODO: Configurable
 
-		// TODO: Get region from the item, not by hardcoding it here and hypothetically here.
-		region := commonMath.Region{
-			RegionType:  commonMath.SquareRegion,
-			Scale:       float32(size),
-			Orientation: 0,
-			Position:    pos}
-
-		// TODO: We really want 'any intersecting objects'. This is good for starters and infrastructure, but not much else.
-		anyNearbyObjects := e.elementFinder.AnyInRange(pos, float32(size))
-
-		if !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region) {
-			element := e.powerGrid.Add(pos, plantType, plantSize)
-			e.elementFinder.Add(element)
+					element := e.powerGrid.Add(pos, plantType, plantSize)
+					e.elementFinder.Add(element)
+				}
+			}
 		}
 	}
 }
@@ -65,19 +65,14 @@ func (e *Engine) MouseMoved(pos mgl32.Vec2) {
 
 func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 	e.isMousePressed = false
+	e.actionPerformed = false
 	e.lastBoardPos = pos
 }
 
 func (e *Engine) Step(stepAmount float32, engineState editorEngine.State) {
 	if engineState.Mode == editorEngine.Draw {
 		if e.isMousePressed {
-			// TODO: This shouldn't be duplicated with the hypothetical region, but you already know that.
-			region := commonMath.Region{
-				RegionType:  commonMath.CircleRegion,
-				Orientation: 0,
-				Scale:       30.0,
-				Position:    e.lastBoardPos}
-
+			region := e.Hypotheticals.Regions[0].Region
 			stepFactor := 0.1 * stepAmount
 
 			switch engineState.InDrawMode {
@@ -97,20 +92,10 @@ func (e *Engine) Step(stepAmount float32, engineState editorEngine.State) {
 }
 
 // Returns true if there is a hypothetical region that should currently be displayed, false otherwise.
-func (e *Engine) HasHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.State) bool {
+func (e *Engine) ComputeHypotheticalRegion(engineState editorEngine.State) {
 	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
-		return true
-	} else if engineState.Mode == editorEngine.Draw {
-		return true
-	}
+		e.Hypotheticals.Regions = make([]HypotheticalRegion, 1)
 
-	return false
-}
-
-// Gets the hypothetical region that an action will happen to when the mouse is released.
-func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.State) (isValid bool, region commonMath.Region) {
-	if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
-		// TODO this really shouldn't be duplicated with the above.
 		plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
 		plantSize := power.Small // TODO: Configurable
 
@@ -120,19 +105,31 @@ func (e *Engine) GetHypotheticalRegion(pos mgl32.Vec2, engineState editorEngine.
 			RegionType:  commonMath.SquareRegion,
 			Scale:       float32(size),
 			Orientation: 0,
-			Position:    pos}
+			Position:    e.lastBoardPos}
 
-		anyNearbyObjects := e.elementFinder.AnyInRange(pos, float32(size))
-		return !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region), region
+		anyNearbyObjects := e.elementFinder.AnyInRange(e.lastBoardPos, region.Scale)
+		var color mgl32.Vec3
+		if !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region) {
+			color = mgl32.Vec3{0, 1, 0}
+		} else {
+			color = mgl32.Vec3{1, 0, 0}
+		}
+
+		e.Hypotheticals.Regions[0] = HypotheticalRegion{
+			Region: region,
+			Color:  color}
 	} else if engineState.Mode == editorEngine.Draw {
-		return true, commonMath.Region{
-			RegionType:  commonMath.CircleRegion,
-			Scale:       30.0, // TODO Make this configurable by reading the editor engine state.
-			Orientation: 0,    // It's a circle, so this doesn't really matter.
-			Position:    pos}
+		e.Hypotheticals.Regions = []HypotheticalRegion{
+			HypotheticalRegion{
+				Color: mgl32.Vec3{0.0, 1.0, 1.0},
+				Region: commonMath.Region{
+					RegionType:  commonMath.CircleRegion,
+					Scale:       30.0, // TODO Make this configurable by reading the editor engine state.
+					Orientation: 0,
+					Position:    e.lastBoardPos}}}
+	} else {
+		e.Hypotheticals.Reset()
 	}
-
-	return false, commonMath.Region{}
 }
 
 // Update methods based on UI

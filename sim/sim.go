@@ -3,7 +3,6 @@ package main
 import (
 	"go-experiments/common/commoncolor"
 	"go-experiments/common/commonconfig"
-	"go-experiments/common/commonmath"
 	"go-experiments/common/commonopengl"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -64,10 +63,6 @@ func main() {
 	ui.Init(window)
 	defer ui.Delete()
 
-	hasHypotheticalRegion := false
-	var hypotheticalRegionColor mgl32.Vec3
-	var hypotheticalRegion commonMath.Region
-
 	editorEngine.Init()
 
 	camera := flat.NewCamera()
@@ -117,19 +112,7 @@ func main() {
 
 		boardPos := camera.MapPixelPosToBoard(input.MousePos)
 		if editorStateUpdated || mouseMoved {
-			if engine.HasHypotheticalRegion(boardPos, editorEngine.EngineState) {
-				hasHypotheticalRegion = true
-
-				isValid, region := engine.GetHypotheticalRegion(boardPos, editorEngine.EngineState)
-				hypotheticalRegion = region
-				if isValid {
-					hypotheticalRegionColor = mgl32.Vec3{0, 1, 0}
-				} else {
-					hypotheticalRegionColor = mgl32.Vec3{1, 0, 0}
-				}
-			} else {
-				hasHypotheticalRegion = false
-			}
+			engine.ComputeHypotheticalRegion(editorEngine.EngineState)
 		}
 
 		if input.MousePressEvent {
@@ -161,13 +144,19 @@ func main() {
 			ui.Ui.OverlayProgram.Render(overlay.GetOverlay())
 		}
 
-		if hasHypotheticalRegion {
-			mappedRegion := camera.MapEngineRegionToScreen(hypotheticalRegion)
-			ui.Ui.RegionProgram.PreRender()
-			ui.Ui.RegionProgram.Render(&mappedRegion, hypotheticalRegionColor)
+		ui.Ui.RegionProgram.PreRender()
+		for _, hypotheticalRegion := range engine.Hypotheticals.Regions {
+			mappedRegion := camera.MapEngineRegionToScreen(hypotheticalRegion.Region)
+			ui.Ui.RegionProgram.Render(&mappedRegion, hypotheticalRegion.Color)
+		}
+
+		ui.Ui.LinesProgram.PreRender()
+		for _, hypotheticalLine := range engine.Hypotheticals.Lines {
+			ui.Ui.LinesProgram.Render([][2]mgl32.Vec2{hypotheticalLine.Line}, hypotheticalLine.Color)
 		}
 
 		flat.RenderPowerPlants(engine.GetPowerGrid(), camera, ui.Ui.RegionProgram)
+		flat.RenderPowerLines(engine.GetPowerGrid(), camera, ui.Ui.LinesProgram)
 
 		if editorEngine.EngineState.SnapToElements {
 			if editorEngine.EngineState.Mode == editorEngine.Add {

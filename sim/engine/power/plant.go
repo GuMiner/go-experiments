@@ -7,7 +7,6 @@ import (
 )
 
 type PowerPlant struct {
-	id       int64
 	location mgl32.Vec2
 
 	plantType PowerPlantType

@@ -2,21 +2,30 @@ package power
 
 import (
 	"fmt"
+	"go-experiments/sim/engine/element"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
 
 type PowerGrid struct {
-	grid           *ResizeableGraph
+	grid    *ResizeableGraph
+	nodeMap map[int]element.Element // Reverse maps a node ID to an element.
+
 	powerPlants    map[int64]*PowerPlant
 	nextPowerPlant int64
+
+	powerLines    map[int64]*PowerLine
+	nextPowerLine int64
 }
 
 func NewPowerGrid() *PowerGrid {
 	grid := PowerGrid{
 		grid:           NewResizeableGraph(),
+		nodeMap:        make(map[int]element.Element),
 		powerPlants:    make(map[int64]*PowerPlant),
-		nextPowerPlant: 0}
+		nextPowerPlant: 0,
+		powerLines:     make(map[int64]*PowerLine),
+		nextPowerLine:  0}
 
 	return &grid
 }
@@ -25,7 +34,6 @@ func (p *PowerGrid) Add(pos mgl32.Vec2, plantType PowerPlantType, plantSize Powe
 	output, size := GetPowerOutputAndSize(plantType, plantSize)
 
 	plant := PowerPlant{
-		id:          p.nextPowerPlant,
 		location:    pos,
 		plantType:   plantType,
 		namedSize:   plantSize,
@@ -33,6 +41,8 @@ func (p *PowerGrid) Add(pos mgl32.Vec2, plantType PowerPlantType, plantSize Powe
 		orientation: 0, // TODO: Rotation
 		output:      output,
 		gridId:      p.grid.AddNode()}
+
+	p.nodeMap[plant.gridId] = &plant
 
 	p.powerPlants[p.nextPowerPlant] = &plant
 	fmt.Printf("Added power plant '%v'.\n", p.powerPlants[p.nextPowerPlant])
@@ -42,8 +52,45 @@ func (p *PowerGrid) Add(pos mgl32.Vec2, plantType PowerPlantType, plantSize Powe
 	return &plant
 }
 
+// Adds a powerline. For both startNode and endNode, if -1 generates a new grid node, else uses an existing node.
+func (p *PowerGrid) AddLine(start, end mgl32.Vec2, capacity int64, startNode, endNode int) {
+	line := PowerLine{
+		start:    start,
+		end:      end,
+		capacity: capacity}
+
+	if startNode == -1 {
+		line.startNode = p.grid.AddNode()
+		line.ownsStartNode = true
+		p.nodeMap[line.startNode] = &line
+	} else {
+		line.startNode = startNode
+		line.ownsStartNode = false
+	}
+
+	if endNode == -1 {
+		line.endNode = p.grid.AddNode()
+		line.ownsEndNode = true
+		p.nodeMap[line.endNode] = &line
+	} else {
+		line.endNode = endNode
+		line.ownsEndNode = false
+	}
+
+	p.grid.AddOrUpdateEdgeCost(line.startNode, line.endNode, line.capacity)
+	p.grid.AddOrUpdateEdgeCost(line.endNode, line.startNode, line.capacity)
+	p.powerLines[p.nextPowerLine] = &line
+	p.nextPowerLine++
+}
+
 func (p *PowerGrid) IteratePlants(iterate func(*PowerPlant)) {
 	for _, plant := range p.powerPlants {
 		iterate(plant)
+	}
+}
+
+func (p *PowerGrid) IterateLines(iterate func(*PowerLine)) {
+	for _, line := range p.powerLines {
+		iterate(line)
 	}
 }

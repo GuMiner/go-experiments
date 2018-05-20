@@ -2,6 +2,7 @@ package ui
 
 import (
 	"go-experiments/sim/input/editorEngine"
+	"go-experiments/sim/ui/lines"
 	"go-experiments/sim/ui/overlay"
 	"go-experiments/sim/ui/region"
 
@@ -11,6 +12,7 @@ import (
 type UiInfrastructure struct {
 	OverlayProgram *overlay.OverlayShaderProgram
 	RegionProgram  *region.RegionShaderProgram
+	LinesProgram   *lines.LinesShaderProgram
 }
 
 var Ui UiInfrastructure
@@ -19,6 +21,7 @@ var Ui UiInfrastructure
 func Init(window *glfw.Window) {
 	Ui.OverlayProgram = overlay.NewOverlayShaderProgram()
 	Ui.RegionProgram = region.NewRegionShaderProgram()
+	Ui.LinesProgram = lines.NewLinesShaderProgram()
 
 	initCustomCursors(window)
 }
