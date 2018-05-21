@@ -150,8 +150,8 @@ func main() {
 
 		ui.Ui.RegionProgram.PreRender()
 		for _, hypotheticalRegion := range engine.Hypotheticals.Regions {
-			mappedRegion := camera.MapEngineRegionToScreen(hypotheticalRegion.Region)
-			ui.Ui.RegionProgram.Render(&mappedRegion, hypotheticalRegion.Color)
+			mappedRegion := camera.MapEngineRegionToScreen(&hypotheticalRegion.Region)
+			ui.Ui.RegionProgram.Render(mappedRegion, hypotheticalRegion.Color)
 		}
 
 		ui.Ui.LinesProgram.PreRender()

@@ -104,7 +104,7 @@ func (c *Camera) MapToBoard(screenPos mgl32.Vec2) mgl32.Vec2 {
 }
 
 // Maps a region on the board to a GLSL (-1, -1) to (1, 1) region
-func (c *Camera) MapEngineRegionToScreen(region commonMath.Region) commonMath.Region {
+func (c *Camera) MapEngineRegionToScreen(region *commonMath.Region) *commonMath.Region {
 	// The only variables that are updated (for now) are position and scale
 	region.Scale *= (1.0 / c.zoomFactor)
 	region.Position = c.MapPositionToScreen(region.Position)

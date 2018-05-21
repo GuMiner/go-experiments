@@ -23,8 +23,8 @@ type PowerLine struct {
 
 // Implement Element
 // Gets the central position of the element.
-func (p *PowerLine) GetRegion() commonMath.Region {
-	panic("GetRegion is not implemented for powerlines!")
+func (p *PowerLine) GetRegion() *commonMath.Region {
+	return nil
 }
 
 // Gets positions on the map that can be used to snap to points of the element.

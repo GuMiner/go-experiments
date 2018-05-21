@@ -21,12 +21,12 @@ func RenderSnapNodes(boardPos mgl32.Vec2, elementFinder *element.ElementFinder, 
 					Position:    snapNode,
 					Scale:       50,
 					Orientation: 0}
-				mappedRegion := camera.MapEngineRegionToScreen(region)
+				mappedRegion := camera.MapEngineRegionToScreen(&region)
 				color := mgl32.Vec3{1.0, 0.0, 1.0}
 				if i == 0 && j == 0 {
 					color = mgl32.Vec3{0.0, 1.0, 0.0}
 				}
-				shadingProgram.Render(&mappedRegion, color)
+				shadingProgram.Render(mappedRegion, color)
 			}
 		}
 	}

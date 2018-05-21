@@ -23,8 +23,8 @@ type PowerPlant struct {
 
 // Implement Element
 // Gets the central position of the element
-func (p *PowerPlant) GetRegion() commonMath.Region {
-	return commonMath.Region{
+func (p *PowerPlant) GetRegion() *commonMath.Region {
+	return &commonMath.Region{
 		RegionType:  commonMath.SquareRegion,
 		Position:    p.location,
 		Scale:       p.size,

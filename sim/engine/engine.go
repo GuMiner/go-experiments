@@ -20,6 +20,11 @@ type PowerLineEditState struct {
 	firstNodeElement int
 }
 
+type SnapItems struct {
+	snappedNode element.ElementWithDistance
+	snappedLine element.LineElementWithDistance
+}
+
 func (p *PowerLineEditState) InPowerLineState(engineState editorEngine.State) bool {
 	return engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerLine
 }
@@ -63,10 +68,9 @@ func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 	e.lastBoardPos = pos
 	if !e.actionPerformed {
 		if engineState.Mode == editorEngine.Add && engineState.InAddMode == editorEngine.PowerPlant {
-			// TODO: We really want 'any intersecting objects'. This is good for starters and infrastructure, but not much else.
-			anyNearbyObjects := e.elementFinder.AnyInRange(pos, e.Hypotheticals.Regions[0].Region.Scale)
+			intesectsWithElement := e.elementFinder.IntersectsWithElement(pos, e.Hypotheticals.Regions[0].Region.Scale)
 
-			if !anyNearbyObjects {
+			if !intesectsWithElement {
 				isGroundValid := e.terrainMap.ValidateGroundLocation(e.Hypotheticals.Regions[0].Region)
 				if isGroundValid {
 					plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
@@ -110,12 +114,10 @@ func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 			// TODO: Configurable capacity
 			// TODO: End node can also be an item we connect to
 			line := e.powerGrid.AddLine(e.powerLineState.firstNode, pos, 1000, e.powerLineState.firstNodeElement, -1)
+			e.elementFinder.Add(line)
+
 			e.powerLineState.firstNode = pos
 			e.powerLineState.firstNodeElement = line.GetEndNodeElement()
-
-			// TODO: Our element finder uses GetRegion to find the element position
-			// This doesn't work, it should really use the snap nodes, which means each element
-			// can be referenced in multiple poslitions.
 		}
 	}
 }
@@ -166,7 +168,7 @@ func (e *Engine) ComputeHypotheticalRegion(engineState editorEngine.State) {
 				Orientation: 0,
 				Position:    e.lastBoardPos}
 
-			anyNearbyObjects := e.elementFinder.AnyInRange(e.lastBoardPos, region.Scale)
+			anyNearbyObjects := e.elementFinder.IntersectsWithElement(e.lastBoardPos, region.Scale)
 			var color mgl32.Vec3
 			if !anyNearbyObjects && e.terrainMap.ValidateGroundLocation(region) {
 				color = mgl32.Vec3{0, 1, 0}

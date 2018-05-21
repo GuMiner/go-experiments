@@ -15,7 +15,7 @@ func RenderPowerPlants(grid *power.PowerGrid, camera *Camera, shadingProgram *re
 	grid.IteratePlants(func(plant *power.PowerPlant) {
 		region := plant.GetRegion()
 		mappedRegion := camera.MapEngineRegionToScreen(region)
-		shadingProgram.Render(&mappedRegion, mgl32.Vec3{0.5, 0.5, 0.0})
+		shadingProgram.Render(mappedRegion, mgl32.Vec3{0.5, 0.5, 0.0})
 	})
 }
 
