@@ -120,6 +120,13 @@ func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 	}
 }
 
+// Cancels the state of any multi-step operation, resetting it back to the start.
+func (e *Engine) CancelState(engineState editorEngine.State) {
+	if e.powerLineState.InPowerLineState(engineState) {
+		e.powerLineState.Reset()
+	}
+}
+
 func (e *Engine) Step(stepAmount float32, engineState editorEngine.State) {
 	if engineState.Mode == editorEngine.Draw {
 		if e.isMousePressed {

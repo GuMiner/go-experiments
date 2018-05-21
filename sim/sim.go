@@ -129,6 +129,10 @@ func main() {
 			engine.MouseMoved(boardPos, editorEngine.EngineState)
 		}
 
+		if input.IsTyped(input.CancelKey) {
+			engine.CancelState(editorEngine.EngineState)
+		}
+
 		engine.Step(frameTime, editorEngine.EngineState)
 	}
 

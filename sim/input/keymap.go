@@ -12,6 +12,8 @@ const (
 	MoveUpKey
 	MoveDownKey
 
+	CancelKey
+
 	SnapToGridKey
 	SnapToAngleKey
 	SnapToElementsKey
@@ -64,6 +66,8 @@ func CreateDefaultKeyMap() {
 	keyMap[MoveRightKey] = glfw.KeyRight
 	keyMap[MoveUpKey] = glfw.KeyUp
 	keyMap[MoveDownKey] = glfw.KeyDown
+
+	keyMap[CancelKey] = glfw.KeyEscape
 
 	keyMap[SnapToGridKey] = glfw.Key8
 	keyMap[SnapToAngleKey] = glfw.Key9
