@@ -46,3 +46,7 @@ func (p *PowerLine) GetSnapEdges() [][2]mgl32.Vec2 {
 func (p *PowerLine) GetLine() [2]mgl32.Vec2 {
 	return p.GetSnapEdges()[0]
 }
+
+func (p *PowerLine) GetEndNodeElement() int {
+	return p.endNode
+}

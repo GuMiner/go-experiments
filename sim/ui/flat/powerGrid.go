@@ -24,7 +24,8 @@ func RenderPowerLines(grid *power.PowerGrid, camera *Camera, shadingProgram *lin
 
 	lines := make([][2]mgl32.Vec2, 0)
 	grid.IterateLines(func(line *power.PowerLine) {
-		lines = append(lines, line.GetLine())
+		mappedLine := camera.MapEngineLineToScreen(line.GetLine())
+		lines = append(lines, mappedLine)
 		if len(lines) > 200 {
 			shadingProgram.Render(lines, mgl32.Vec3{0, 1, 0})
 			lines = make([][2]mgl32.Vec2, 0)

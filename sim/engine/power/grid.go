@@ -53,7 +53,7 @@ func (p *PowerGrid) Add(pos mgl32.Vec2, plantType PowerPlantType, plantSize Powe
 }
 
 // Adds a powerline. For both startNode and endNode, if -1 generates a new grid node, else uses an existing node.
-func (p *PowerGrid) AddLine(start, end mgl32.Vec2, capacity int64, startNode, endNode int) {
+func (p *PowerGrid) AddLine(start, end mgl32.Vec2, capacity int64, startNode, endNode int) *PowerLine {
 	line := PowerLine{
 		start:    start,
 		end:      end,
@@ -81,6 +81,8 @@ func (p *PowerGrid) AddLine(start, end mgl32.Vec2, capacity int64, startNode, en
 	p.grid.AddOrUpdateEdgeCost(line.endNode, line.startNode, line.capacity)
 	p.powerLines[p.nextPowerLine] = &line
 	p.nextPowerLine++
+
+	return &line
 }
 
 func (p *PowerGrid) IteratePlants(iterate func(*PowerPlant)) {

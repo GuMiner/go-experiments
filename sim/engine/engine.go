@@ -15,8 +15,9 @@ import (
 type PowerLineEditState struct {
 	wasInEditState bool
 
-	hasFirstNode bool
-	firstNode    mgl32.Vec2
+	hasFirstNode     bool
+	firstNode        mgl32.Vec2
+	firstNodeElement int
 }
 
 func (p *PowerLineEditState) InPowerLineState(engineState editorEngine.State) bool {
@@ -102,15 +103,19 @@ func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 			fmt.Printf("First node pos %v\n", pos)
 			e.powerLineState.firstNode = pos
 			e.powerLineState.hasFirstNode = true
-
+			e.powerLineState.firstNodeElement = -1
 			// TODO: Need to store snap nodes, other plants, etc. in the powerline state.
 		} else {
-			// Add the powerline
-			// TODO
 
-			// Setup the first node to be the last position.
-			// TOOD, also need to transfer over nodes as the last-created powerline owns the power node.
+			// TODO: Configurable capacity
+			// TODO: End node can also be an item we connect to
+			line := e.powerGrid.AddLine(e.powerLineState.firstNode, pos, 1000, e.powerLineState.firstNodeElement, -1)
 			e.powerLineState.firstNode = pos
+			e.powerLineState.firstNodeElement = line.GetEndNodeElement()
+
+			// TODO: Our element finder uses GetRegion to find the element position
+			// This doesn't work, it should really use the snap nodes, which means each element
+			// can be referenced in multiple poslitions.
 		}
 	}
 }
