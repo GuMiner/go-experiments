@@ -23,38 +23,45 @@
             "smallOutput": 22,
             "smallSize": 22,
             "largeOutput": 22,
-            "largeSize": 22
+            "largeSize": 22,
+            "cost": 100000.0
         },
         "nuclear": {
             "smallOutput": 22,
             "smallSize": 22,
             "largeOutput": 22,
-            "largeSize": 22
+            "largeSize": 22,
+            "cost": 1000000.0
         },
         "naturalGas": {
             "smallOutput": 22,
             "smallSize": 22,
             "largeOutput": 22,
-            "largeSize": 22
+            "largeSize": 22,
+            "cost": 500000.0
         },
         "wind": {
             "smallOutput": 22,
             "smallSize": 22,
             "largeOutput": 22,
-            "largeSize": 22
+            "largeSize": 22,
+            "cost": 10000.0
         },
         "solar": {
             "smallOutput": 22,
             "smallSize": 22,
             "largeOutput": 22,
-            "largeSize": 22
+            "largeSize": 22,
+            "cost": 50000.0
         },
         "geothermal": {
             "smallOutput": 22,
             "smallSize": 22,
             "largeOutput": 22,
-            "largeSize": 22
-        }
+            "largeSize": 22,
+            "cost": 300000.0
+        },
+        "powerLineCost": 100.0
     },
     "ui": {
         "terrainUi": {
@@ -77,5 +84,10 @@
     "snap": {
         "snapAngleDivision": 45,
         "snapGridResolution": 10
+    },
+    "sim": {
+        "secondsPerDay": 5,
+        "startingSavings": 100000000.0,
+        "maxDebt": 1000000.0
     }
 }

@@ -73,3 +73,23 @@ func GetPlantType(plantAddMode editorEngine.EditorPlantAddMode) PowerPlantType {
 
 	return plantType
 }
+
+func GetPlantCost(plantType PowerPlantType) float32 {
+	var cost float32
+	switch plantType {
+	case Coal:
+		cost = config.Config.Power.Coal.Cost
+	case Geothermal:
+		cost = config.Config.Power.Geothermal.Cost
+	case NaturalGas:
+		cost = config.Config.Power.NaturalGas.Cost
+	case Nuclear:
+		cost = config.Config.Power.Nuclear.Cost
+	case Wind:
+		cost = config.Config.Power.Wind.Cost
+	default: // Solar
+		cost = config.Config.Power.Solar.Cost
+	}
+
+	return cost
+}

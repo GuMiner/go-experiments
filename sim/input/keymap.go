@@ -12,6 +12,7 @@ const (
 	MoveUpKey
 	MoveDownKey
 
+	PauseKey
 	CancelKey
 
 	SnapToGridKey
@@ -67,6 +68,7 @@ func CreateDefaultKeyMap() {
 	keyMap[MoveUpKey] = glfw.KeyUp
 	keyMap[MoveDownKey] = glfw.KeyDown
 
+	keyMap[PauseKey] = glfw.KeySpace
 	keyMap[CancelKey] = glfw.KeyEscape
 
 	keyMap[SnapToGridKey] = glfw.Key8

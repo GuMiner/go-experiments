@@ -78,6 +78,7 @@ func main() {
 	lastElapsed := float32(0.0)
 	elapsed := lastElapsed
 
+	paused := false
 	update := func() {
 		lastElapsed = elapsed
 		elapsed = float32(time.Since(startTime)) / float32(time.Second)
@@ -133,7 +134,14 @@ func main() {
 			engine.CancelState(editorEngine.EngineState)
 		}
 
-		engine.Step(frameTime, editorEngine.EngineState)
+		if input.IsTyped(input.PauseKey) {
+			paused = !paused
+		}
+
+		if !paused {
+			engine.StepSim(frameTime)
+		}
+		engine.StepEdit(frameTime, editorEngine.EngineState)
 	}
 
 	render := func() {

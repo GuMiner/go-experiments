@@ -13,15 +13,18 @@ type PowerPlant struct {
 
 	LargeOutput int
 	LargeSize   int
+
+	Cost float32
 }
 
 type Power struct {
-	Coal       PowerPlant
-	Nuclear    PowerPlant
-	NaturalGas PowerPlant
-	Wind       PowerPlant
-	Solar      PowerPlant
-	Geothermal PowerPlant
+	Coal          PowerPlant
+	Nuclear       PowerPlant
+	NaturalGas    PowerPlant
+	Wind          PowerPlant
+	Solar         PowerPlant
+	Geothermal    PowerPlant
+	PowerLineCost float32 // Cost per unit
 }
 
 type GenerationParameters struct {
@@ -85,12 +88,19 @@ type SnapConfig struct {
 	SnapGridResolution int
 }
 
+type SimConfig struct {
+	SecondsPerDay   float32
+	StartingSavings float32
+	MaxDebt         float32
+}
+
 type Configuration struct {
 	Terrain Terrain
 	Power   Power
 	Ui      Ui
 	Draw    DrawConfig
 	Snap    SnapConfig
+	Sim     SimConfig
 }
 
 var Config Configuration

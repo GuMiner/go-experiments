@@ -1,8 +1,10 @@
 package engine
 
 import (
+	"fmt"
 	"go-experiments/common/commonmath"
 	"go-experiments/sim/config"
+	"go-experiments/sim/engine/core"
 	"go-experiments/sim/engine/element"
 	"go-experiments/sim/engine/power"
 	"go-experiments/sim/engine/terrain"
@@ -23,6 +25,9 @@ type Engine struct {
 	snapElements    SnapElements
 
 	Hypotheticals HypotheticalActions
+
+	time       core.Time
+	financials core.Financials
 }
 
 func NewEngine() *Engine {
@@ -37,7 +42,10 @@ func NewEngine() *Engine {
 		powerLineState:  NewPowerLineEditState(),
 		snapElements:    NewSnapElements(),
 
-		Hypotheticals: NewHypotheticalActions()}
+		Hypotheticals: NewHypotheticalActions(),
+	
+		time: core.NewTime(),
+		financials: core.NewFinancials()}
 	return &engine
 }
 
@@ -52,6 +60,7 @@ func (e *Engine) addPowerPlantIfValid() {
 
 			element := e.powerGrid.Add(e.getEffectivePosition(), plantType, plantSize)
 			e.elementFinder.Add(element)
+			e.financials.BuyItem("Power Plant", power.GetPlantCost(plantType))
 		}
 	}
 }
@@ -64,13 +73,16 @@ func (e *Engine) updatePowerLineState() {
 		e.powerLineState.firstNodeElement = e.getEffectivePowerGridElement()
 	} else {
 		// TODO: Configurable capacity
+		powerLineEnd := e.getEffectivePosition()
 		line := e.powerGrid.AddLine(e.powerLineState.firstNode,
-			e.getEffectivePosition(), 1000,
+			powerLineEnd, 1000,
 			e.powerLineState.firstNodeElement, e.getEffectivePowerGridElement())
 		if line != nil {
 			e.elementFinder.Add(line)
+			powerLineCost := e.powerLineState.firstNode.Sub(powerLineEnd).Len() * config.Config.Power.PowerLineCost
+			e.financials.BuyItem("Power Line", powerLineCost)
 
-			e.powerLineState.firstNode = e.getEffectivePosition()
+			e.powerLineState.firstNode = powerLineEnd
 			e.powerLineState.firstNodeElement = line.GetSnapNodeElement(1)
 		}
 	}
@@ -158,10 +170,21 @@ func (e *Engine) applyStepDraw(stepAmount float32, engineState *editorEngine.Sta
 	}
 }
 
-// Performs operations that are performed as steps with time.
-func (e *Engine) Step(stepAmount float32, engineState editorEngine.State) {
+// Performs operations that are performed as steps with time for edit
+func (e *Engine) StepEdit(stepAmount float32, engineState editorEngine.State) {
 	if engineState.Mode == editorEngine.Draw && e.isMousePressed {
 		e.applyStepDraw(stepAmount, &engineState)
+	}
+}
+
+// Steps the simulation
+func (e *Engine) StepSim(stepAmount float32) {
+	if e.time.Update(stepAmount) {
+		// End of day. Recompute financials and periodic data
+		if !e.financials.Update() {
+			fmt.Printf("No longer solvent! End of game.\n")
+			panic("TODO: Design a menu system. Low priority as gameplay is more important ATM.")
+		}
 	}
 }
 
