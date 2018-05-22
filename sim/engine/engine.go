@@ -1,7 +1,6 @@
 package engine
 
 import (
-	"fmt"
 	"go-experiments/common/commonmath"
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/element"
@@ -20,7 +19,7 @@ type Engine struct {
 	isMousePressed  bool
 	actionPerformed bool
 	lastBoardPos    mgl32.Vec2
-	powerLineState  PowerLineEditState
+	powerLineState  *PowerLineEditState
 	snapElements    SnapElements
 
 	Hypotheticals HypotheticalActions
@@ -60,21 +59,47 @@ func (e *Engine) addPowerPlantIfValid() {
 func (e *Engine) updatePowerLineState() {
 	// If this is the first press, we associate it with the first location of the powerline.
 	if !e.powerLineState.hasFirstNode {
-		fmt.Printf("First node pos %v\n", e.lastBoardPos)
-		e.powerLineState.firstNode = e.lastBoardPos
+		e.powerLineState.firstNode = e.getEffectivePosition()
 		e.powerLineState.hasFirstNode = true
-		e.powerLineState.firstNodeElement = -1
-		// TODO: Need to store snap nodes, other plants, etc. in the powerline state.
+		e.powerLineState.firstNodeElement = e.getEffectivePowerGridElement()
 	} else {
-
 		// TODO: Configurable capacity
-		// TODO: End node can also be an item we connect to
-		line := e.powerGrid.AddLine(e.powerLineState.firstNode, e.lastBoardPos, 1000, e.powerLineState.firstNodeElement, -1)
-		e.elementFinder.Add(line)
+		line := e.powerGrid.AddLine(e.powerLineState.firstNode,
+			e.getEffectivePosition(), 1000,
+			e.powerLineState.firstNodeElement, e.getEffectivePowerGridElement())
+		if line != nil {
+			e.elementFinder.Add(line)
 
-		e.powerLineState.firstNode = e.lastBoardPos
-		e.powerLineState.firstNodeElement = line.GetEndNodeElement()
+			e.powerLineState.firstNode = e.getEffectivePosition()
+			e.powerLineState.firstNodeElement = line.GetSnapNodeElement(1)
+		}
 	}
+}
+
+func (e *Engine) getEffectivePosition() mgl32.Vec2 {
+	if e.snapElements.snappedNode != nil {
+		return e.snapElements.snappedNode.Element.GetSnapNodes()[e.snapElements.snappedNode.SnapNodeIdx]
+	}
+
+	return e.lastBoardPos
+}
+
+// TODO: Rename, element is too generic...
+func (e *Engine) getEffectivePowerGridElement() int {
+	node := e.snapElements.snappedNode
+	if node != nil {
+		// TODO: New interface for power elements?
+		if line, ok := node.Element.(*power.PowerLine); ok {
+			return line.GetSnapNodeElement(node.SnapNodeIdx)
+		}
+
+		if powerPlant, ok := node.Element.(*power.PowerPlant); ok {
+			return powerPlant.GetSnapElement()
+		}
+	}
+
+	// No grid element association.
+	return -1
 }
 
 func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
@@ -90,6 +115,7 @@ func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 func (e *Engine) MouseMoved(pos mgl32.Vec2, engineState editorEngine.State) {
 	e.lastBoardPos = pos
 
+	e.snapElements.ComputeSnappedSnapElements(e.lastBoardPos, e.elementFinder)
 	e.powerLineState.EnterOrExitEditMode(&engineState)
 }
 
@@ -153,4 +179,8 @@ func (e *Engine) GetPowerGrid() *power.PowerGrid {
 
 func (e *Engine) GetElementFinder() *element.ElementFinder {
 	return e.elementFinder
+}
+
+func (e *Engine) GetSnapElements() *SnapElements {
+	return &e.snapElements
 }

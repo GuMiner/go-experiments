@@ -163,12 +163,7 @@ func main() {
 		flat.RenderPowerPlants(engine.GetPowerGrid(), camera, ui.Ui.RegionProgram)
 		flat.RenderPowerLines(engine.GetPowerGrid(), camera, ui.Ui.LinesProgram)
 
-		if editorEngine.EngineState.SnapToElements &&
-			editorEngine.EngineState.Mode == editorEngine.Add &&
-			editorEngine.EngineState.InAddMode == editorEngine.PowerLine {
-			boardPos := camera.MapPixelPosToBoard(input.MousePos)
-			flat.RenderSnapNodes(boardPos, engine.GetElementFinder(), camera, ui.Ui.RegionProgram)
-		}
+		flat.RenderSnapNodes(engine.GetSnapElements(), camera, ui.Ui.RegionProgram)
 	}
 
 	RenderLoop(update, render, window)

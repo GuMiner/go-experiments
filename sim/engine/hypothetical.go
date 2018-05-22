@@ -73,14 +73,14 @@ func (e *HypotheticalActions) computePowerLineHypotheticalRegion(n *Engine) {
 					RegionType:  commonMath.CircleRegion,
 					Scale:       40.0, // TODO Make this configurable by reading the editor engine state.
 					Orientation: 0,
-					Position:    n.lastBoardPos}})
+					Position:    n.getEffectivePosition()}})
 	} else {
 		e.Reset()
 		e.Lines = []HypotheticalLine{
 			HypotheticalLine{
 				Color: mgl32.Vec3{1.0, 0.0, 1.0},
 				Line: [2]mgl32.Vec2{
-					n.lastBoardPos,
+					n.getEffectivePosition(),
 					n.powerLineState.firstNode}}}
 	}
 }

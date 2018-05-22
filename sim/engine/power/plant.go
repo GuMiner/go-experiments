@@ -43,3 +43,7 @@ func (p *PowerPlant) GetSnapNodes() []mgl32.Vec2 {
 func (p *PowerPlant) GetSnapEdges() [][2]mgl32.Vec2 {
 	return make([][2]mgl32.Vec2, 0)
 }
+
+func (p *PowerPlant) GetSnapElement() int {
+	return p.gridId
+}

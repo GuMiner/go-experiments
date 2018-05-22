@@ -52,7 +52,7 @@ func (e *ElementFinder) KNearest(pos mgl32.Vec2, count int) []ElementWithDistanc
 
 	for _, element := range e.elements {
 		snapNodes := element.GetSnapNodes()
-		for i, snapNode := range snapNodes {
+		for n, snapNode := range snapNodes {
 			distance := snapNode.Sub(pos).Len()
 
 			addedToResultSet := false
@@ -74,7 +74,7 @@ func (e *ElementFinder) KNearest(pos mgl32.Vec2, count int) []ElementWithDistanc
 							elementsWithDistances[j] = ElementWithDistance{
 								Distance:    distance,
 								Element:     element,
-								SnapNodeIdx: i}
+								SnapNodeIdx: n}
 						}
 					}
 					break
@@ -86,7 +86,7 @@ func (e *ElementFinder) KNearest(pos mgl32.Vec2, count int) []ElementWithDistanc
 				elementsWithDistances[elementsFound] = ElementWithDistance{
 					Distance:    distance,
 					Element:     element,
-					SnapNodeIdx: i}
+					SnapNodeIdx: n}
 				elementsFound++
 			}
 		}

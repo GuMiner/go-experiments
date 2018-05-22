@@ -14,10 +14,10 @@ type PowerLineEditState struct {
 	firstNodeElement int
 }
 
-func NewPowerLineEditState() PowerLineEditState {
+func NewPowerLineEditState() *PowerLineEditState {
 	s := PowerLineEditState{}
 	s.Reset()
-	return s
+	return &s
 }
 
 func (p *PowerLineEditState) InPowerLineState(engineState *editorEngine.State) bool {
