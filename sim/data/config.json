@@ -73,5 +73,9 @@
     "draw": {
         "snapNodeCount": 5,
         "minSnapNodeDistance": 15.0
+    },
+    "snap": {
+        "snapAngleDivision": 45,
+        "snapGridResolution": 10
     }
 }

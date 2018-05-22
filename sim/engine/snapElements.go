@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"go-experiments/common/commonmath"
 	"go-experiments/sim/config"
 	"go-experiments/sim/engine/element"
 	"go-experiments/sim/input/editorEngine"
@@ -9,8 +10,9 @@ import (
 )
 
 type SnapElements struct {
-	snappedNode *element.ElementWithDistance
-	snappedLine *element.LineElementWithDistance
+	snappedNode    *element.ElementWithDistance
+	snappedLine    *element.LineElementWithDistance
+	snappedGridPos *mgl32.Vec2
 }
 
 func NewSnapElements() SnapElements {
@@ -32,6 +34,15 @@ func (s *SnapElements) ComputeSnappedSnapElements(boardPos mgl32.Vec2, elementFi
 				break
 			}
 		}
+	}
+
+	s.snappedGridPos = nil
+	if editorEngine.EngineState.SnapToGrid {
+		snapGridResolution := float32(config.Config.Snap.SnapGridResolution)
+		offsetBoardPos := boardPos.Add(mgl32.Vec2{snapGridResolution / 2, snapGridResolution / 2})
+		snappedIntPosition := commonMath.IntVec2{int(offsetBoardPos.X() / snapGridResolution), int(offsetBoardPos.Y() / snapGridResolution)}
+		snappedPos := mgl32.Vec2{float32(snappedIntPosition.X()), float32(snappedIntPosition.Y())}.Mul(snapGridResolution)
+		s.snappedGridPos = &snappedPos
 	}
 }
 

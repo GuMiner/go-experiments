@@ -42,7 +42,7 @@ func NewEngine() *Engine {
 }
 
 func (e *Engine) addPowerPlantIfValid() {
-	intesectsWithElement := e.elementFinder.IntersectsWithElement(e.lastBoardPos, e.Hypotheticals.Regions[0].Region.Scale)
+	intesectsWithElement := e.elementFinder.IntersectsWithElement(e.getEffectivePosition(), e.Hypotheticals.Regions[0].Region.Scale)
 
 	if !intesectsWithElement {
 		isGroundValid := e.terrainMap.ValidateGroundLocation(e.Hypotheticals.Regions[0].Region)
@@ -50,7 +50,7 @@ func (e *Engine) addPowerPlantIfValid() {
 			plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
 			plantSize := power.Small // TODO: Configurable
 
-			element := e.powerGrid.Add(e.lastBoardPos, plantType, plantSize)
+			element := e.powerGrid.Add(e.getEffectivePosition(), plantType, plantSize)
 			e.elementFinder.Add(element)
 		}
 	}
@@ -79,6 +79,10 @@ func (e *Engine) updatePowerLineState() {
 func (e *Engine) getEffectivePosition() mgl32.Vec2 {
 	if e.snapElements.snappedNode != nil {
 		return e.snapElements.snappedNode.Element.GetSnapNodes()[e.snapElements.snappedNode.SnapNodeIdx]
+	}
+
+	if e.snapElements.snappedGridPos != nil {
+		return *e.snapElements.snappedGridPos
 	}
 
 	return e.lastBoardPos

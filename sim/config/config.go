@@ -70,14 +70,19 @@ type CameraConfig struct {
 	KeyMotionFactor   float32
 }
 
+type Ui struct {
+	TerrainUi TerrainUi
+	Camera    CameraConfig
+}
+
 type DrawConfig struct {
 	SnapNodeCount       int
 	MinSnapNodeDistance float32
 }
 
-type Ui struct {
-	TerrainUi TerrainUi
-	Camera    CameraConfig
+type SnapConfig struct {
+	SnapAngleDivision  int
+	SnapGridResolution int
 }
 
 type Configuration struct {
@@ -85,6 +90,7 @@ type Configuration struct {
 	Power   Power
 	Ui      Ui
 	Draw    DrawConfig
+	Snap    SnapConfig
 }
 
 var Config Configuration

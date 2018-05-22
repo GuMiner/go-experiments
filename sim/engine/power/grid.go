@@ -65,7 +65,6 @@ func (p *PowerGrid) AddLine(start, end mgl32.Vec2, capacity int64, startNode, en
 	} else if startNode != -1 && endNode != -1 {
 		// This might be a duplicate line.
 		cost := p.grid.Cost(startNode, endNode)
-		fmt.Printf("%v %v %v\n", startNode, endNode, cost)
 		if cost != -1 {
 			fmt.Printf("There already is a line from %v to %v.\n", startNode, endNode)
 			return nil

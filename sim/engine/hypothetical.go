@@ -50,7 +50,7 @@ func (e *HypotheticalActions) computePowerPlantHypotheticalRegion(n *Engine) {
 		RegionType:  commonMath.SquareRegion,
 		Scale:       float32(size),
 		Orientation: 0,
-		Position:    n.lastBoardPos}
+		Position:    n.getEffectivePosition()}
 
 	anyNearbyObjects := n.elementFinder.IntersectsWithElement(n.lastBoardPos, region.Scale)
 	var color mgl32.Vec3
