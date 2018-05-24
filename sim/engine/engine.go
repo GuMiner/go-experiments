@@ -43,8 +43,8 @@ func NewEngine() *Engine {
 		snapElements:    NewSnapElements(),
 
 		Hypotheticals: NewHypotheticalActions(),
-	
-		time: core.NewTime(),
+
+		time:       core.NewTime(),
 		financials: core.NewFinancials()}
 	return &engine
 }
@@ -55,7 +55,7 @@ func (e *Engine) addPowerPlantIfValid() {
 	if !intesectsWithElement {
 		isGroundValid := e.terrainMap.ValidateGroundLocation(e.Hypotheticals.Regions[0].Region)
 		if isGroundValid {
-			plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
+			plantType := power.GetPlantType(editorEngine.EngineState.ItemSubSelection)
 			plantSize := power.Small // TODO: Configurable
 
 			element := e.powerGrid.Add(e.getEffectivePosition(), plantType, plantSize)

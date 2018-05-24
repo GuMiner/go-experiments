@@ -27,13 +27,13 @@ var drawModeKeySubSelectionActions map[input.KeyAssignment]KeyAction = make(map[
 
 func Init() {
 	EngineState = State{
-		Mode:                Select,
-		InAddMode:           PowerPlant,
-		InDrawMode:          TerrainFlatten,
-		InPowerPlantAddMode: CoalPlant,
-		SnapToGrid:          true,
-		SnapToElements:      true,
-		SnapToAngle:         false}
+		Mode:             Select,
+		InAddMode:        PowerPlant,
+		InDrawMode:       TerrainFlatten,
+		ItemSubSelection: Item1,
+		SnapToGrid:       true,
+		SnapToElements:   true,
+		SnapToAngle:      false}
 
 	globalKeyToggleActions[input.SnapToGridKey] = KeyToggle{&EngineState.SnapToGrid, "snap to grid"}
 	globalKeyToggleActions[input.SnapToAngleKey] = KeyToggle{&EngineState.SnapToAngle, "snap to angle"}
@@ -46,12 +46,12 @@ func Init() {
 	addModeKeyActions[input.PowerPlantAddModeKey] = KeyAction{func() { EngineState.InAddMode = PowerPlant }, "power plant add"}
 	addModeKeyActions[input.PowerLineAddModeKey] = KeyAction{func() { EngineState.InAddMode = PowerLine }, "power line add"}
 
-	addModeKeySubSelectionActions[input.CoalPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = CoalPlant }, "coal plant construction"}
-	addModeKeySubSelectionActions[input.NuclearPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = NuclearPlant }, "nuclear plant construction"}
-	addModeKeySubSelectionActions[input.NaturalGasPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = NaturalGasPlant }, "natural gas plant construction"}
-	addModeKeySubSelectionActions[input.WindPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = WindPlant }, "wind plant construction"}
-	addModeKeySubSelectionActions[input.SolarPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = SolarPlant }, "solar plant construction"}
-	addModeKeySubSelectionActions[input.GeothermalPlantKey] = KeyAction{func() { EngineState.InPowerPlantAddMode = GeothermalPlant }, "geothermal plant construction"}
+	addModeKeySubSelectionActions[input.ItemAdd1Key] = KeyAction{func() { EngineState.ItemSubSelection = Item1 }, "item 1 selection"}
+	addModeKeySubSelectionActions[input.ItemAdd2Key] = KeyAction{func() { EngineState.ItemSubSelection = Item2 }, "item 2 selection"}
+	addModeKeySubSelectionActions[input.ItemAdd3Key] = KeyAction{func() { EngineState.ItemSubSelection = Item3 }, "item 3 selection"}
+	addModeKeySubSelectionActions[input.ItemAdd4Key] = KeyAction{func() { EngineState.ItemSubSelection = Item4 }, "item 4 selection"}
+	addModeKeySubSelectionActions[input.ItemAdd5Key] = KeyAction{func() { EngineState.ItemSubSelection = Item5 }, "item 5 selection"}
+	addModeKeySubSelectionActions[input.ItemAdd6Key] = KeyAction{func() { EngineState.ItemSubSelection = Item6 }, "item 6 selection"}
 
 	drawModeKeySubSelectionActions[input.TerrainFlattenKey] = KeyAction{func() { EngineState.InDrawMode = TerrainFlatten }, "terrain flatten"}
 	drawModeKeySubSelectionActions[input.TerrainSharpenKey] = KeyAction{func() { EngineState.InDrawMode = TerrainSharpen }, "terrain sharpen"}

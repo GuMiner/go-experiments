@@ -7,57 +7,6 @@ import (
 	"go-experiments/common/commonio"
 )
 
-type PowerPlant struct {
-	SmallOutput int
-	SmallSize   int
-
-	LargeOutput int
-	LargeSize   int
-
-	Cost float32
-}
-
-type Power struct {
-	Coal          PowerPlant
-	Nuclear       PowerPlant
-	NaturalGas    PowerPlant
-	Wind          PowerPlant
-	Solar         PowerPlant
-	Geothermal    PowerPlant
-	PowerLineCost float32 // Cost per unit
-}
-
-type GenerationParameters struct {
-	Seed int
-
-	// The inverse of the noise scale. Lower values == more granular.
-	MaxNoiseScale float32
-	MedNoiseScale float32
-	MinNoiseScale float32
-
-	// Amount each noise amount contributes to the final total
-	// Can add up to anything.
-	MaxNoiseContribution float32
-	MedNoiseContribution float32
-	MinNoiseContribution float32
-
-	// How much the lower end of the noise spectrum is flattened
-	PowerFactor float32
-}
-
-type Terrain struct {
-	// Levels for which the given terrain begins.
-	WaterLevel float32
-	SandLevel  float32
-	GrassLevel float32
-	HillLevel  float32
-	RockLevel  float32
-	SnowLevel  float32
-
-	Generation GenerationParameters
-	RegionSize int
-}
-
 type TerrainUi struct {
 	// Colors range from [0-256), not [0 - 1)
 	WaterColor commonConfig.SerializableVec3
@@ -116,6 +65,13 @@ func loadSubConfigs(configFolder string) {
 	bytes = commonIo.ReadFileAsBytes(configFolder + "power.json")
 	if err := json.Unmarshal(bytes, &Config.Power); err != nil {
 		panic(err)
+	}
+
+	i := 0
+	Config.Power.IdToNameMap = make(map[int]string)
+	for key, _ := range Config.Power.PowerPlantTypes {
+		Config.Power.IdToNameMap[i] = key
+		i++
 	}
 }
 

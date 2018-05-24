@@ -9,7 +9,7 @@ import (
 type PowerPlant struct {
 	location mgl32.Vec2
 
-	plantType PowerPlantType
+	plantType string
 	namedSize PowerPlantSize
 
 	size        float32 // All plants are assumed square, for now. (TODO)

@@ -30,7 +30,7 @@ func NewPowerGrid() *PowerGrid {
 	return &grid
 }
 
-func (p *PowerGrid) Add(pos mgl32.Vec2, plantType PowerPlantType, plantSize PowerPlantSize) *PowerPlant {
+func (p *PowerGrid) Add(pos mgl32.Vec2, plantType string, plantSize PowerPlantSize) *PowerPlant {
 	output, size := GetPowerOutputAndSize(plantType, plantSize)
 
 	plant := PowerPlant{

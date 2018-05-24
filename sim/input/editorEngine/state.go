@@ -15,15 +15,15 @@ const (
 	PowerLine
 )
 
-type EditorPlantAddMode int
+type ItemSubSelection int
 
 const (
-	CoalPlant EditorPlantAddMode = iota
-	NuclearPlant
-	NaturalGasPlant
-	WindPlant
-	SolarPlant
-	GeothermalPlant
+	Item1 ItemSubSelection = 0
+	Item2 ItemSubSelection = 1
+	Item3 ItemSubSelection = 2
+	Item4 ItemSubSelection = 3
+	Item5 ItemSubSelection = 4
+	Item6 ItemSubSelection = 5
 )
 
 type EditorDrawMode int
@@ -38,10 +38,10 @@ const (
 )
 
 type State struct {
-	Mode                EditorMode
-	InAddMode           EditorAddMode
-	InDrawMode          EditorDrawMode
-	InPowerPlantAddMode EditorPlantAddMode
+	Mode             EditorMode
+	InAddMode        EditorAddMode
+	InDrawMode       EditorDrawMode
+	ItemSubSelection ItemSubSelection
 
 	SnapToGrid     bool
 	SnapToElements bool

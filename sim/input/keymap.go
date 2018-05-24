@@ -26,12 +26,12 @@ const (
 	PowerPlantAddModeKey
 	PowerLineAddModeKey
 
-	CoalPlantKey
-	NuclearPlantKey
-	NaturalGasPlantKey
-	WindPlantKey
-	SolarPlantKey
-	GeothermalPlantKey
+	ItemAdd1Key
+	ItemAdd2Key
+	ItemAdd3Key
+	ItemAdd4Key
+	ItemAdd5Key
+	ItemAdd6Key
 
 	TerrainFlattenKey
 	TerrainSharpenKey
@@ -47,12 +47,12 @@ var keyMap map[KeyAssignment]glfw.Key = make(map[KeyAssignment]glfw.Key)
 
 // Sub options are 1-7
 func createSubOptionsKeyMap() {
-	keyMap[CoalPlantKey] = glfw.Key1
-	keyMap[NuclearPlantKey] = glfw.Key2
-	keyMap[NaturalGasPlantKey] = glfw.Key3
-	keyMap[WindPlantKey] = glfw.Key4
-	keyMap[SolarPlantKey] = glfw.Key5
-	keyMap[GeothermalPlantKey] = glfw.Key6
+	keyMap[ItemAdd1Key] = glfw.Key1
+	keyMap[ItemAdd2Key] = glfw.Key2
+	keyMap[ItemAdd3Key] = glfw.Key3
+	keyMap[ItemAdd4Key] = glfw.Key4
+	keyMap[ItemAdd5Key] = glfw.Key5
+	keyMap[ItemAdd6Key] = glfw.Key6
 
 	keyMap[TerrainFlattenKey] = glfw.Key1
 	keyMap[TerrainSharpenKey] = glfw.Key2

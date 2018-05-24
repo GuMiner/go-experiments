@@ -41,7 +41,7 @@ func (h *HypotheticalActions) setSingleRegion(region HypotheticalRegion) {
 }
 
 func (e *HypotheticalActions) computePowerPlantHypotheticalRegion(n *Engine) {
-	plantType := power.GetPlantType(editorEngine.EngineState.InPowerPlantAddMode)
+	plantType := power.GetPlantType(editorEngine.EngineState.ItemSubSelection)
 	plantSize := power.Small // TODO: Configurable
 
 	// Ensure we only put power plants on valid ground.
