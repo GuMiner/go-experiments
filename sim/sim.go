@@ -36,7 +36,7 @@ func setInputCallbacks(window *glfw.Window) {
 }
 
 func main() {
-	config.Load("./data/config.json", "./data/commonConfig.json")
+	config.Load("./data/config/", "./data/commonConfig.json")
 
 	commonOpenGl.InitGlfw()
 	defer glfw.Terminate()

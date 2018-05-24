@@ -97,22 +97,40 @@ type SimConfig struct {
 type Configuration struct {
 	Terrain Terrain
 	Power   Power
-	Ui      Ui
-	Draw    DrawConfig
-	Snap    SnapConfig
-	Sim     SimConfig
+
+	Ui   Ui
+	Draw DrawConfig
+	Snap SnapConfig
+	Sim  SimConfig
 }
 
 var Config Configuration
 
-func Load(configFileName string, commonConfigFileName string) {
-	commonConfig.Load(commonConfigFileName)
-	bytes := commonIo.ReadFileAsBytes(configFileName)
+func loadSubConfigs(configFolder string) {
+	// Sub-configs
+	bytes := commonIo.ReadFileAsBytes(configFolder + "terrain.json")
+	if err := json.Unmarshal(bytes, &Config.Terrain); err != nil {
+		panic(err)
+	}
 
+	bytes = commonIo.ReadFileAsBytes(configFolder + "power.json")
+	if err := json.Unmarshal(bytes, &Config.Power); err != nil {
+		panic(err)
+	}
+}
+
+func Load(configFolder string, commonConfigFileName string) {
+	commonConfig.Load(commonConfigFileName)
+
+	Config = Configuration{}
+
+	bytes := commonIo.ReadFileAsBytes(configFolder + "config.json")
 	if err := json.Unmarshal(bytes, &Config); err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("Read in config '%v'.\n", configFileName)
+	loadSubConfigs(configFolder)
+
+	fmt.Printf("Read in config from '%v'.\n", configFolder)
 	fmt.Printf("  Config data: %v\n\n", Config)
 }

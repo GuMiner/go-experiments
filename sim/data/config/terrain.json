@@ -1,0 +1,19 @@
+{
+    "waterLevel": 0.05,
+    "sandLevel":  0.06,
+    "grassLevel": 0.35,
+    "hillLevel":  0.7,
+    "rockLevel":  0.8,
+    "snowLevel":  1,
+    "generation": {
+        "seed":  8642,
+        "maxNoiseScale": 100,
+        "medNoiseScale": 50,        
+        "minNoiseScale": 25,        
+        "maxNoiseContribution": 1, 
+        "medNoiseContribution": 0.5, 
+        "minNoiseContribution": 0.25, 
+        "powerFactor": 2.5          
+    },
+    "regionSize":200
+}

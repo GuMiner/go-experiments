@@ -1,0 +1,29 @@
+{
+    "ui": {
+        "terrainUi": {
+            "waterColor": { "x": 0, "y": 145, "z": 255 },
+            "sandColor":  { "x": 247, "y": 252, "z": 197 },
+            "grassColor": { "x": 180, "y": 232, "z": 169 },
+            "hillColor":  { "x": 45, "y": 110, "z": 18 },
+            "rockColor":  { "x": 143, "y": 148, "z": 141 },
+            "snowColor":  { "x": 237, "y": 242, "z": 235 }
+        },
+        "camera": {
+            "mouseScrollFactor": 0.02,
+            "keyMotionFactor": 100.0
+        }
+    },
+    "draw": {
+        "snapNodeCount": 5,
+        "minSnapNodeDistance": 15.0
+    },
+    "snap": {
+        "snapAngleDivision": 45,
+        "snapGridResolution": 10
+    },
+    "sim": {
+        "secondsPerDay": 5,
+        "startingSavings": 100000000.0,
+        "maxDebt": 1000000.0
+    }
+}
