@@ -1,0 +1,18 @@
+[{
+    "name":"car",
+    "passengerCount": 3,
+    "resourceCapacity": 30,
+    "roadLength": 3
+},
+{
+    "name":"truck",
+    "passengerCount": 4,
+    "resourceCapacity": 100,
+    "roadLength": 5
+},
+{
+    "name":"semi",
+    "passengerCount": 1,
+    "resourceCapacity": 5000,
+    "roadLength": 15
+}]

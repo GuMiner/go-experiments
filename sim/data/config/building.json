@@ -1,0 +1,43 @@
+[{
+    "name": "Convenience Store",
+    "size": 30,
+    "cost": 4000,
+    "attributes":{},
+    "requiredBasics": {
+        "power": 5000,
+        "citizens": 2
+    },
+    "inputs":[{
+            "resourceType": "Produce",
+            "amount": 50
+        }
+    ],
+    "outputs":[{
+        "resourceType": "Biomass",
+        "amount": 10
+    }],
+    "storageCapacity":{
+        "Produce": 100,
+        "Biomass": 50
+    }
+},
+{
+    "name": "Farm",
+    "size": 80,
+    "cost": 5000,
+    "attributes":{"gathering":-1},
+    "requiredBasics": {
+        "power": 10000,
+        "citizens": 10
+    },
+    "inputs":[
+    ],
+    "outputs":[{
+        "resourceType": "Produce",
+        "amount": 100
+    }],
+    "storageCapacity":{
+        "Produce": 1000,
+        "Biomass": 40
+    }
+}]

@@ -51,6 +51,10 @@ type Configuration struct {
 	Draw DrawConfig
 	Snap SnapConfig
 	Sim  SimConfig
+
+	Buildings []Building
+	Resources []Resource
+	Vehicles  []Vehicle
 }
 
 var Config Configuration
@@ -72,6 +76,21 @@ func loadSubConfigs(configFolder string) {
 	for key, _ := range Config.Power.PowerPlantTypes {
 		Config.Power.IdToNameMap[i] = key
 		i++
+	}
+
+	bytes = commonIo.ReadFileAsBytes(configFolder + "building.json")
+	if err := json.Unmarshal(bytes, &Config.Buildings); err != nil {
+		panic(err)
+	}
+
+	bytes = commonIo.ReadFileAsBytes(configFolder + "resource.json")
+	if err := json.Unmarshal(bytes, &Config.Resources); err != nil {
+		panic(err)
+	}
+
+	bytes = commonIo.ReadFileAsBytes(configFolder + "vehicle.json")
+	if err := json.Unmarshal(bytes, &Config.Vehicles); err != nil {
+		panic(err)
 	}
 }
 

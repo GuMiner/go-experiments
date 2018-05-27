@@ -7,6 +7,9 @@ type Building struct {
 	Size int
 	Cost float32
 
+	// Defines special attributes that indicate game functionality, user constructability, etc.
+	Attributes map[string]float32
+
 	// Required resource for each day for the building to function
 	RequiredBasics resource.UtilityResource
 
