@@ -114,6 +114,7 @@ func main() {
 		boardPos := camera.MapPixelPosToBoard(input.MousePos)
 		if editorStateUpdated || mouseMoved {
 			engine.Hypotheticals.ComputeHypotheticalRegion(engine, &editorEngine.EngineState)
+			engine.ComputeSnapNodes(&editorEngine.EngineState)
 		}
 
 		if input.MousePressEvent {
@@ -170,6 +171,8 @@ func main() {
 
 		flat.RenderPowerPlants(engine.GetPowerGrid(), camera, ui.Ui.RegionProgram)
 		flat.RenderPowerLines(engine.GetPowerGrid(), camera, ui.Ui.LinesProgram)
+
+		flat.RenderRoadLines(engine.GetRoadGrid(), camera, ui.Ui.LinesProgram)
 
 		flat.RenderSnapNodes(engine.GetSnapElements(), camera, ui.Ui.RegionProgram)
 	}

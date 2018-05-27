@@ -36,6 +36,8 @@ func UpdateEditorState(engineState editorEngine.State, window *glfw.Window) {
 			cursor = PowerLineAdd
 		} else if engineState.InAddMode == editorEngine.PowerPlant {
 			cursor = PowerPlantAdd
+		} else if engineState.InAddMode == editorEngine.RoadLine {
+			cursor = RoadLineAdd
 		}
 	} else { // Draw Mode
 		cursor = drawModeCursors[engineState.InDrawMode]

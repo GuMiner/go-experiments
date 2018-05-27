@@ -25,6 +25,7 @@ const (
 
 	PowerPlantAddModeKey
 	PowerLineAddModeKey
+	RoadLineAddModeKey
 
 	ItemAdd1Key
 	ItemAdd2Key
@@ -81,6 +82,7 @@ func CreateDefaultKeyMap() {
 
 	keyMap[PowerPlantAddModeKey] = glfw.KeyP
 	keyMap[PowerLineAddModeKey] = glfw.KeyL
+	keyMap[RoadLineAddModeKey] = glfw.KeyR
 
 	createSubOptionsKeyMap()
 }

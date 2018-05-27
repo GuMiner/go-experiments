@@ -2,13 +2,14 @@ package power
 
 import (
 	"fmt"
+	"go-experiments/sim/engine/core"
 	"go-experiments/sim/engine/element"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
 
 type PowerGrid struct {
-	grid    *ResizeableGraph
+	grid    *core.ResizeableGraph
 	nodeMap map[int]element.Element // Reverse maps a node ID to an element.
 
 	powerPlants    map[int64]*PowerPlant
@@ -20,7 +21,7 @@ type PowerGrid struct {
 
 func NewPowerGrid() *PowerGrid {
 	grid := PowerGrid{
-		grid:           NewResizeableGraph(),
+		grid:           core.NewResizeableGraph(),
 		nodeMap:        make(map[int]element.Element),
 		powerPlants:    make(map[int64]*PowerPlant),
 		nextPowerPlant: 0,

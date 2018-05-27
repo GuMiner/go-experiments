@@ -13,6 +13,7 @@ const (
 	Selection CustomCursorType = iota
 	PowerPlantAdd
 	PowerLineAdd
+	RoadLineAdd
 
 	TerrainFlatten
 	TerrainSharpen
@@ -60,8 +61,10 @@ func initCustomCursors(window *glfw.Window) {
 
 	powerPlantImage := commonIo.ReadImageFromFile("data/cursors/PowerPlant.png")
 	powerLineImage := commonIo.ReadImageFromFile("data/cursors/PowerLine.png")
+	roadLineImage := commonIo.ReadImageFromFile("data/cursors/RoadLine.png")
 	customCursors.cursors[PowerPlantAdd] = glfw.CreateCursor(powerPlantImage, 0, 0)
 	customCursors.cursors[PowerLineAdd] = glfw.CreateCursor(powerLineImage, 0, 0)
+	customCursors.cursors[RoadLineAdd] = glfw.CreateCursor(roadLineImage, 0, 0)
 	initDrawModeCursors(&customCursors)
 
 	window.SetCursor(customCursors.cursors[Selection])

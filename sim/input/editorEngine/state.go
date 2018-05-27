@@ -13,6 +13,7 @@ type EditorAddMode int
 const (
 	PowerPlant EditorAddMode = iota
 	PowerLine
+	RoadLine
 )
 
 type ItemSubSelection int

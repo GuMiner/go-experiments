@@ -45,6 +45,7 @@ func Init() {
 
 	addModeKeyActions[input.PowerPlantAddModeKey] = KeyAction{func() { EngineState.InAddMode = PowerPlant }, "power plant add"}
 	addModeKeyActions[input.PowerLineAddModeKey] = KeyAction{func() { EngineState.InAddMode = PowerLine }, "power line add"}
+	addModeKeyActions[input.RoadLineAddModeKey] = KeyAction{func() { EngineState.InAddMode = RoadLine }, "road line add"}
 
 	addModeKeySubSelectionActions[input.ItemAdd1Key] = KeyAction{func() { EngineState.ItemSubSelection = Item1 }, "item 1 selection"}
 	addModeKeySubSelectionActions[input.ItemAdd2Key] = KeyAction{func() { EngineState.ItemSubSelection = Item2 }, "item 2 selection"}

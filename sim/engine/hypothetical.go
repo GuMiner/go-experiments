@@ -85,6 +85,28 @@ func (e *HypotheticalActions) computePowerLineHypotheticalRegion(n *Engine) {
 	}
 }
 
+func (e *HypotheticalActions) computeRoadLineHypotheticalRegion(n *Engine) {
+	if !n.roadLineState.hasFirstNode {
+		// Draw a generic road line icon.
+		e.setSingleRegion(
+			HypotheticalRegion{
+				Color: mgl32.Vec3{1.0, 1.0, 0.0},
+				Region: commonMath.Region{
+					RegionType:  commonMath.CircleRegion,
+					Scale:       40.0, // TODO Make this configurable by reading the editor engine state.
+					Orientation: 0,
+					Position:    n.getEffectivePosition()}})
+	} else {
+		e.Reset()
+		e.Lines = []HypotheticalLine{
+			HypotheticalLine{
+				Color: mgl32.Vec3{1.0, 1.0, 0.0},
+				Line: [2]mgl32.Vec2{
+					n.getEffectivePosition(),
+					n.roadLineState.firstNode}}}
+	}
+}
+
 func (e *HypotheticalActions) computeDrawIndicator(n *Engine) {
 	e.setSingleRegion(
 		HypotheticalRegion{
@@ -103,6 +125,8 @@ func (e *HypotheticalActions) ComputeHypotheticalRegion(n *Engine, engineState *
 			e.computePowerPlantHypotheticalRegion(n)
 		} else if engineState.InAddMode == editorEngine.PowerLine {
 			e.computePowerLineHypotheticalRegion(n)
+		} else if engineState.InAddMode == editorEngine.RoadLine {
+			e.computeRoadLineHypotheticalRegion(n)
 		}
 	} else if engineState.Mode == editorEngine.Draw {
 		e.computeDrawIndicator(n)

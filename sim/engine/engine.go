@@ -7,6 +7,7 @@ import (
 	"go-experiments/sim/engine/core"
 	"go-experiments/sim/engine/element"
 	"go-experiments/sim/engine/power"
+	"go-experiments/sim/engine/road"
 	"go-experiments/sim/engine/terrain"
 	"go-experiments/sim/input/editorEngine"
 
@@ -17,11 +18,13 @@ type Engine struct {
 	terrainMap    *terrain.TerrainMap
 	elementFinder *element.ElementFinder
 	powerGrid     *power.PowerGrid
+	roadGrid      *road.RoadGrid
 
 	isMousePressed  bool
 	actionPerformed bool
 	lastBoardPos    mgl32.Vec2
 	powerLineState  *PowerLineEditState
+	roadLineState   *RoadLineEditState
 	snapElements    SnapElements
 
 	Hypotheticals HypotheticalActions
@@ -37,9 +40,11 @@ func NewEngine() *Engine {
 		terrainMap:      terrain.NewTerrainMap(),
 		elementFinder:   element.NewElementFinder(),
 		powerGrid:       power.NewPowerGrid(),
+		roadGrid:        road.NewRoadGrid(),
 		isMousePressed:  false,
 		actionPerformed: false,
 		powerLineState:  NewPowerLineEditState(),
+		roadLineState:   NewRoadLineEditState(),
 		snapElements:    NewSnapElements(),
 
 		Hypotheticals: NewHypotheticalActions(),
@@ -88,6 +93,30 @@ func (e *Engine) updatePowerLineState() {
 	}
 }
 
+func (e *Engine) updateRoadLineState() {
+	// TODO: Deduplicate
+	// If this is the first press, we associate it with the first location of the powerline.
+	if !e.roadLineState.hasFirstNode {
+		e.roadLineState.firstNode = e.getEffectivePosition()
+		e.roadLineState.hasFirstNode = true
+		e.roadLineState.firstNodeElement = e.getEffectiveRoadGridElement()
+	} else {
+		// TODO: Configurable capacity
+		roadLineEnd := e.getEffectivePosition()
+		line := e.roadGrid.AddLine(e.roadLineState.firstNode,
+			roadLineEnd, 1000,
+			e.roadLineState.firstNodeElement, e.getEffectiveRoadGridElement())
+		if line != nil {
+			e.elementFinder.Add(line)
+			roadLineCost := e.roadLineState.firstNode.Sub(roadLineEnd).Len() * 3000 // TODO: Configurable
+			e.financials.BuyItem("Road", roadLineCost)
+
+			e.roadLineState.firstNode = roadLineEnd
+			e.roadLineState.firstNodeElement = line.GetSnapNodeElement(1)
+		}
+	}
+}
+
 func (e *Engine) getEffectivePosition() mgl32.Vec2 {
 	if e.snapElements.snappedNode != nil {
 		return e.snapElements.snappedNode.Element.GetSnapNodes()[e.snapElements.snappedNode.SnapNodeIdx]
@@ -112,6 +141,22 @@ func (e *Engine) getEffectivePowerGridElement() int {
 		if powerPlant, ok := node.Element.(*power.PowerPlant); ok {
 			return powerPlant.GetSnapElement()
 		}
+
+		panic(fmt.Sprintf("We've snapped to a node that isn't a power grid element: %v\n", node))
+	}
+
+	// No grid element association.
+	return -1
+}
+
+func (e *Engine) getEffectiveRoadGridElement() int {
+	node := e.snapElements.snappedNode
+	if node != nil {
+		if line, ok := node.Element.(*road.RoadLine); ok {
+			return line.GetSnapNodeElement(node.SnapNodeIdx)
+		}
+
+		panic(fmt.Sprintf("We've snapped to a node that isn't a road element: %v\n", node))
 	}
 
 	// No grid element association.
@@ -131,8 +176,8 @@ func (e *Engine) MousePress(pos mgl32.Vec2, engineState editorEngine.State) {
 func (e *Engine) MouseMoved(pos mgl32.Vec2, engineState editorEngine.State) {
 	e.lastBoardPos = pos
 
-	e.snapElements.ComputeSnappedSnapElements(e.lastBoardPos, e.elementFinder)
 	e.powerLineState.EnterOrExitEditMode(&engineState)
+	e.roadLineState.EnterOrExitEditMode(&engineState)
 }
 
 func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
@@ -143,12 +188,20 @@ func (e *Engine) MouseRelease(pos mgl32.Vec2, engineState editorEngine.State) {
 	if e.powerLineState.InPowerLineState(&engineState) {
 		e.updatePowerLineState()
 	}
+
+	if e.roadLineState.InRoadLineState(&engineState) {
+		e.updateRoadLineState()
+	}
 }
 
 // Cancels the state of any multi-step operation, resetting it back to the start.
 func (e *Engine) CancelState(engineState editorEngine.State) {
 	if e.powerLineState.InPowerLineState(&engineState) {
 		e.powerLineState.Reset()
+	}
+
+	if e.roadLineState.InRoadLineState(&engineState) {
+		e.roadLineState.Reset()
 	}
 }
 
@@ -195,6 +248,10 @@ func (e *Engine) PrecacheRegions(regions []commonMath.IntVec2) {
 	}
 }
 
+func (e *Engine) ComputeSnapNodes(engineState *editorEngine.State) {
+	e.snapElements.ComputeSnappedSnapElements(e.lastBoardPos, e.elementFinder, engineState)
+}
+
 // Data retrieval for drawing
 func (e *Engine) GetRegionMap(region commonMath.IntVec2) *terrain.TerrainSubMap {
 	return e.terrainMap.GetOrAddRegion(region.X(), region.Y())
@@ -202,6 +259,10 @@ func (e *Engine) GetRegionMap(region commonMath.IntVec2) *terrain.TerrainSubMap 
 
 func (e *Engine) GetPowerGrid() *power.PowerGrid {
 	return e.powerGrid
+}
+
+func (e *Engine) GetRoadGrid() *road.RoadGrid {
+	return e.roadGrid
 }
 
 func (e *Engine) GetElementFinder() *element.ElementFinder {
