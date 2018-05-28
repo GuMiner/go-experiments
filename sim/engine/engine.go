@@ -15,10 +15,11 @@ import (
 )
 
 type Engine struct {
-	terrainMap    *terrain.TerrainMap
-	elementFinder *element.ElementFinder
-	powerGrid     *power.PowerGrid
-	roadGrid      *road.RoadGrid
+	terrainMap          *terrain.TerrainMap
+	elementFinder       *element.ElementFinder
+	powerGrid           *power.PowerGrid
+	roadGrid            *road.RoadGrid
+	infiniRoadGenerator *road.InfiniRoadGenerator
 
 	isMousePressed  bool
 	actionPerformed bool
@@ -37,15 +38,16 @@ func NewEngine() *Engine {
 	terrain.Init(config.Config.Terrain.Generation.Seed)
 
 	engine := Engine{
-		terrainMap:      terrain.NewTerrainMap(),
-		elementFinder:   element.NewElementFinder(),
-		powerGrid:       power.NewPowerGrid(),
-		roadGrid:        road.NewRoadGrid(),
-		isMousePressed:  false,
-		actionPerformed: false,
-		powerLineState:  NewPowerLineEditState(),
-		roadLineState:   NewRoadLineEditState(),
-		snapElements:    NewSnapElements(),
+		terrainMap:          terrain.NewTerrainMap(),
+		elementFinder:       element.NewElementFinder(),
+		powerGrid:           power.NewPowerGrid(),
+		roadGrid:            road.NewRoadGrid(),
+		infiniRoadGenerator: road.NewInfiniRoadGenerator(),
+		isMousePressed:      false,
+		actionPerformed:     false,
+		powerLineState:      NewPowerLineEditState(),
+		roadLineState:       NewRoadLineEditState(),
+		snapElements:        NewSnapElements(),
 
 		Hypotheticals: NewHypotheticalActions(),
 
@@ -252,9 +254,16 @@ func (e *Engine) ComputeSnapNodes(engineState *editorEngine.State) {
 	e.snapElements.ComputeSnappedSnapElements(e.lastBoardPos, e.elementFinder, engineState)
 }
 
-// Data retrieval for drawing
+// Data retrieval for drawing.
 func (e *Engine) GetRegionMap(region commonMath.IntVec2) *terrain.TerrainSubMap {
-	return e.terrainMap.GetOrAddRegion(region.X(), region.Y())
+	submap := e.terrainMap.GetOrAddRegion(region.X(), region.Y())
+
+	// Perform synchronous generation steps, as needed
+	if !e.infiniRoadGenerator.GeneratedRoad(region) {
+		e.infiniRoadGenerator.GenerateRoad(region, e.roadGrid, e.elementFinder)
+	}
+
+	return submap
 }
 
 func (e *Engine) GetPowerGrid() *power.PowerGrid {
