@@ -1,68 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ReceiptEditor
 {
     public partial class ReceiptEditor : Form, IDisposable
     {
-        private Pen overlayPen = new Pen(Color.CornflowerBlue, 1);
-        private Pen highlightPen = new Pen(Color.LightGreen, 1);
+        private const int MinSubImageSize = 10;
+
+        private readonly Pen overlayPen = new Pen(Color.CornflowerBlue, 1);
+        private readonly Pen highlightPen = new Pen(Color.LightGreen, 1);
 
         private Point lastMousePos = new Point(-1, -1);
         private Point lastClickedPos = new Point(-1, -1);
         private bool inSelectMode = false;
-        private int minSubImageSize = 10;
+
+        private Queue<string> filesToProcess = new Queue<string>();
+        private int filesProcessed = 0;
 
         private List<SubImage> subImages = new List<SubImage>();
+        private string currentFileName = null;
 
         public ReceiptEditor()
         {
             InitializeComponent();
-            this.imageBox.Image = Image.FromFile(@"C:\Users\Gustave\Desktop\Data Archive\receipts\2015-01-21\001.jpg");
-        }
-
-        // Unused?
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void nextButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        // Unused
-        private void label2_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void categoryBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void itemDate_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void imageBox_Click(object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>
@@ -70,7 +34,6 @@ namespace ReceiptEditor
         /// </summary>
         private void imageBox_Paint(object sender, PaintEventArgs e)
         {
-            // e.Graphics.DrawEllipse(overlayPen, 0, 0, this.imageBox.Width, this.imageBox.Height);
             e.Graphics.DrawEllipse(overlayPen, new Rectangle(lastMousePos, new Size(10, 10)));
 
             if (inSelectMode)
@@ -98,7 +61,7 @@ namespace ReceiptEditor
 
         private void imageBox_MouseUp(object sender, MouseEventArgs e)
         {
-            if (lastMousePos.X < lastClickedPos.X + minSubImageSize || lastMousePos.Y < lastClickedPos.Y + minSubImageSize)
+            if (Math.Abs(lastMousePos.X - lastClickedPos.X) < MinSubImageSize || Math.Abs(lastMousePos.Y - lastClickedPos.Y) < MinSubImageSize)
             {
                 // Cancel the operation
                 return;
@@ -154,19 +117,106 @@ namespace ReceiptEditor
             return new Point((int)newX, (int)newY);
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void addCategoryField_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void ReceiptEditor_Resize(object sender, EventArgs e)
         {
             imageBox.Invalidate();
+        }
+
+        private void scanButton_Click(object sender, EventArgs e)
+        {
+            this.filesToProcess = this.FindFiles(this.receiptFolderBox.Text);
+            this.IterateFiles(this.processedFolderBox.Text, (file) => ++this.filesProcessed);
+
+            this.UpdatePercentDone();
+            this.AdvanceImage(skipValidationSteps: true);
+        }
+
+        private void nextButton_Click(object sender, EventArgs e)
+        {
+            this.AdvanceImage();
+        }
+
+        private void AdvanceImage(bool skipValidationSteps = false)
+        {
+            // Validate we don't inadvertently lose data.
+            if (!skipValidationSteps)
+            {
+                if (subImages.Count == 0)
+                {
+                    DialogResult result = MessageBox.Show("No subimages were selected. Do you want to continue?", "No Subimages selected", MessageBoxButtons.YesNo);
+                    if (result != DialogResult.Yes)
+                    {
+                        return;
+                    }
+                }
+
+                if (subImages.Any(image => !image.Saved))
+                {
+                    DialogResult result = MessageBox.Show("Not all subimages were saved. Do you want to continue?", "Not all subimages saved", MessageBoxButtons.YesNo);
+                    if (result != DialogResult.Yes)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            // Move to the processed folder, if we actually have a file to update.
+            if (false && this.currentFileName != null)
+            {
+                string destinationDirectory = Path.Combine(this.processedFolderBox.Text, Path.GetDirectoryName(this.currentFileName));
+                string fileName = Path.GetFileName(this.currentFileName);
+                string destinationFile = Path.Combine(destinationDirectory, fileName);
+                while (File.Exists(destinationFile))
+                {
+                    fileName = $"0{fileName}";
+                    destinationFile = Path.Combine(destinationDirectory, fileName);
+                }
+
+                if (!Directory.Exists(destinationDirectory))
+                {
+                    Directory.CreateDirectory(destinationDirectory);
+                }
+
+                File.Move(this.currentFileName, destinationFile);
+
+                // Update UI.
+                ++this.filesProcessed;
+                this.UpdatePercentDone();
+            }
+
+            // Advance to the next image.
+            this.currentFileName = this.filesToProcess.Dequeue();
+            this.imageBox.Image = Image.FromFile(this.currentFileName);
+            this.subImages.Clear();
+
+            imageFolderBox.Text = Path.GetDirectoryName(this.currentFileName);
+            imageNameBox.Text = $"{Path.GetFileName(this.currentFileName)}: {this.imageBox.Image.Width}x{this.imageBox.Image.Height}";
+        }
+
+        private void UpdatePercentDone()
+        {
+            string percentDoneString = $"{(this.filesProcessed * 100) / (this.filesProcessed + this.filesToProcess.Count)}% done.";
+            scanResultsTextBox.Text = $"{this.filesProcessed} proc., {this.filesToProcess.Count} ready, {percentDoneString}";
+        }
+
+        private Queue<string> FindFiles(string directory)
+        {
+            Queue<string> fileQueue = new Queue<string>();
+            this.IterateFiles(directory, (file) => fileQueue.Enqueue(file));
+            return fileQueue;
+        }
+
+        private void IterateFiles(string directory, Action<string> fileAction)
+        {
+            foreach (string file in Directory.GetFiles(directory))
+            {
+                fileAction(file);
+            }
+
+            foreach (string subDirectory in Directory.GetDirectories(directory))
+            {
+                IterateFiles(subDirectory, fileAction);
+            }
         }
     }
 }

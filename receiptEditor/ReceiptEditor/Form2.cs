@@ -31,16 +31,18 @@ namespace ReceiptEditor
 
         private void MouseWheelMove(object sender, MouseEventArgs e)
         {
+            float aspectRatio = 1.0f / ((float)subImage.Image.Width / (float)subImage.Image.Height);
             int scrollDelta = e.Delta;
+            int zoomAddFactor = 10;
             if (scrollDelta > 0)
             {
-                subImage.MinPos = new Point((int)((float)subImage.MinPos.X * 0.90), (int)((float)subImage.MinPos.Y * 0.90));
-                subImage.MaxPos = new Point((int)((float)subImage.MaxPos.X * 1.10), (int)((float)subImage.MaxPos.Y * 1.10));
+                subImage.MinPos = new Point((int)((float)subImage.MinPos.X - zoomAddFactor * aspectRatio), (int)((float)subImage.MinPos.Y - zoomAddFactor));
+                subImage.MaxPos = new Point((int)((float)subImage.MaxPos.X + zoomAddFactor * aspectRatio), (int)((float)subImage.MaxPos.Y + zoomAddFactor));
             }
             else
             {
-                subImage.MinPos = new Point((int)((float)subImage.MinPos.X * 1.10), (int)((float)subImage.MinPos.Y * 1.10));
-                subImage.MaxPos = new Point((int)((float)subImage.MaxPos.X * 0.90), (int)((float)subImage.MaxPos.Y * 0.90));
+                subImage.MinPos = new Point((int)((float)subImage.MinPos.X + zoomAddFactor* aspectRatio), (int)((float)subImage.MinPos.Y + zoomAddFactor));
+                subImage.MaxPos = new Point((int)((float)subImage.MaxPos.X - zoomAddFactor* aspectRatio), (int)((float)subImage.MaxPos.Y - zoomAddFactor));
             }
 
             imageBox.Invalidate();

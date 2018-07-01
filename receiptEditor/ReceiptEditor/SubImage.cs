@@ -12,7 +12,11 @@ namespace ReceiptEditor
 
             this.OriginalMin = originalMin;
             this.OriginalMax = originalMax;
+
+            this.Saved = false;
         }
+
+        public bool Saved { get; set; }
 
         public Image Image { get; set; }
         public Point MinPos { get; set; }

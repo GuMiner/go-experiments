@@ -30,16 +30,15 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.imageBox = new System.Windows.Forms.PictureBox();
-            this.usesDateFieldCheckBox = new System.Windows.Forms.CheckBox();
-            this.addCategoryButton = new System.Windows.Forms.Button();
-            this.addCategoryField = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.categoryBox = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.itemDate = new System.Windows.Forms.DateTimePicker();
+            this.imageNameBox = new System.Windows.Forms.TextBox();
+            this.imageFolderBox = new System.Windows.Forms.TextBox();
             this.nextButton = new System.Windows.Forms.Button();
+            this.scanResultsTextBox = new System.Windows.Forms.TextBox();
+            this.processedFolderBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.receiptFolderBox = new System.Windows.Forms.TextBox();
+            this.scanButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -59,139 +58,110 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.usesDateFieldCheckBox);
-            this.splitContainer1.Panel2.Controls.Add(this.addCategoryButton);
-            this.splitContainer1.Panel2.Controls.Add(this.addCategoryField);
-            this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Panel2.Controls.Add(this.label2);
-            this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-            this.splitContainer1.Panel2.Controls.Add(this.categoryBox);
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Panel2.Controls.Add(this.itemDate);
+            this.splitContainer1.Panel2.Controls.Add(this.imageNameBox);
+            this.splitContainer1.Panel2.Controls.Add(this.imageFolderBox);
             this.splitContainer1.Panel2.Controls.Add(this.nextButton);
+            this.splitContainer1.Panel2.Controls.Add(this.scanResultsTextBox);
+            this.splitContainer1.Panel2.Controls.Add(this.processedFolderBox);
+            this.splitContainer1.Panel2.Controls.Add(this.label2);
+            this.splitContainer1.Panel2.Controls.Add(this.receiptFolderBox);
+            this.splitContainer1.Panel2.Controls.Add(this.scanButton);
+            this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Size = new System.Drawing.Size(874, 428);
-            this.splitContainer1.SplitterDistance = 486;
+            this.splitContainer1.SplitterDistance = 604;
             this.splitContainer1.TabIndex = 0;
             // 
             // imageBox
             // 
-            this.imageBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.imageBox.Location = new System.Drawing.Point(3, 3);
+            this.imageBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageBox.Location = new System.Drawing.Point(0, 0);
             this.imageBox.Name = "imageBox";
-            this.imageBox.Size = new System.Drawing.Size(480, 422);
+            this.imageBox.Size = new System.Drawing.Size(604, 428);
             this.imageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imageBox.TabIndex = 0;
             this.imageBox.TabStop = false;
-            this.imageBox.Click += new System.EventHandler(this.imageBox_Click);
             this.imageBox.Paint += new System.Windows.Forms.PaintEventHandler(this.imageBox_Paint);
             this.imageBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.imageBox_MouseDown);
             this.imageBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imageBox_MouseMove);
             this.imageBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.imageBox_MouseUp);
             // 
-            // usesDateFieldCheckBox
+            // imageNameBox
             // 
-            this.usesDateFieldCheckBox.AutoSize = true;
-            this.usesDateFieldCheckBox.Location = new System.Drawing.Point(204, 261);
-            this.usesDateFieldCheckBox.Name = "usesDateFieldCheckBox";
-            this.usesDateFieldCheckBox.Size = new System.Drawing.Size(152, 17);
-            this.usesDateFieldCheckBox.TabIndex = 9;
-            this.usesDateFieldCheckBox.Text = "Category Uses Date Field?";
-            this.usesDateFieldCheckBox.UseVisualStyleBackColor = true;
+            this.imageNameBox.Location = new System.Drawing.Point(2, 367);
+            this.imageNameBox.Name = "imageNameBox";
+            this.imageNameBox.ReadOnly = true;
+            this.imageNameBox.Size = new System.Drawing.Size(248, 20);
+            this.imageNameBox.TabIndex = 8;
             // 
-            // addCategoryButton
+            // imageFolderBox
             // 
-            this.addCategoryButton.Location = new System.Drawing.Point(296, 282);
-            this.addCategoryButton.Name = "addCategoryButton";
-            this.addCategoryButton.Size = new System.Drawing.Size(80, 23);
-            this.addCategoryButton.TabIndex = 8;
-            this.addCategoryButton.Text = "Add Category";
-            this.addCategoryButton.UseVisualStyleBackColor = true;
-            this.addCategoryButton.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // addCategoryField
-            // 
-            this.addCategoryField.Location = new System.Drawing.Point(201, 284);
-            this.addCategoryField.Name = "addCategoryField";
-            this.addCategoryField.Size = new System.Drawing.Size(89, 20);
-            this.addCategoryField.TabIndex = 7;
-            this.addCategoryField.TextChanged += new System.EventHandler(this.addCategoryField_TextChanged);
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(201, 331);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Notes";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(199, 35);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Category";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(201, 347);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(177, 49);
-            this.textBox1.TabIndex = 4;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // categoryBox
-            // 
-            this.categoryBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.categoryBox.FormattingEnabled = true;
-            this.categoryBox.Location = new System.Drawing.Point(201, 51);
-            this.categoryBox.Name = "categoryBox";
-            this.categoryBox.ScrollAlwaysVisible = true;
-            this.categoryBox.Size = new System.Drawing.Size(175, 199);
-            this.categoryBox.TabIndex = 3;
-            this.categoryBox.SelectedIndexChanged += new System.EventHandler(this.categoryBox_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(201, 18);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Creation Date";
-            // 
-            // itemDate
-            // 
-            this.itemDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.itemDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.itemDate.Location = new System.Drawing.Point(273, 12);
-            this.itemDate.Name = "itemDate";
-            this.itemDate.ShowUpDown = true;
-            this.itemDate.Size = new System.Drawing.Size(100, 20);
-            this.itemDate.TabIndex = 1;
-            this.itemDate.ValueChanged += new System.EventHandler(this.itemDate_ValueChanged);
+            this.imageFolderBox.Location = new System.Drawing.Point(2, 341);
+            this.imageFolderBox.Name = "imageFolderBox";
+            this.imageFolderBox.ReadOnly = true;
+            this.imageFolderBox.Size = new System.Drawing.Size(248, 20);
+            this.imageFolderBox.TabIndex = 7;
             // 
             // nextButton
             // 
-            this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.nextButton.Location = new System.Drawing.Point(306, 402);
+            this.nextButton.Location = new System.Drawing.Point(179, 393);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(75, 23);
-            this.nextButton.TabIndex = 0;
+            this.nextButton.TabIndex = 6;
             this.nextButton.Text = "Next";
             this.nextButton.UseVisualStyleBackColor = true;
             this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+            // 
+            // scanResultsTextBox
+            // 
+            this.scanResultsTextBox.Location = new System.Drawing.Point(6, 87);
+            this.scanResultsTextBox.Name = "scanResultsTextBox";
+            this.scanResultsTextBox.ReadOnly = true;
+            this.scanResultsTextBox.Size = new System.Drawing.Size(248, 20);
+            this.scanResultsTextBox.TabIndex = 5;
+            // 
+            // processedFolderBox
+            // 
+            this.processedFolderBox.Location = new System.Drawing.Point(85, 32);
+            this.processedFolderBox.Name = "processedFolderBox";
+            this.processedFolderBox.Size = new System.Drawing.Size(169, 20);
+            this.processedFolderBox.TabIndex = 4;
+            this.processedFolderBox.Text = "C:\\Users\\Gustave\\Desktop\\Data Archive\\processed_receipts";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 32);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(76, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Processed Dir.";
+            // 
+            // receiptFolderBox
+            // 
+            this.receiptFolderBox.Location = new System.Drawing.Point(85, 6);
+            this.receiptFolderBox.Name = "receiptFolderBox";
+            this.receiptFolderBox.Size = new System.Drawing.Size(169, 20);
+            this.receiptFolderBox.TabIndex = 2;
+            this.receiptFolderBox.Text = "C:\\Users\\Gustave\\Desktop\\Data Archive\\receipts";
+            // 
+            // scanButton
+            // 
+            this.scanButton.Location = new System.Drawing.Point(179, 58);
+            this.scanButton.Name = "scanButton";
+            this.scanButton.Size = new System.Drawing.Size(75, 23);
+            this.scanButton.TabIndex = 1;
+            this.scanButton.Text = "Scan";
+            this.scanButton.UseVisualStyleBackColor = true;
+            this.scanButton.Click += new System.EventHandler(this.scanButton_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(76, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Receipt Folder";
             // 
             // ReceiptEditor
             // 
@@ -201,7 +171,6 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "ReceiptEditor";
             this.Text = "Receipt Editor";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.ReceiptEditor_Resize);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -217,16 +186,15 @@
 
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PictureBox imageBox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DateTimePicker itemDate;
+        private System.Windows.Forms.TextBox imageNameBox;
+        private System.Windows.Forms.TextBox imageFolderBox;
         private System.Windows.Forms.Button nextButton;
-        private System.Windows.Forms.ListBox categoryBox;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox scanResultsTextBox;
+        private System.Windows.Forms.TextBox processedFolderBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button addCategoryButton;
-        private System.Windows.Forms.TextBox addCategoryField;
-        private System.Windows.Forms.CheckBox usesDateFieldCheckBox;
+        private System.Windows.Forms.TextBox receiptFolderBox;
+        private System.Windows.Forms.Button scanButton;
+        private System.Windows.Forms.Label label1;
     }
 }
 
