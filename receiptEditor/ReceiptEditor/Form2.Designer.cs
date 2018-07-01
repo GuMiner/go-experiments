@@ -34,12 +34,10 @@
             // 
             // imageBox
             // 
-            this.imageBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.imageBox.Location = new System.Drawing.Point(12, 12);
+            this.imageBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageBox.Location = new System.Drawing.Point(0, 0);
             this.imageBox.Name = "imageBox";
-            this.imageBox.Size = new System.Drawing.Size(489, 412);
+            this.imageBox.Size = new System.Drawing.Size(513, 436);
             this.imageBox.TabIndex = 0;
             this.imageBox.TabStop = false;
             this.imageBox.Paint += new System.Windows.Forms.PaintEventHandler(this.imageBox_Paint);
@@ -59,7 +57,6 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Sub Image";
-            this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.subImage_Scroll);
             this.Resize += new System.EventHandler(this.Form2_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.imageBox)).EndInit();
             this.ResumeLayout(false);
