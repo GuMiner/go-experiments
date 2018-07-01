@@ -23,11 +23,15 @@ namespace ReceiptEditor
 
         private List<SubImage> subImages = new List<SubImage>();
         private string currentFileName = null;
-
+        
         public ReceiptEditor()
         {
             InitializeComponent();
+
+            ReceiptEditor.ImageCategories = ImageCategory.LoadImageCategories();
         }
+
+        public static List<ImageCategory> ImageCategories { get; private set; }
 
         /// <summary>
         /// Render
@@ -71,7 +75,7 @@ namespace ReceiptEditor
                 SubImage subImage = new SubImage(GetImagePosition(lastClickedPos), GetImagePosition(lastMousePos), (Image)imageBox.Image.Clone(), lastClickedPos, lastMousePos);
                 subImages.Add(subImage);
 
-                Form2 form = new Form2(subImage);
+                Form2 form = new Form2(this.subImages.Count, subImage);
                 form.Show();
             }
 
@@ -161,7 +165,7 @@ namespace ReceiptEditor
             }
 
             // Move to the processed folder, if we actually have a file to update.
-            if (false && this.currentFileName != null)
+            if (this.currentFileName != null)
             {
                 string destinationDirectory = Path.Combine(this.processedFolderBox.Text, Path.GetDirectoryName(this.currentFileName));
                 string fileName = Path.GetFileName(this.currentFileName);

@@ -35,9 +35,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.categoryBox = new System.Windows.Forms.ListBox();
             this.addCategoryButton = new System.Windows.Forms.Button();
-            this.addCategoryField = new System.Windows.Forms.TextBox();
+            this.newCategoryName = new System.Windows.Forms.TextBox();
             this.saveButton = new System.Windows.Forms.Button();
-            this.categoryDirectoryBox = new System.Windows.Forms.TextBox();
+            this.newCategoryFolder = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.brightnessTrackbar)).BeginInit();
@@ -115,13 +115,14 @@
             this.addCategoryButton.TabIndex = 11;
             this.addCategoryButton.Text = "Add Category";
             this.addCategoryButton.UseVisualStyleBackColor = true;
+            this.addCategoryButton.Click += new System.EventHandler(this.addCategoryButton_Click);
             // 
-            // addCategoryField
+            // newCategoryName
             // 
-            this.addCategoryField.Location = new System.Drawing.Point(224, 169);
-            this.addCategoryField.Name = "addCategoryField";
-            this.addCategoryField.Size = new System.Drawing.Size(89, 20);
-            this.addCategoryField.TabIndex = 10;
+            this.newCategoryName.Location = new System.Drawing.Point(224, 169);
+            this.newCategoryName.Name = "newCategoryName";
+            this.newCategoryName.Size = new System.Drawing.Size(89, 20);
+            this.newCategoryName.TabIndex = 10;
             // 
             // saveButton
             // 
@@ -133,12 +134,12 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
-            // categoryDirectoryBox
+            // newCategoryFolder
             // 
-            this.categoryDirectoryBox.Location = new System.Drawing.Point(224, 122);
-            this.categoryDirectoryBox.Name = "categoryDirectoryBox";
-            this.categoryDirectoryBox.Size = new System.Drawing.Size(175, 20);
-            this.categoryDirectoryBox.TabIndex = 14;
+            this.newCategoryFolder.Location = new System.Drawing.Point(224, 122);
+            this.newCategoryFolder.Name = "newCategoryFolder";
+            this.newCategoryFolder.Size = new System.Drawing.Size(175, 20);
+            this.newCategoryFolder.TabIndex = 14;
             // 
             // label1
             // 
@@ -165,10 +166,10 @@
             this.ClientSize = new System.Drawing.Size(411, 252);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.categoryDirectoryBox);
+            this.Controls.Add(this.newCategoryFolder);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.addCategoryButton);
-            this.Controls.Add(this.addCategoryField);
+            this.Controls.Add(this.newCategoryName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.categoryBox);
             this.Controls.Add(this.contrastTrackBar);
@@ -193,9 +194,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ListBox categoryBox;
         private System.Windows.Forms.Button addCategoryButton;
-        private System.Windows.Forms.TextBox addCategoryField;
+        private System.Windows.Forms.TextBox newCategoryName;
         private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.TextBox categoryDirectoryBox;
+        private System.Windows.Forms.TextBox newCategoryFolder;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
     }

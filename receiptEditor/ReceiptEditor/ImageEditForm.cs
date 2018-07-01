@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ReceiptEditor
@@ -14,11 +10,18 @@ namespace ReceiptEditor
     public partial class ImageEditForm : Form
     {
         private Action<ImageAttributes> editCallback;
+        private Func<Bitmap> getImageCallback;
+        private Action hideCallback;
 
-        public ImageEditForm(Action<ImageAttributes> editCallback)
+        public ImageEditForm(int subImageId, Action<ImageAttributes> editCallback, Func<Bitmap> getImageCallback, Action hideCallback)
         {
             InitializeComponent();
+            this.Text = $"Categorization - {subImageId}";
+            this.categoryBox.DataSource = ReceiptEditor.ImageCategories;
+
             this.editCallback = editCallback;
+            this.getImageCallback = getImageCallback;
+            this.hideCallback = hideCallback;
         }
 
         private void brightnessTrackbar_Scroll(object sender, EventArgs e)
@@ -56,7 +59,43 @@ namespace ReceiptEditor
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            // TODO: SAve sub image in the proper category and all.
+            string saveFolder = (this.categoryBox.SelectedItem as ImageCategory).Folder;
+
+            int num = 0;
+            string fileName = Path.Combine(saveFolder, $"{num}.jpg");
+            while (File.Exists(fileName))
+            {
+                ++num;
+                fileName = Path.Combine(saveFolder, $"{num}.jpg");
+            }
+
+            if (!Directory.Exists(Path.GetDirectoryName(fileName)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+            }
+
+            Bitmap imageToSave = this.getImageCallback();
+            imageToSave.Save(fileName);
+            imageToSave.Dispose();
+
+            this.Hide();
+            this.hideCallback();
+        }
+
+        private void addCategoryButton_Click(object sender, EventArgs e)
+        {
+            ImageCategory category = new ImageCategory()
+            {
+                Name = this.newCategoryName.Text,
+                Folder = this.newCategoryFolder.Text
+            };
+
+            // TODO: This only updates the current subimage window.
+            ReceiptEditor.ImageCategories.Add(category);
+            categoryBox.DataSource = null;
+            categoryBox.DataSource = ReceiptEditor.ImageCategories;
+            categoryBox.DisplayMember = ReceiptEditor.ImageCategories.First().ToString();
+            ImageCategory.SaveImageCategories(ReceiptEditor.ImageCategories);
         }
     }
 }

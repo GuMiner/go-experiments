@@ -1,32 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ReceiptEditor
 {
     public partial class Form2 : Form
     {
-        private SubImage subImage;
+        private readonly int subImageId;
+        private readonly SubImage subImage;
         private ImageAttributes imageAttributes;
+
+        private bool inTranslateMode = false;
+        private Point lastMousePos = new Point(-1, -1);
+
         public Form2()
         {
             InitializeComponent();
             this.imageAttributes = new ImageAttributes();
             this.MouseWheel += new MouseEventHandler(MouseWheelMove);
-
-            ImageEditForm imageEditForm = new ImageEditForm((attr) =>
-            {
-                this.imageAttributes = attr;
-                imageBox.Invalidate();
-            });
-            imageEditForm.Show();
         }
 
         private void MouseWheelMove(object sender, MouseEventArgs e)
@@ -48,31 +40,71 @@ namespace ReceiptEditor
             imageBox.Invalidate();
         }
 
-        public Form2(SubImage subImage)
+        public Form2(int subImageId, SubImage subImage)
             : this()
         {
+            this.Text = $"Sub Image - {subImageId}";
+            this.subImageId = subImageId;
             this.subImage = subImage;
+
+            ImageEditForm imageEditForm = new ImageEditForm(
+                this.subImageId,
+                (attr) =>
+                {
+                    this.imageAttributes = attr;
+                    imageBox.Invalidate();
+                },
+                () => {
+                    this.subImage.Saved = true;
+                    Bitmap bitmap = new Bitmap(imageBox.Width, imageBox.Height);
+                    using (Graphics g = Graphics.FromImage(bitmap))
+                    {
+                        DrawPartialImage(g);
+                    }
+
+                    return bitmap;
+                }, () => this.Hide());
+
+            imageEditForm.Show();
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            if (inTranslateMode)
+            {
+                int deltaX = e.X - lastMousePos.X;
+                int deltaY = e.Y - lastMousePos.Y;
 
+                float xScaleFactor = (float)(subImage.MaxPos.X - subImage.MinPos.X) / (float)imageBox.Width;
+                float yScaleFactor = (float)(subImage.MaxPos.Y - subImage.MinPos.Y) / (float)imageBox.Height;
+                subImage.MinPos = new Point((int)((float)subImage.MinPos.X - (float)deltaX * xScaleFactor), (int)((float)subImage.MinPos.Y - (float)deltaY * yScaleFactor));
+                subImage.MaxPos = new Point((int)((float)subImage.MaxPos.X - (float)deltaX * xScaleFactor), (int)((float)subImage.MaxPos.Y - (float)deltaY * yScaleFactor));
+
+                lastMousePos = e.Location;
+                imageBox.Invalidate();
+            }
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-
+            inTranslateMode = true;
+            lastMousePos = e.Location;
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-
+            inTranslateMode = false;
         }
 
         private void imageBox_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.Clear(Color.LightSeaGreen);
-            e.Graphics.DrawImage(subImage.Image,
+            DrawPartialImage(e.Graphics);
+        }
+
+        private void DrawPartialImage(Graphics g)
+        {
+            g.Clear(Color.LightSeaGreen);
+            g.DrawImage(subImage.Image,
                 new Rectangle(0, 0, imageBox.Width, imageBox.Height),
                 subImage.MinPos.X, subImage.MinPos.Y,
                 subImage.MaxPos.X - subImage.MinPos.X,
