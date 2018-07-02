@@ -167,7 +167,7 @@ namespace ReceiptEditor
             // Move to the processed folder, if we actually have a file to update.
             if (this.currentFileName != null)
             {
-                string destinationDirectory = Path.Combine(this.processedFolderBox.Text, Path.GetDirectoryName(this.currentFileName));
+                string destinationDirectory = Path.Combine(this.processedFolderBox.Text, Path.GetFileName(Path.GetDirectoryName(this.currentFileName)));
                 string fileName = Path.GetFileName(this.currentFileName);
                 string destinationFile = Path.Combine(destinationDirectory, fileName);
                 while (File.Exists(destinationFile))
@@ -180,6 +180,10 @@ namespace ReceiptEditor
                 {
                     Directory.CreateDirectory(destinationDirectory);
                 }
+
+                Image mainImage = this.imageBox.Image;
+                this.imageBox.Image = null;
+                mainImage.Dispose();
 
                 File.Move(this.currentFileName, destinationFile);
 

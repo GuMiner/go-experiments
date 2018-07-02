@@ -56,10 +56,12 @@ namespace ReceiptEditor
                 },
                 () => {
                     this.subImage.Saved = true;
-                    Bitmap bitmap = new Bitmap(imageBox.Width, imageBox.Height);
+                    int width = subImage.MaxPos.X - subImage.MinPos.X;
+                    int height = subImage.MaxPos.Y - subImage.MinPos.Y;
+                    Bitmap bitmap = new Bitmap(width, height);
                     using (Graphics g = Graphics.FromImage(bitmap))
                     {
-                        DrawPartialImage(g);
+                        DrawPartialImage(g, width, height);
                     }
 
                     return bitmap;
@@ -98,14 +100,14 @@ namespace ReceiptEditor
 
         private void imageBox_Paint(object sender, PaintEventArgs e)
         {
-            DrawPartialImage(e.Graphics);
+            DrawPartialImage(e.Graphics, imageBox.Width, imageBox.Height);
         }
 
-        private void DrawPartialImage(Graphics g)
+        private void DrawPartialImage(Graphics g, int destinationWidth, int destinationHeight)
         {
             g.Clear(Color.LightSeaGreen);
             g.DrawImage(subImage.Image,
-                new Rectangle(0, 0, imageBox.Width, imageBox.Height),
+                new Rectangle(0, 0, destinationWidth, destinationHeight),
                 subImage.MinPos.X, subImage.MinPos.Y,
                 subImage.MaxPos.X - subImage.MinPos.X,
                 subImage.MaxPos.Y - subImage.MinPos.Y,
