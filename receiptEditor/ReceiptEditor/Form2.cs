@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace ReceiptEditor
 {
-    public partial class Form2 : Form
+    public partial class Form2 : Form, IDisposable
     {
         private readonly int subImageId;
         private readonly SubImage subImage;
@@ -13,6 +13,8 @@ namespace ReceiptEditor
 
         private bool inTranslateMode = false;
         private Point lastMousePos = new Point(-1, -1);
+
+        private ImageEditForm imageEditForm;
 
         public Form2()
         {
@@ -47,7 +49,7 @@ namespace ReceiptEditor
             this.subImageId = subImageId;
             this.subImage = subImage;
 
-            ImageEditForm imageEditForm = new ImageEditForm(
+            this.imageEditForm = new ImageEditForm(
                 this.subImageId,
                 (attr) =>
                 {
@@ -67,7 +69,14 @@ namespace ReceiptEditor
                     return bitmap;
                 }, () => this.Hide());
 
-            imageEditForm.Show();
+            this.imageEditForm.Show();
+        }
+
+        public new void Dispose()
+        {
+            this.imageBox.Image = null;
+            this.imageEditForm.Dispose();
+            base.Dispose();
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)

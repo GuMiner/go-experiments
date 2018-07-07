@@ -22,6 +22,7 @@ namespace ReceiptEditor
         private int filesProcessed = 0;
 
         private List<SubImage> subImages = new List<SubImage>();
+        private List<IDisposable> forms = new List<IDisposable>();
         private string currentFileName = null;
         
         public ReceiptEditor()
@@ -77,6 +78,7 @@ namespace ReceiptEditor
 
                 Form2 form = new Form2(this.subImages.Count, subImage);
                 form.Show();
+                forms.Add(form);
             }
 
             inSelectMode = false;
@@ -164,6 +166,19 @@ namespace ReceiptEditor
                 }
             }
 
+            // Release all handles to the image
+            this.subImages.Clear();
+            foreach (IDisposable form in this.forms)
+            {
+                form.Dispose();
+            }
+
+            this.forms.Clear();
+
+            Image mainImage = this.imageBox.Image;
+            this.imageBox.Image = null;
+            mainImage?.Dispose();
+
             // Move to the processed folder, if we actually have a file to update.
             if (this.currentFileName != null)
             {
@@ -181,10 +196,6 @@ namespace ReceiptEditor
                     Directory.CreateDirectory(destinationDirectory);
                 }
 
-                Image mainImage = this.imageBox.Image;
-                this.imageBox.Image = null;
-                mainImage.Dispose();
-
                 File.Move(this.currentFileName, destinationFile);
 
                 // Update UI.
@@ -194,8 +205,10 @@ namespace ReceiptEditor
 
             // Advance to the next image.
             this.currentFileName = this.filesToProcess.Dequeue();
-            this.imageBox.Image = Image.FromFile(this.currentFileName);
-            this.subImages.Clear();
+            using (FileStream stream = new FileStream(this.currentFileName, FileMode.Open, FileAccess.Read))
+            {
+                this.imageBox.Image = Image.FromStream(stream);
+            }
 
             imageFolderBox.Text = Path.GetDirectoryName(this.currentFileName);
             imageNameBox.Text = $"{Path.GetFileName(this.currentFileName)}: {this.imageBox.Image.Width}x{this.imageBox.Image.Height}";
