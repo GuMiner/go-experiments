@@ -18,6 +18,9 @@ namespace ReceiptEditor
 
         private ImageEditForm imageEditForm;
 
+        // 0 == no rotation, 1-3, rotation, 
+        private int rotation = 0;
+
         public Form2()
         {
             InitializeComponent();
@@ -62,6 +65,13 @@ namespace ReceiptEditor
                 () => {
                     int width = subImage.MaxPos.X - subImage.MinPos.X;
                     int height = subImage.MaxPos.Y - subImage.MinPos.Y;
+                    if (rotation % 4 == 1 || rotation % 4 == 3)
+                    {
+                        int swap = width;
+                        width = height;
+                        height = swap;
+                    }
+
                     Bitmap bitmap = new Bitmap(width, height);
                     using (Graphics g = Graphics.FromImage(bitmap))
                     {
@@ -70,10 +80,19 @@ namespace ReceiptEditor
 
                     this.subImage.Saved = true;
                     return bitmap;
-                }, () => this.Hide());
+                },
+                (increment) =>
+                {
+                    this.rotation += increment;
+                    this.Width = this.GetWidth();
+                    this.Height = this.GetHeight();
 
-            this.Width = (this.subImage.MaxPos.X - subImage.MinPos.X) / scaleDownFactor;
-            this.Height = (this.subImage.MaxPos.Y - subImage.MinPos.Y) / scaleDownFactor;
+                    imageBox.Invalidate();
+                },
+                () => this.Hide());
+
+            this.Width = this.GetWidth();
+            this.Height = this.GetHeight();
             this.Show();
             this.imageEditForm.Show();
         }
@@ -91,6 +110,27 @@ namespace ReceiptEditor
             {
                 int deltaX = e.X - lastMousePos.X;
                 int deltaY = e.Y - lastMousePos.Y;
+                switch (rotation % 4)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        int swap = deltaX;
+                        deltaX = -deltaY;
+                        deltaY = swap;
+                        break;
+                    case 2:
+                        deltaX = -deltaX;
+                        deltaY = -deltaY;
+                        break;
+                    case 3:
+                        swap = deltaX;
+                        deltaX = deltaY;
+                        deltaY = -swap;
+                        break;
+                    default:
+                        break;
+                }
 
                 float xScaleFactor = (float)(subImage.MaxPos.X - subImage.MinPos.X) / (float)imageBox.Width;
                 float yScaleFactor = (float)(subImage.MaxPos.Y - subImage.MinPos.Y) / (float)imageBox.Height;
@@ -122,10 +162,8 @@ namespace ReceiptEditor
         {
             g.Clear(Color.LightSeaGreen);
             g.DrawImage(subImage.Image,
-                new Rectangle(0, 0, destinationWidth, destinationHeight),
-                subImage.MinPos.X, subImage.MinPos.Y,
-                subImage.MaxPos.X - subImage.MinPos.X,
-                subImage.MaxPos.Y - subImage.MinPos.Y,
+                this.GetDestinationPoints(destinationWidth, destinationHeight),
+                new Rectangle(subImage.MinPos.X, subImage.MinPos.Y, subImage.MaxPos.X - subImage.MinPos.X, subImage.MaxPos.Y - subImage.MinPos.Y),
                 GraphicsUnit.Pixel,
                 imageAttributes);
         }
@@ -133,6 +171,56 @@ namespace ReceiptEditor
         private void Form2_Resize(object sender, EventArgs e)
         {
             imageBox.Invalidate();
+        }
+
+        private PointF[] GetDestinationPoints(int destinationWidth, int destinationHeight)
+        {
+            --destinationWidth;
+            --destinationHeight;
+            switch (rotation % 4)
+            {
+                case 0:
+                    return new[] { new PointF(0, 0), new PointF(destinationWidth, 0), new PointF(0, destinationHeight) };
+                case 1:
+                    return new[] { new PointF(destinationWidth, 0), new PointF(destinationWidth, destinationHeight), new PointF(0, 0),  };
+                case 2:
+                    return new[] { new PointF(destinationWidth, destinationHeight), new PointF(0, destinationHeight), new PointF(destinationWidth, 0), };
+                case 3:
+                default:
+                    return new[] { new PointF(0, destinationHeight), new PointF(0, 0), new PointF(destinationWidth, destinationHeight), };
+            }
+        }
+
+        private int GetWidth()
+        {
+            int nominalWidth = subImage.MaxPos.X - subImage.MinPos.X;
+            int nominalHeight = subImage.MaxPos.Y - subImage.MinPos.Y;
+            switch (rotation % 4)
+            {
+                case 0:
+                case 2:
+                    return nominalWidth / scaleDownFactor;
+                case 1:
+                case 3:
+                default:
+                    return nominalHeight / scaleDownFactor;
+            }
+        }
+
+        private int GetHeight()
+        {
+            int nominalWidth = subImage.MaxPos.X - subImage.MinPos.X;
+            int nominalHeight = subImage.MaxPos.Y - subImage.MinPos.Y;
+            switch (rotation % 4)
+            {
+                case 0:
+                case 2:
+                    return nominalHeight / scaleDownFactor;
+                case 1:
+                case 3:
+                default:
+                    return nominalWidth / scaleDownFactor;
+            }
         }
     }
 }

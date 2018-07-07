@@ -11,9 +11,10 @@ namespace ReceiptEditor
     {
         private Action<ImageAttributes> editCallback;
         private Func<Bitmap> getImageCallback;
+        private Action<int> rotateAction;
         private Action hideCallback;
 
-        public ImageEditForm(int subImageId, Action<ImageAttributes> editCallback, Func<Bitmap> getImageCallback, Action hideCallback)
+        public ImageEditForm(int subImageId, Action<ImageAttributes> editCallback, Func<Bitmap> getImageCallback, Action<int> rotateAction, Action hideCallback)
         {
             InitializeComponent();
             this.Text = $"Categorization - {subImageId}";
@@ -21,6 +22,7 @@ namespace ReceiptEditor
 
             this.editCallback = editCallback;
             this.getImageCallback = getImageCallback;
+            this.rotateAction = rotateAction;
             this.hideCallback = hideCallback;
         }
 
@@ -94,10 +96,17 @@ namespace ReceiptEditor
 
             // TODO: This only updates the current subimage window.
             ReceiptEditor.ImageCategories.Add(category);
+            ReceiptEditor.ImageCategories.Sort((left, right) => left.Name.CompareTo(right.Name));
+
             categoryBox.DataSource = null;
             categoryBox.DataSource = ReceiptEditor.ImageCategories;
             categoryBox.DisplayMember = ReceiptEditor.ImageCategories.First().ToString();
             ImageCategory.SaveImageCategories(ReceiptEditor.ImageCategories);
+        }
+
+        private void rotateButton_Click(object sender, EventArgs e)
+        {
+            this.rotateAction(1);
         }
     }
 }
