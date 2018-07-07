@@ -69,6 +69,7 @@ namespace ReceiptEditor
                     return bitmap;
                 }, () => this.Hide());
 
+            this.Show();
             this.imageEditForm.Show();
         }
 

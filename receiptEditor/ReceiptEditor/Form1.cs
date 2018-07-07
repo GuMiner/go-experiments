@@ -30,9 +30,11 @@ namespace ReceiptEditor
             InitializeComponent();
 
             ReceiptEditor.ImageCategories = ImageCategory.LoadImageCategories();
+            ReceiptEditor.FilesSharded = 0;
         }
 
         public static List<ImageCategory> ImageCategories { get; private set; }
+        public static int FilesSharded { get; set;  }
 
         /// <summary>
         /// Render
@@ -133,6 +135,11 @@ namespace ReceiptEditor
             this.filesToProcess = this.FindFiles(this.receiptFolderBox.Text);
             this.IterateFiles(this.processedFolderBox.Text, (file) => ++this.filesProcessed);
 
+            foreach (ImageCategory category in ReceiptEditor.ImageCategories)
+            {
+                this.IterateFiles(category.Folder, (file) => ++ReceiptEditor.FilesSharded);
+            }
+
             this.UpdatePercentDone();
             this.AdvanceImage(skipValidationSteps: true);
         }
@@ -218,6 +225,8 @@ namespace ReceiptEditor
         {
             string percentDoneString = $"{(this.filesProcessed * 100) / (this.filesProcessed + this.filesToProcess.Count)}% done.";
             scanResultsTextBox.Text = $"{this.filesProcessed} proc., {this.filesToProcess.Count} ready, {percentDoneString}";
+
+            shardedStatusTextBox.Text = $"{ReceiptEditor.FilesSharded} sharded files in {ReceiptEditor.ImageCategories.Count} categories.";
         }
 
         private Queue<string> FindFiles(string directory)

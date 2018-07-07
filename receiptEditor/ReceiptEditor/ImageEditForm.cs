@@ -78,6 +78,8 @@ namespace ReceiptEditor
             imageToSave.Save(fileName);
             imageToSave.Dispose();
 
+            ++ReceiptEditor.FilesSharded;
+
             this.Hide();
             this.hideCallback();
         }

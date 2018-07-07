@@ -39,6 +39,7 @@
             this.receiptFolderBox = new System.Windows.Forms.TextBox();
             this.scanButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.shardedStatusTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -48,7 +49,11 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -58,6 +63,8 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.splitContainer1.Panel2.Controls.Add(this.shardedStatusTextBox);
             this.splitContainer1.Panel2.Controls.Add(this.imageNameBox);
             this.splitContainer1.Panel2.Controls.Add(this.imageFolderBox);
             this.splitContainer1.Panel2.Controls.Add(this.nextButton);
@@ -73,7 +80,9 @@
             // 
             // imageBox
             // 
-            this.imageBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.imageBox.Location = new System.Drawing.Point(0, 0);
             this.imageBox.Name = "imageBox";
             this.imageBox.Size = new System.Drawing.Size(604, 428);
@@ -87,6 +96,7 @@
             // 
             // imageNameBox
             // 
+            this.imageNameBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.imageNameBox.Location = new System.Drawing.Point(2, 367);
             this.imageNameBox.Name = "imageNameBox";
             this.imageNameBox.ReadOnly = true;
@@ -95,6 +105,7 @@
             // 
             // imageFolderBox
             // 
+            this.imageFolderBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.imageFolderBox.Location = new System.Drawing.Point(2, 341);
             this.imageFolderBox.Name = "imageFolderBox";
             this.imageFolderBox.ReadOnly = true;
@@ -103,6 +114,7 @@
             // 
             // nextButton
             // 
+            this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.nextButton.Location = new System.Drawing.Point(179, 393);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(75, 23);
@@ -113,6 +125,7 @@
             // 
             // scanResultsTextBox
             // 
+            this.scanResultsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.scanResultsTextBox.Location = new System.Drawing.Point(6, 87);
             this.scanResultsTextBox.Name = "scanResultsTextBox";
             this.scanResultsTextBox.ReadOnly = true;
@@ -121,6 +134,7 @@
             // 
             // processedFolderBox
             // 
+            this.processedFolderBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.processedFolderBox.Location = new System.Drawing.Point(85, 32);
             this.processedFolderBox.Name = "processedFolderBox";
             this.processedFolderBox.Size = new System.Drawing.Size(169, 20);
@@ -129,6 +143,7 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 32);
             this.label2.Name = "label2";
@@ -138,6 +153,7 @@
             // 
             // receiptFolderBox
             // 
+            this.receiptFolderBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.receiptFolderBox.Location = new System.Drawing.Point(85, 6);
             this.receiptFolderBox.Name = "receiptFolderBox";
             this.receiptFolderBox.Size = new System.Drawing.Size(169, 20);
@@ -146,6 +162,7 @@
             // 
             // scanButton
             // 
+            this.scanButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.scanButton.Location = new System.Drawing.Point(179, 58);
             this.scanButton.Name = "scanButton";
             this.scanButton.Size = new System.Drawing.Size(75, 23);
@@ -156,12 +173,22 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(76, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Receipt Folder";
+            // 
+            // shardedStatusTextBox
+            // 
+            this.shardedStatusTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.shardedStatusTextBox.Location = new System.Drawing.Point(6, 113);
+            this.shardedStatusTextBox.Name = "shardedStatusTextBox";
+            this.shardedStatusTextBox.ReadOnly = true;
+            this.shardedStatusTextBox.Size = new System.Drawing.Size(248, 20);
+            this.shardedStatusTextBox.TabIndex = 9;
             // 
             // ReceiptEditor
             // 
@@ -195,6 +222,7 @@
         private System.Windows.Forms.TextBox receiptFolderBox;
         private System.Windows.Forms.Button scanButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox shardedStatusTextBox;
     }
 }
 
