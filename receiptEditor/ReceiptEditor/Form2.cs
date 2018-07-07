@@ -7,6 +7,8 @@ namespace ReceiptEditor
 {
     public partial class Form2 : Form, IDisposable
     {
+        private const int scaleDownFactor = 2;
+
         private readonly int subImageId;
         private readonly SubImage subImage;
         private ImageAttributes imageAttributes;
@@ -25,7 +27,8 @@ namespace ReceiptEditor
 
         private void MouseWheelMove(object sender, MouseEventArgs e)
         {
-            float aspectRatio = 1.0f / ((float)subImage.Image.Width / (float)subImage.Image.Height);
+            float aspectRatio = (float)(subImage.MaxPos.X - subImage.MinPos.X) / (float)(subImage.MaxPos.Y - subImage.MinPos.Y);
+
             int scrollDelta = e.Delta;
             int zoomAddFactor = 10;
             if (scrollDelta > 0)
@@ -35,8 +38,8 @@ namespace ReceiptEditor
             }
             else
             {
-                subImage.MinPos = new Point((int)((float)subImage.MinPos.X + zoomAddFactor* aspectRatio), (int)((float)subImage.MinPos.Y + zoomAddFactor));
-                subImage.MaxPos = new Point((int)((float)subImage.MaxPos.X - zoomAddFactor* aspectRatio), (int)((float)subImage.MaxPos.Y - zoomAddFactor));
+                subImage.MinPos = new Point((int)((float)subImage.MinPos.X + zoomAddFactor * aspectRatio), (int)((float)subImage.MinPos.Y + zoomAddFactor));
+                subImage.MaxPos = new Point((int)((float)subImage.MaxPos.X - zoomAddFactor * aspectRatio), (int)((float)subImage.MaxPos.Y - zoomAddFactor));
             }
 
             imageBox.Invalidate();
@@ -57,7 +60,6 @@ namespace ReceiptEditor
                     imageBox.Invalidate();
                 },
                 () => {
-                    this.subImage.Saved = true;
                     int width = subImage.MaxPos.X - subImage.MinPos.X;
                     int height = subImage.MaxPos.Y - subImage.MinPos.Y;
                     Bitmap bitmap = new Bitmap(width, height);
@@ -66,9 +68,12 @@ namespace ReceiptEditor
                         DrawPartialImage(g, width, height);
                     }
 
+                    this.subImage.Saved = true;
                     return bitmap;
                 }, () => this.Hide());
 
+            this.Width = (this.subImage.MaxPos.X - subImage.MinPos.X) / scaleDownFactor;
+            this.Height = (this.subImage.MaxPos.Y - subImage.MinPos.Y) / scaleDownFactor;
             this.Show();
             this.imageEditForm.Show();
         }

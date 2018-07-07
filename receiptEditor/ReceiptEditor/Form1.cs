@@ -68,7 +68,7 @@ namespace ReceiptEditor
 
         private void imageBox_MouseUp(object sender, MouseEventArgs e)
         {
-            if (Math.Abs(lastMousePos.X - lastClickedPos.X) < MinSubImageSize || Math.Abs(lastMousePos.Y - lastClickedPos.Y) < MinSubImageSize)
+            if (lastMousePos.X - lastClickedPos.X < MinSubImageSize || lastMousePos.Y - lastClickedPos.Y < MinSubImageSize)
             {
                 // Cancel the operation
                 return;
