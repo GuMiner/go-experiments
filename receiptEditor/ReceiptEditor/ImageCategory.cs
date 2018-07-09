@@ -26,7 +26,7 @@ namespace ReceiptEditor
         
         public static void SaveImageCategories(List<ImageCategory> categories)
         {
-            File.WriteAllText(GetImageCategoryFilePath(), JsonConvert.SerializeObject(categories));
+            File.WriteAllText(GetImageCategoryFilePath(), JsonConvert.SerializeObject(categories, Formatting.Indented));
         }
 
         private static string GetImageCategoryFilePath() => ConfigurationManager.AppSettings["CategoriesFile"];

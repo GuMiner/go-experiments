@@ -1,1 +1,158 @@
-[{"Name":"ASLC","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ASLC"},{"Name":"R-AmericanA","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AmericanAirlines"},{"Name":"R-AmiciItalian","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AmiciItailian"},{"Name":"R-BoilingPoint","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BoilingPoint"},{"Name":"R-Caramba","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Caramba"},{"Name":"R-Chevron","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Chevron"},{"Name":"R-CrystalMountain","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CrystalMountain"},{"Name":"R-Delta","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Delta"},{"Name":"R-Dubliner","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dubliner"},{"Name":"R-FiveGuys","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FiveGuys"},{"Name":"R-GLCBarAndGrill","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GlcBarAndGrill"},{"Name":"R-HighMountainBrewing","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HighMountainBrewing"},{"Name":"R-JinyaRamen","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\JinyaRamen"},{"Name":"R-KFC","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\KFC"},{"Name":"R-McCormick","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\McCormick&Schmick"},{"Name":"R-McDonalds","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\McDonalds"},{"Name":"R-MerlinsBarAndGrill","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MerlinsBarAndGrill"},{"Name":"R-MSN","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dane County Airport"},{"Name":"R-PastaLupino","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PastaLupino"},{"Name":"R-RedmondShip","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedmondShipping"},{"Name":"R-Safeway","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Safeway"},{"Name":"R-StudioH","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\StudioH"},{"Name":"R-TgiFridays","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TgiFridays"},{"Name":"R-TuttaBella","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TuttaBella"},{"Name":"R-United","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\United"},{"Name":"R-Unknown","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Unknown"},{"Name":"R-UWBookstore","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UWBookstore"},{"Name":"R-Wendys","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Wendys"},{"Name":"R-WhistlerParking","Folder":"C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhistlerParking"}]
+[
+  {
+    "Name": "ASLC",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ASLC"
+  },
+  {
+    "Name": "R-AmericanA",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AmericanAirlines"
+  },
+  {
+    "Name": "R-AmiciItalian",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AmiciItailian"
+  },
+  {
+    "Name": "R-BarnesAndNoble",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BarnesAndNoble"
+  },
+  {
+    "Name": "R-BoilingPoint",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BoilingPoint"
+  },
+  {
+    "Name": "R-Caramba",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Caramba"
+  },
+  {
+    "Name": "R-Chevron",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Chevron"
+  },
+  {
+    "Name": "R-CrystalMountain",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CrystalMountain"
+  },
+  {
+    "Name": "R-Delta",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Delta"
+  },
+  {
+    "Name": "R-DoughZone",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DoughZone"
+  },
+  {
+    "Name": "R-Dubliner",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dubliner"
+  },
+  {
+    "Name": "R-Ebay",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Ebay"
+  },
+  {
+    "Name": "R-FirstTech",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FirstTech"
+  },
+  {
+    "Name": "R-FiveGuys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FiveGuys"
+  },
+  {
+    "Name": "R-GLCBarAndGrill",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GlcBarAndGrill"
+  },
+  {
+    "Name": "R-HighMountainBrewing",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HighMountainBrewing"
+  },
+  {
+    "Name": "R-IGA",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IGA"
+  },
+  {
+    "Name": "R-JinyaRamen",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\JinyaRamen"
+  },
+  {
+    "Name": "R-KFC",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\KFC"
+  },
+  {
+    "Name": "R-LaIsla",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LaIsla"
+  },
+  {
+    "Name": "R-McCormick",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\McCormick&Schmick"
+  },
+  {
+    "Name": "R-McDonalds",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\McDonalds"
+  },
+  {
+    "Name": "R-MediterraneanKitchen",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MediterraneanKitchen"
+  },
+  {
+    "Name": "R-MerlinsBarAndGrill",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MerlinsBarAndGrill"
+  },
+  {
+    "Name": "R-MSN",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dane County Airport"
+  },
+  {
+    "Name": "R-PackagedMsftShipping",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Packaged"
+  },
+  {
+    "Name": "R-PastaLupino",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PastaLupino"
+  },
+  {
+    "Name": "R-RedmondShip",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedmondShipping"
+  },
+  {
+    "Name": "R-Safeway",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Safeway"
+  },
+  {
+    "Name": "R-StudioH",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\StudioH"
+  },
+  {
+    "Name": "R-TgiFridays",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TgiFridays"
+  },
+  {
+    "Name": "R-TuttaBella",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TuttaBella"
+  },
+  {
+    "Name": "R-United",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\United"
+  },
+  {
+    "Name": "R-Unknown",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Unknown"
+  },
+  {
+    "Name": "R-UWBookstore",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UWBookstore"
+  },
+  {
+    "Name": "R-Wendys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Wendys"
+  },
+  {
+    "Name": "R-WhistlerParking",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhistlerParking"
+  },
+  {
+    "Name": "R-WhitePass",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhitePass"
+  },
+  {
+    "Name": "TrailsOfRedmond",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TrailsOfRedmond"
+  }
+]

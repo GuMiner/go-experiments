@@ -100,7 +100,7 @@ namespace ReceiptEditor
 
             categoryBox.DataSource = null;
             categoryBox.DataSource = ReceiptEditor.ImageCategories;
-            categoryBox.DisplayMember = ReceiptEditor.ImageCategories.First().ToString();
+            categoryBox.SelectedItem = category;
             ImageCategory.SaveImageCategories(ReceiptEditor.ImageCategories);
         }
 

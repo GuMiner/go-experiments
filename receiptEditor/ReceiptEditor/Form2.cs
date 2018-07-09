@@ -95,7 +95,9 @@ namespace ReceiptEditor
             this.Height = this.GetHeight();
             this.Show();
 
-            this.imageEditForm.Location = new Point(this.Location.X + this.Width, this.Location.Y);
+            this.imageEditForm.StartPosition = FormStartPosition.Manual;
+            this.imageEditForm.Left = this.Location.X + this.Width;
+            this.imageEditForm.Top = this.Location.Y;
             this.imageEditForm.Show();
         }
 

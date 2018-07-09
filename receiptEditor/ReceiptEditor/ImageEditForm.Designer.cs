@@ -94,7 +94,7 @@
             this.categoryBox.Location = new System.Drawing.Point(12, 15);
             this.categoryBox.Name = "categoryBox";
             this.categoryBox.ScrollAlwaysVisible = true;
-            this.categoryBox.Size = new System.Drawing.Size(175, 446);
+            this.categoryBox.Size = new System.Drawing.Size(175, 472);
             this.categoryBox.TabIndex = 8;
             // 
             // addCategoryButton
@@ -102,7 +102,7 @@
             this.addCategoryButton.Location = new System.Drawing.Point(319, 217);
             this.addCategoryButton.Name = "addCategoryButton";
             this.addCategoryButton.Size = new System.Drawing.Size(80, 23);
-            this.addCategoryButton.TabIndex = 11;
+            this.addCategoryButton.TabIndex = 12;
             this.addCategoryButton.Text = "Add Category";
             this.addCategoryButton.UseVisualStyleBackColor = true;
             this.addCategoryButton.Click += new System.EventHandler(this.addCategoryButton_Click);
@@ -116,7 +116,8 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(319, 438);
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.Location = new System.Drawing.Point(319, 472);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(80, 23);
             this.saveButton.TabIndex = 13;
@@ -129,7 +130,7 @@
             this.newCategoryFolder.Location = new System.Drawing.Point(224, 191);
             this.newCategoryFolder.Name = "newCategoryFolder";
             this.newCategoryFolder.Size = new System.Drawing.Size(175, 20);
-            this.newCategoryFolder.TabIndex = 14;
+            this.newCategoryFolder.TabIndex = 11;
             // 
             // label1
             // 
@@ -163,14 +164,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(411, 473);
+            this.ClientSize = new System.Drawing.Size(411, 507);
             this.Controls.Add(this.rotateButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.newCategoryFolder);
-            this.Controls.Add(this.saveButton);
-            this.Controls.Add(this.addCategoryButton);
             this.Controls.Add(this.newCategoryName);
+            this.Controls.Add(this.newCategoryFolder);
+            this.Controls.Add(this.addCategoryButton);
+            this.Controls.Add(this.saveButton);
             this.Controls.Add(this.categoryBox);
             this.Controls.Add(this.contrastTrackBar);
             this.Controls.Add(this.contrastLabel);
