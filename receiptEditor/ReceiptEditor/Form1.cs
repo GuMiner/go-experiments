@@ -24,7 +24,9 @@ namespace ReceiptEditor
         private List<SubImage> subImages = new List<SubImage>();
         private List<IDisposable> forms = new List<IDisposable>();
         private string currentFileName = null;
-        
+
+        private object scanLockObject = new object();
+
         public ReceiptEditor()
         {
             InitializeComponent();
@@ -34,7 +36,7 @@ namespace ReceiptEditor
         }
 
         public static List<ImageCategory> ImageCategories { get; private set; }
-        public static int FilesSharded { get; set;  }
+        public static int FilesSharded { get; set; }
 
         /// <summary>
         /// Render
@@ -132,16 +134,26 @@ namespace ReceiptEditor
 
         private void scanButton_Click(object sender, EventArgs e)
         {
-            this.filesToProcess = this.FindFiles(this.receiptFolderBox.Text);
-            this.IterateFiles(this.processedFolderBox.Text, (file) => ++this.filesProcessed);
-
-            foreach (ImageCategory category in ReceiptEditor.ImageCategories)
+            lock (scanLockObject)
             {
-                this.IterateFiles(category.Folder, (file) => ++ReceiptEditor.FilesSharded);
-            }
+                if (this.scanButton.Enabled)
+                {
 
-            this.UpdatePercentDone();
-            this.AdvanceImage(skipValidationSteps: true);
+                    this.filesToProcess = this.FindFiles(this.receiptFolderBox.Text);
+                    this.IterateFiles(this.processedFolderBox.Text, (file) => ++this.filesProcessed);
+
+                    foreach (ImageCategory category in ReceiptEditor.ImageCategories)
+                    {
+                        this.IterateFiles(category.Folder, (file) => ++ReceiptEditor.FilesSharded);
+                    }
+
+                    this.UpdatePercentDone();
+                    this.AdvanceImage(skipValidationSteps: true);
+                }
+
+                // The application must be restarted for scanning to work more than once.
+                this.scanButton.Enabled = false;
+            }
         }
 
         private void nextButton_Click(object sender, EventArgs e)
