@@ -94,6 +94,8 @@ namespace ReceiptEditor
             this.Width = this.GetWidth();
             this.Height = this.GetHeight();
             this.Show();
+
+            this.imageEditForm.Location = new Point(this.Location.X + this.Width, this.Location.Y);
             this.imageEditForm.Show();
         }
 

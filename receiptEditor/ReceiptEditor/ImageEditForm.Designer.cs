@@ -94,12 +94,12 @@
             this.categoryBox.Location = new System.Drawing.Point(12, 15);
             this.categoryBox.Name = "categoryBox";
             this.categoryBox.ScrollAlwaysVisible = true;
-            this.categoryBox.Size = new System.Drawing.Size(175, 225);
+            this.categoryBox.Size = new System.Drawing.Size(175, 446);
             this.categoryBox.TabIndex = 8;
             // 
             // addCategoryButton
             // 
-            this.addCategoryButton.Location = new System.Drawing.Point(319, 166);
+            this.addCategoryButton.Location = new System.Drawing.Point(319, 217);
             this.addCategoryButton.Name = "addCategoryButton";
             this.addCategoryButton.Size = new System.Drawing.Size(80, 23);
             this.addCategoryButton.TabIndex = 11;
@@ -116,7 +116,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(319, 217);
+            this.saveButton.Location = new System.Drawing.Point(319, 438);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(80, 23);
             this.saveButton.TabIndex = 13;
@@ -163,7 +163,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(411, 252);
+            this.ClientSize = new System.Drawing.Size(411, 473);
             this.Controls.Add(this.rotateButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
