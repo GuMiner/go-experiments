@@ -1,7 +1,39 @@
 [
   {
     "Name": "ASLC",
-    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ASLC"
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\ASLC"
+  },
+  {
+    "Name": "Design",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Design"
+  },
+  {
+    "Name": "ME 361",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\ME361"
+  },
+  {
+    "Name": "NE 305",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\NE305"
+  },
+  {
+    "Name": "NE 405",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\NE405"
+  },
+  {
+    "Name": "NE 408",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\NE408"
+  },
+  {
+    "Name": "NE 427",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\NE427"
+  },
+  {
+    "Name": "Physics 308",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Physics308"
+  },
+  {
+    "Name": "Physics 525",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Physics525"
   },
   {
     "Name": "R-AmericanA",
@@ -12,8 +44,20 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AmiciItailian"
   },
   {
+    "Name": "R-Arbys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Arbys"
+  },
+  {
     "Name": "R-BarnesAndNoble",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BarnesAndNoble"
+  },
+  {
+    "Name": "R-BestBuy",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BestBuy"
+  },
+  {
+    "Name": "R-BJs",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BJs"
   },
   {
     "Name": "R-BoilingPoint",
@@ -48,6 +92,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Ebay"
   },
   {
+    "Name": "R-Ezells",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\EzellsFamousChicken"
+  },
+  {
     "Name": "R-FirstTech",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FirstTech"
   },
@@ -64,6 +112,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HighMountainBrewing"
   },
   {
+    "Name": "R-HondaOfBellevue",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HondaOfBellevue"
+  },
+  {
     "Name": "R-IGA",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IGA"
   },
@@ -76,8 +128,16 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\KFC"
   },
   {
+    "Name": "R-L9Sports",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\L9Sports"
+  },
+  {
     "Name": "R-LaIsla",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LaIsla"
+  },
+  {
+    "Name": "R-LincolnSquare",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LincolnSquare"
   },
   {
     "Name": "R-McCormick",
@@ -94,6 +154,10 @@
   {
     "Name": "R-MerlinsBarAndGrill",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MerlinsBarAndGrill"
+  },
+  {
+    "Name": "R-ModPizza",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ModPizza"
   },
   {
     "Name": "R-MSN",
@@ -116,12 +180,28 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Safeway"
   },
   {
+    "Name": "R-Sears",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Sears"
+  },
+  {
     "Name": "R-StudioH",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\StudioH"
   },
   {
     "Name": "R-TgiFridays",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TgiFridays"
+  },
+  {
+    "Name": "R-Thai65",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Thai65"
+  },
+  {
+    "Name": "R-ThreeLions",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ThreeLionsPub"
+  },
+  {
+    "Name": "R-TraderJoes",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TraderJoes"
   },
   {
     "Name": "R-TuttaBella",
@@ -132,12 +212,12 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\United"
   },
   {
-    "Name": "R-Unknown",
-    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Unknown"
-  },
-  {
     "Name": "R-UWBookstore",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UWBookstore"
+  },
+  {
+    "Name": "R-VisionPlusRedmond",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\VisionPlusRedmond"
   },
   {
     "Name": "R-Wendys",
@@ -153,6 +233,10 @@
   },
   {
     "Name": "TrailsOfRedmond",
-    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TrailsOfRedmond"
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\TrailsOfRedmond"
+  },
+  {
+    "Name": "Unknown",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Unknown"
   }
 ]
