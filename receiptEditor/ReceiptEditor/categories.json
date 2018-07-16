@@ -4,12 +4,32 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\ASLC"
   },
   {
+    "Name": "BoyScouts",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\BS"
+  },
+  {
+    "Name": "CBE 250",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\CBE250"
+  },
+  {
     "Name": "CBE 320",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\CBE320"
   },
   {
+    "Name": "Chem 115",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Chem115"
+  },
+  {
+    "Name": "Chem 116",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Chem116"
+  },
+  {
     "Name": "COE Shop",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\COEShop"
+  },
+  {
+    "Name": "CS 252",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\CS252"
   },
   {
     "Name": "CSREF",
@@ -40,6 +60,14 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\ME361"
   },
   {
+    "Name": "MS&E 350",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\MSE350"
+  },
+  {
+    "Name": "Museums",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Museums"
+  },
+  {
     "Name": "NE 305",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\NE305"
   },
@@ -64,12 +92,20 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Physics201"
   },
   {
+    "Name": "Physics 241",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Physics241"
+  },
+  {
     "Name": "Physics 308",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Physics308"
   },
   {
     "Name": "Physics 525",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Physics525"
+  },
+  {
+    "Name": "R-76",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\76"
   },
   {
     "Name": "R-AmericanA",
@@ -82,6 +118,10 @@
   {
     "Name": "R-Arbys",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Arbys"
+  },
+  {
+    "Name": "R-BaiTong",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BaiTong"
   },
   {
     "Name": "R-BarnesAndNoble",
@@ -130,6 +170,10 @@
   {
     "Name": "R-Ezells",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\EzellsFamousChicken"
+  },
+  {
+    "Name": "R-Fatburger",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Fatburger"
   },
   {
     "Name": "R-FirstTech",
@@ -212,6 +256,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedmondShipping"
   },
   {
+    "Name": "R-REI",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\REI"
+  },
+  {
     "Name": "R-Safeway",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Safeway"
   },
@@ -266,6 +314,10 @@
   {
     "Name": "R-WhitePass",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhitePass"
+  },
+  {
+    "Name": "Science Olympiad",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\ScienceOlympiad"
   },
   {
     "Name": "TrailsOfRedmond",
