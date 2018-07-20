@@ -56,6 +56,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\HS"
   },
   {
+    "Name": "HS-Bio",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\HS\\Bio"
+  },
+  {
     "Name": "ME 361",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\ME361"
   },
@@ -156,6 +160,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Delta"
   },
   {
+    "Name": "R-DiamondParking",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DiamondParking"
+  },
+  {
     "Name": "R-DoughZone",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DoughZone"
   },
@@ -220,6 +228,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LincolnSquare"
   },
   {
+    "Name": "R-LivingComputerMuseum",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LivingComputerMuseum"
+  },
+  {
     "Name": "R-McCormick",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\McCormick&Schmick"
   },
@@ -244,6 +256,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dane County Airport"
   },
   {
+    "Name": "R-OtoSushi",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OtoSushi"
+  },
+  {
     "Name": "R-PackagedMsftShipping",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Packaged"
   },
@@ -252,8 +268,16 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PastaLupino"
   },
   {
+    "Name": "R-PurpleCafe",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PurpleCafe"
+  },
+  {
     "Name": "R-RedmondShip",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedmondShipping"
+  },
+  {
+    "Name": "R-Regal",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Regal"
   },
   {
     "Name": "R-REI",
@@ -268,8 +292,16 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Sears"
   },
   {
+    "Name": "R-SpiceRoute",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SpiceRoute"
+  },
+  {
     "Name": "R-StudioH",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\StudioH"
+  },
+  {
+    "Name": "R-SwishSwish",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SwishSwish"
   },
   {
     "Name": "R-TgiFridays",
@@ -286,6 +318,10 @@
   {
     "Name": "R-TraderJoes",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TraderJoes"
+  },
+  {
+    "Name": "R-TropeaRistoranteItaliano",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TropeaRistoranteItaliano"
   },
   {
     "Name": "R-TuttaBella",
