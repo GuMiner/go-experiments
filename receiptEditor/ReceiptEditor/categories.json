@@ -44,6 +44,10 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\ECE376"
   },
   {
+    "Name": "Electronics",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Electronics"
+  },
+  {
     "Name": "EPD 275",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\EPD275"
   },
@@ -58,6 +62,14 @@
   {
     "Name": "HS-Bio",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\HS\\Bio"
+  },
+  {
+    "Name": "Keys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Keys"
+  },
+  {
+    "Name": "Library",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Library"
   },
   {
     "Name": "ME 361",
@@ -108,8 +120,44 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\Physics525"
   },
   {
+    "Name": "R-",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WoodlandParkZoo"
+  },
+  {
     "Name": "R-76",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\76"
+  },
+  {
+    "Name": "R-8OzBurgers",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\8OzBurgerBar"
+  },
+  {
+    "Name": "R-AceHardware",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AceHardware"
+  },
+  {
+    "Name": "R-Adafruit",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Adafruit"
+  },
+  {
+    "Name": "R-AEBike",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AEBike"
+  },
+  {
+    "Name": "R-AlaskaAir",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AlaskaAirlines"
+  },
+  {
+    "Name": "R-AllElectronics",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AlllElectronics"
+  },
+  {
+    "Name": "R-AlliedElectronics",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AlliedElectronics"
+  },
+  {
+    "Name": "R-Amazon",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Amazon"
   },
   {
     "Name": "R-AmericanA",
@@ -120,8 +168,24 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AmiciItailian"
   },
   {
+    "Name": "R-Applebees",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Applebees"
+  },
+  {
     "Name": "R-Arbys",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Arbys"
+  },
+  {
+    "Name": "R-Arco",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Arco"
+  },
+  {
+    "Name": "R-AuntieAnnes",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\AuntieAnnes"
+  },
+  {
+    "Name": "R-Avis",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Avis"
   },
   {
     "Name": "R-BaiTong",
@@ -132,36 +196,232 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BarnesAndNoble"
   },
   {
+    "Name": "R-BavarianBistro",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BavarianBistroAndBar"
+  },
+  {
+    "Name": "R-BavarianSausage",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BavarianSausage"
+  },
+  {
+    "Name": "R-BedBathAndB",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BedBathAndBeyond"
+  },
+  {
+    "Name": "R-BellaBotega",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BellaBotega"
+  },
+  {
+    "Name": "R-BellRedBarbers",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BellRedBarbers"
+  },
+  {
+    "Name": "R-BenaroyaHall",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BenaroyaHall"
+  },
+  {
+    "Name": "R-BenFranklin",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BenFranklin"
+  },
+  {
+    "Name": "R-BentoBox",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BentoBox"
+  },
+  {
     "Name": "R-BestBuy",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BestBuy"
+  },
+  {
+    "Name": "R-BestWok",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BestWok"
+  },
+  {
+    "Name": "R-BevMo",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BevMo"
+  },
+  {
+    "Name": "R-BigRiverBooks",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BigRiverBooks"
+  },
+  {
+    "Name": "R-BillyGoat",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BillyGoat"
   },
   {
     "Name": "R-BJs",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BJs"
   },
   {
+    "Name": "R-BobsBurgersAndBrew",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BobsBurgersAndBrew"
+  },
+  {
+    "Name": "R-BobsCopyShop",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BobsCopyShop"
+  },
+  {
     "Name": "R-BoilingPoint",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BoilingPoint"
+  },
+  {
+    "Name": "R-BostonStore",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BostonStore"
+  },
+  {
+    "Name": "R-BP",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BP"
+  },
+  {
+    "Name": "R-BrownBear",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BrownBearCarWash"
+  },
+  {
+    "Name": "R-BudgetBicycle",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BudgetBicycleCenter"
+  },
+  {
+    "Name": "R-BurgerKing",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\BurgerKing"
+  },
+  {
+    "Name": "R-Cactus",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Cactus"
+  },
+  {
+    "Name": "R-CafeZoot",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CafeZoot"
+  },
+  {
+    "Name": "R-CalebsBooks",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CalebsBooks"
+  },
+  {
+    "Name": "R-CaliPizzaKitchen",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CaliforniaPizzaKitchen"
+  },
+  {
+    "Name": "R-CanAmPizza",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CanAmPizza"
   },
   {
     "Name": "R-Caramba",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Caramba"
   },
   {
+    "Name": "R-CardKingdom",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CardKingdom"
+  },
+  {
+    "Name": "R-ChaatNRoll",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ChaatNRoll"
+  },
+  {
+    "Name": "R-CheesecakeFactory",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TheCheesecakeFactory"
+  },
+  {
     "Name": "R-Chevron",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Chevron"
+  },
+  {
+    "Name": "R-ChickFilA",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ChickFilA"
+  },
+  {
+    "Name": "R-ChihulyGlass",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ChihulyGardenAndGlass"
+  },
+  {
+    "Name": "R-Chilis",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Chilis"
+  },
+  {
+    "Name": "R-Chipotle",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Chipotle"
+  },
+  {
+    "Name": "R-ChocolateBox",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ChocolateBox"
+  },
+  {
+    "Name": "R-ClaimJumper",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ClaimJumper"
+  },
+  {
+    "Name": "R-ClickAndGrow",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ClickAndGrow"
+  },
+  {
+    "Name": "R-ColomboYogurt",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ColomboFrozenYogurt"
+  },
+  {
+    "Name": "R-ColoradoSportsBarAndDeli",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ColoradoSportsBarAndDeli"
+  },
+  {
+    "Name": "R-CompadresMexican",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CompadresMexican"
+  },
+  {
+    "Name": "R-Costas",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Costas"
+  },
+  {
+    "Name": "R-CrossroadsCafe",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CrossroadsCafe"
   },
   {
     "Name": "R-CrystalMountain",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CrystalMountain"
   },
   {
+    "Name": "R-CubsBarAndGrill",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\CubsBarAndGrill"
+  },
+  {
+    "Name": "R-Culvers",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Culvers"
+  },
+  {
+    "Name": "R-DairyQueen",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DairyQueen"
+  },
+  {
     "Name": "R-Delta",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Delta"
   },
   {
+    "Name": "R-Dennys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dennys"
+  },
+  {
     "Name": "R-DiamondParking",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DiamondParking"
+  },
+  {
+    "Name": "R-Digikey",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Digikey"
+  },
+  {
+    "Name": "R-Disney",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Disney"
+  },
+  {
+    "Name": "R-DoitTech",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DoitTech"
+  },
+  {
+    "Name": "R-DollarTree",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DollarTree"
+  },
+  {
+    "Name": "R-Dominos",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DominosPizza"
+  },
+  {
+    "Name": "R-DornHardware",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dorn"
   },
   {
     "Name": "R-DoughZone",
@@ -172,48 +432,228 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dubliner"
   },
   {
+    "Name": "R-DunkinDonuts",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\DunkinDonuts"
+  },
+  {
+    "Name": "R-EarlsWhistler",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\EarlsWhistler"
+  },
+  {
+    "Name": "R-EastsideSkiAndSport",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\EastsideSkiAndSport"
+  },
+  {
     "Name": "R-Ebay",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Ebay"
+  },
+  {
+    "Name": "R-ElectronicGoldmine",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ElectronicGoldmine"
+  },
+  {
+    "Name": "R-ElisCheeseCake",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ElisCheesecake"
+  },
+  {
+    "Name": "R-ElToreador",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ElToreador"
+  },
+  {
+    "Name": "R-EMPMuseum",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\EMPMuseum"
   },
   {
     "Name": "R-Ezells",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\EzellsFamousChicken"
   },
   {
+    "Name": "R-FamilyPancakeHouse",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FamilyPancakeHous"
+  },
+  {
+    "Name": "R-FamousDaves",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FamousDaves"
+  },
+  {
     "Name": "R-Fatburger",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Fatburger"
+  },
+  {
+    "Name": "R-Fazolis",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Fazolis"
+  },
+  {
+    "Name": "R-Firenze",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Firenze"
   },
   {
     "Name": "R-FirstTech",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FirstTech"
   },
   {
+    "Name": "R-FitchburgMovie",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FitchburgMovie"
+  },
+  {
     "Name": "R-FiveGuys",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FiveGuys"
+  },
+  {
+    "Name": "R-FredMeyer",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FredMeyer"
+  },
+  {
+    "Name": "R-FryingFish",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\FryingFish"
+  },
+  {
+    "Name": "R-Frys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Frys"
+  },
+  {
+    "Name": "R-GameStop",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GameStop"
+  },
+  {
+    "Name": "R-GE",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GE"
+  },
+  {
+    "Name": "R-Ghirardelli",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Ghirardelli"
   },
   {
     "Name": "R-GLCBarAndGrill",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GlcBarAndGrill"
   },
   {
+    "Name": "R-GoldenAgeCollectibles",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GoldenAgeCollectibles"
+  },
+  {
+    "Name": "R-GreatAmericanBagel",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GreatAmericanBagel"
+  },
+  {
+    "Name": "R-GyroWorld",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\GyroWorld"
+  },
+  {
+    "Name": "R-HaagenDazPizza",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HaagenDazPizza"
+  },
+  {
+    "Name": "R-HalfPriceBooks",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HalfPriceBooks"
+  },
+  {
+    "Name": "R-HarborFreightTools",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HarborFreightTools"
+  },
+  {
     "Name": "R-HighMountainBrewing",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HighMountainBrewing"
+  },
+  {
+    "Name": "R-HobbyTown",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HobbyTown"
+  },
+  {
+    "Name": "R-HomeDepot",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HomeDepot"
   },
   {
     "Name": "R-HondaOfBellevue",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HondaOfBellevue"
   },
   {
+    "Name": "R-HudsonNews",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\HudsonNews"
+  },
+  {
+    "Name": "R-ICECurrencyServices",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ICECurrencyServices"
+  },
+  {
+    "Name": "R-IdlewildPizza",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IdlewildPizza"
+  },
+  {
     "Name": "R-IGA",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IGA"
+  },
+  {
+    "Name": "R-IHOP",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IHOP"
+  },
+  {
+    "Name": "R-IKEA",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IKEA"
+  },
+  {
+    "Name": "R-IllinoisToll",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IllinoisToll"
+  },
+  {
+    "Name": "R-IPic",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\iPicRedmond"
+  },
+  {
+    "Name": "R-IslandGrill",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IslandGrill"
+  },
+  {
+    "Name": "R-IssaquahTheater",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IssaquahTheater"
+  },
+  {
+    "Name": "R-IvarsSeafood",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\IvarsSeafood"
+  },
+  {
+    "Name": "R-JayBerrysPizza",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\JayBerrysGormetPizza"
+  },
+  {
+    "Name": "R-JerseyMikesSubs",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\JerseyMikesSubs"
   },
   {
     "Name": "R-JinyaRamen",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\JinyaRamen"
   },
   {
+    "Name": "R-JJMahoneys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\JJMahoneys"
+  },
+  {
+    "Name": "R-JoannFabrics",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\JoannFabrics"
+  },
+  {
+    "Name": "R-Kanishka",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Kanishka"
+  },
+  {
     "Name": "R-KFC",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\KFC"
+  },
+  {
+    "Name": "R-KiddValley",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\KiddValley"
+  },
+  {
+    "Name": "R-KikuSushi",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\KikuSushi"
+  },
+  {
+    "Name": "R-KingCountyMetro",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\KingCountyMetro"
+  },
+  {
+    "Name": "R-Kobe",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Kobe"
   },
   {
     "Name": "R-L9Sports",
@@ -224,12 +664,68 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LaIsla"
   },
   {
+    "Name": "R-Lego",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Lego"
+  },
+  {
     "Name": "R-LincolnSquare",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LincolnSquare"
   },
   {
     "Name": "R-LivingComputerMuseum",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LivingComputerMuseum"
+  },
+  {
+    "Name": "R-LunchboxLab",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\LunchboxLab"
+  },
+  {
+    "Name": "R-Macys",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Macys"
+  },
+  {
+    "Name": "R-MadeInWA",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MadeInWashington"
+  },
+  {
+    "Name": "R-Mallards",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Mallards"
+  },
+  {
+    "Name": "R-ManchuWok",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ManchuWok"
+  },
+  {
+    "Name": "R-MapCo",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MapCo"
+  },
+  {
+    "Name": "R-MarblemountDiner",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MarblemountDiner"
+  },
+  {
+    "Name": "R-MarcusTheatres",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MarcusTheatres"
+  },
+  {
+    "Name": "R-Marrakesh",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Marrakesh"
+  },
+  {
+    "Name": "R-Matador",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Matador"
+  },
+  {
+    "Name": "R-MattsRotisserie",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MattsRotisserieAndOysterLounge"
+  },
+  {
+    "Name": "R-Mayuri",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\receipts\\Mayuri"
+  },
+  {
+    "Name": "R-MazurkaPens",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MazurkaPens"
   },
   {
     "Name": "R-McCormick",
@@ -240,68 +736,392 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\McDonalds"
   },
   {
+    "Name": "R-MediterraneanGrill",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MediterraneanGrill"
+  },
+  {
     "Name": "R-MediterraneanKitchen",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MediterraneanKitchen"
+  },
+  {
+    "Name": "R-MegaMediaXchange",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MegaMediaXchange"
   },
   {
     "Name": "R-MerlinsBarAndGrill",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MerlinsBarAndGrill"
   },
   {
+    "Name": "R-Michaels",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Michaels"
+  },
+  {
+    "Name": "R-MidContinentRailwayMuseum",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MidContinentRailwayMuseum"
+  },
+  {
+    "Name": "R-MinutemanParking",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MinutemanParking"
+  },
+  {
     "Name": "R-ModPizza",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ModPizza"
+  },
+  {
+    "Name": "R-MothersBistroAndBar",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MothersBistroAndBar"
+  },
+  {
+    "Name": "R-MSFTStore",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MicrosoftCompanyStore"
   },
   {
     "Name": "R-MSN",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Dane County Airport"
   },
   {
+    "Name": "R-MtBaker",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\MtBaker"
+  },
+  {
+    "Name": "R-Newegg",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Newegg"
+  },
+  {
+    "Name": "R-NibbanaThai",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\NibbanaThai"
+  },
+  {
+    "Name": "R-NobleCourt",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\NobleCourt"
+  },
+  {
+    "Name": "R-NoodleLand",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\NoodleLand"
+  },
+  {
+    "Name": "R-OCharThai",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OCharThai"
+  },
+  {
+    "Name": "R-OfficeDepot",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OfficeDepot"
+  },
+  {
+    "Name": "R-OhIndia",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OhIndia"
+  },
+  {
+    "Name": "R-OliveGarden",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OliveGarden"
+  },
+  {
+    "Name": "R-OnlineMetals",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OnlineMetals"
+  },
+  {
+    "Name": "R-OrchardCountyWinery",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OrchardCountyWineryAndMarket"
+  },
+  {
+    "Name": "R-OriginalJoes",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OriginalJoes"
+  },
+  {
     "Name": "R-OtoSushi",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OtoSushi"
+  },
+  {
+    "Name": "R-OverlakeLandKey",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\OverlakeLockAndKey"
+  },
+  {
+    "Name": "R-PacificScienceCenter",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PacificScienceCenter"
   },
   {
     "Name": "R-PackagedMsftShipping",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Packaged"
   },
   {
+    "Name": "R-PaddyCoynes",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PaddyCoynes"
+  },
+  {
+    "Name": "R-PandaExpress",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PandaExpress"
+  },
+  {
+    "Name": "R-Panera",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PaneraBread"
+  },
+  {
+    "Name": "R-PapaJohns",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PapaJohnsPizza"
+  },
+  {
     "Name": "R-PastaLupino",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PastaLupino"
+  },
+  {
+    "Name": "R-PDQ",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PDQ"
+  },
+  {
+    "Name": "R-PerformanceBike",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PerformanceBike"
+  },
+  {
+    "Name": "R-PizzaHut",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PizzaHut"
+  },
+  {
+    "Name": "R-Pogacha",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\receipts\\Pogacha"
+  },
+  {
+    "Name": "R-Pololu",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Pololu"
+  },
+  {
+    "Name": "R-PomegranateBistro",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PomegranateBistro"
+  },
+  {
+    "Name": "R-PonyExpress",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PonyExpress"
+  },
+  {
+    "Name": "R-PortlandArtMuseum",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PortlandArtMuseum"
+  },
+  {
+    "Name": "R-PortlandJapaneseGarden",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PortlandJapaneseGarden"
+  },
+  {
+    "Name": "R-PortlandTransit",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PortlandTransit"
+  },
+  {
+    "Name": "R-Potbelly",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PotbellySandwich"
+  },
+  {
+    "Name": "R-PowellsCityOfBooks",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PowellsCityOfBooks"
+  },
+  {
+    "Name": "R-Printrbot",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Printrbot"
   },
   {
     "Name": "R-PurpleCafe",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\PurpleCafe"
   },
   {
+    "Name": "R-QFC",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\QFC"
+  },
+  {
+    "Name": "R-Quiznos",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\QuiznosSubs"
+  },
+  {
+    "Name": "R-Radioshack",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Radioshack"
+  },
+  {
+    "Name": "R-RainierRest",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RainierRestaurant"
+  },
+  {
+    "Name": "R-RedmondBarGrill",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedmondBarAndGrill"
+  },
+  {
+    "Name": "R-RedmondCycle",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedmondCycle"
+  },
+  {
     "Name": "R-RedmondShip",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedmondShipping"
+  },
+  {
+    "Name": "R-RedRobin",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RedRobin"
   },
   {
     "Name": "R-Regal",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Regal"
   },
   {
+    "Name": "R-RegentBakeryAndCafe",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RegentBakeryAndCafe"
+  },
+  {
     "Name": "R-REI",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\REI"
+  },
+  {
+    "Name": "R-RepublicParking",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RepublicParking"
+  },
+  {
+    "Name": "R-RiteAid",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RiteAid"
+  },
+  {
+    "Name": "R-RiverbendCafe",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RiverbendCafe"
+  },
+  {
+    "Name": "R-RoadRanger",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\RoadRanger"
   },
   {
     "Name": "R-Safeway",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Safeway"
   },
   {
+    "Name": "R-Saleae",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Saleae"
+  },
+  {
+    "Name": "R-SamsTavern",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SamsTavern"
+  },
+  {
+    "Name": "R-Santouka",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Santouka"
+  },
+  {
+    "Name": "R-SavvyMattress",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SavvyMattress"
+  },
+  {
     "Name": "R-Sears",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Sears"
+  },
+  {
+    "Name": "R-SeatacParking",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SeatacParking"
+  },
+  {
+    "Name": "R-SeattleLighting",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SeattleLighting"
+  },
+  {
+    "Name": "R-SeattleWheel",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SeattleGreatWheel"
+  },
+  {
+    "Name": "R-Sebis",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Sebis"
+  },
+  {
+    "Name": "R-Shell",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Shell"
+  },
+  {
+    "Name": "R-SilverCityBrewery",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SilverCityBrewery"
+  },
+  {
+    "Name": "R-SipThaiBistro",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SipThaiBistro"
+  },
+  {
+    "Name": "R-SizzlePieWest",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SizzlePieWest"
+  },
+  {
+    "Name": "R-SoundMicrosystems",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SoundMicrosystems"
+  },
+  {
+    "Name": "R-SouthwestAir",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SouthwestAirlines"
+  },
+  {
+    "Name": "R-Sparkfun",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Sparkfun"
+  },
+  {
+    "Name": "R-SpazzoItalian",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SpazzoItalian"
+  },
+  {
+    "Name": "R-Spiced",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Spiced"
   },
   {
     "Name": "R-SpiceRoute",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SpiceRoute"
   },
   {
+    "Name": "R-SportRestaurantAndBar",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SportRestaurantAndBar"
+  },
+  {
+    "Name": "R-SquareLotus",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SquareLotus"
+  },
+  {
+    "Name": "R-Staples",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Staples"
+  },
+  {
+    "Name": "R-StarCinema",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\StarCinema"
+  },
+  {
+    "Name": "R-StoneKorean",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\StoneKorean"
+  },
+  {
     "Name": "R-StudioH",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\StudioH"
   },
   {
+    "Name": "R-Subway",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Subway"
+  },
+  {
     "Name": "R-SwishSwish",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SwishSwish"
+  },
+  {
+    "Name": "R-SzechuanChef",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SzechuanChef"
+  },
+  {
+    "Name": "R-TallsCamera",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TallsCamera"
+  },
+  {
+    "Name": "R-TapPlastics",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TapPlastics"
+  },
+  {
+    "Name": "R-TaqueriaElRinc",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TaqueriaElRinconsito"
+  },
+  {
+    "Name": "R-Target",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Target"
+  },
+  {
+    "Name": "R-TavernHall",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TavernHall"
+  },
+  {
+    "Name": "R-Texaco",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Texaco"
+  },
+  {
+    "Name": "R-TextBooksNow",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TextBooksNow"
   },
   {
     "Name": "R-TgiFridays",
@@ -312,44 +1132,168 @@
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Thai65"
   },
   {
+    "Name": "R-ThaiKitchen",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ThaiKitchen"
+  },
+  {
+    "Name": "R-ThaiVp",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ThaiVP"
+  },
+  {
+    "Name": "R-ThinkGeek",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ThinkGeek"
+  },
+  {
     "Name": "R-ThreeLions",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ThreeLionsPub"
+  },
+  {
+    "Name": "R-TMobile",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TMobile"
+  },
+  {
+    "Name": "R-ToothOfTimeTraders",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ToothOfTimeTraders"
+  },
+  {
+    "Name": "R-Tradehome",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Tradehome"
   },
   {
     "Name": "R-TraderJoes",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TraderJoes"
   },
   {
+    "Name": "R-TresHermanos",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TresHermanos"
+  },
+  {
     "Name": "R-TropeaRistoranteItaliano",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TropeaRistoranteItaliano"
+  },
+  {
+    "Name": "R-TrPottery",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TrPottery"
+  },
+  {
+    "Name": "R-TuCasa",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TuCasa"
   },
   {
     "Name": "R-TuttaBella",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\TuttaBella"
   },
   {
+    "Name": "R-Typhoon",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Typhoon"
+  },
+  {
+    "Name": "R-UltiMachine",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UltiMachine"
+  },
+  {
+    "Name": "R-UnclesGames",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UnclesGames"
+  },
+  {
     "Name": "R-United",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\United"
+  },
+  {
+    "Name": "R-UPS",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UPS"
   },
   {
     "Name": "R-UWBookstore",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UWBookstore"
   },
   {
+    "Name": "R-UWCreditUnion",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UWCreditUnion"
+  },
+  {
+    "Name": "R-UWDailyScoop",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UWDailyScoop"
+  },
+  {
+    "Name": "R-UWSettPub",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\SettPub"
+  },
+  {
+    "Name": "R-UWUrbanSlice",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\UWUrbanSlice"
+  },
+  {
+    "Name": "R-VeronaVision",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\VeronaVisionCare"
+  },
+  {
+    "Name": "R-Vetco",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Vetco"
+  },
+  {
     "Name": "R-VisionPlusRedmond",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\VisionPlusRedmond"
+  },
+  {
+    "Name": "R-WaDeptLicense",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WaDeptOfLicensing"
+  },
+  {
+    "Name": "R-Walgreens",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Walgreens"
+  },
+  {
+    "Name": "R-Walmart",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Walmart"
+  },
+  {
+    "Name": "R-WatchZone",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WatchZone"
   },
   {
     "Name": "R-Wendys",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\Wendys"
   },
   {
+    "Name": "R-WhistlerFood",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhistlerFood"
+  },
+  {
     "Name": "R-WhistlerParking",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhistlerParking"
   },
   {
+    "Name": "R-WhistlerRental",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhistlerRental"
+  },
+  {
     "Name": "R-WhitePass",
     "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WhitePass"
+  },
+  {
+    "Name": "R-WildeRoverIrish",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WildeRoverIrish"
+  },
+  {
+    "Name": "R-WiscoDNR",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WisconsinDNR"
+  },
+  {
+    "Name": "R-WoodlandParkZoo",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\WoodlandParkZoo"
+  },
+  {
+    "Name": "R-YellowCab",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\YellowCab"
+  },
+  {
+    "Name": "R-Zeeks",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ZeeksPizza"
+  },
+  {
+    "Name": "R-ZitiPasta",
+    "Folder": "C:\\Users\\Gustave\\Desktop\\Data Archive\\shardedScans\\receipts\\ZitiPasta"
   },
   {
     "Name": "Science Olympiad",
